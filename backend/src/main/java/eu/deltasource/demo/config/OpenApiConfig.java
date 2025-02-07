@@ -5,6 +5,10 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for customizing the OpenAPI documentation for the online learning platform.
+ * This class sets up the OpenAPI specification with custom information about the API.
+ */
 @Configuration
 public class OpenApiConfig {
 

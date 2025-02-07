@@ -3,6 +3,10 @@ package eu.deltasource.demo.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+/**
+ * Represents a student entity in the system.
+ * This class encapsulates the core attributes of a student.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
