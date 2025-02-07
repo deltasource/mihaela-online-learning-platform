@@ -149,7 +149,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void getStudentByEmail_NullPointerException_ReturnsInternalServerError() throws Exception {
+    public void getStudentByEmail_NullPointerException_ReturnsBadRequest() throws Exception {
         // Given
         String email = "test@example.com";
         when(studentService.getStudentByEmail(anyString()))
@@ -158,7 +158,7 @@ public class StudentControllerTest {
         // When & Then
         mockMvc.perform(get("/students/v1/" + email)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value(500));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
     }
 }
