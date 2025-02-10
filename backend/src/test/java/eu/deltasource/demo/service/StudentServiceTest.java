@@ -16,11 +16,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for the StudentService class.
- * These tests verify the behavior of the StudentService methods
- * using a mocked StudentRepository.
- */
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
 

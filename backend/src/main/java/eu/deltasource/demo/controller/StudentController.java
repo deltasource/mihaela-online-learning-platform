@@ -23,12 +23,6 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    /**
-     * Creates a new student in the system.
-     *
-     * @param studentDTO the DTO containing the student information
-     * @return the created StudentDTO
-     */
     @PostMapping
     @Operation(summary = "Create a new student", description = "Creates a new student with the provided details")
     public StudentDTO createStudent(
@@ -37,12 +31,6 @@ public class StudentController {
         return studentService.createStudent(studentDTO);
     }
 
-    /**
-     * Retrieves a student by their email address.
-     *
-     * @param email the email of the student to retrieve
-     * @return the StudentDTO of the found student
-     */
     @GetMapping("/{email}")
     @Operation(summary = "Get a student by email", description = "Returns a student based on the email provided")
     public StudentDTO getStudentByEmail(
@@ -51,12 +39,6 @@ public class StudentController {
         return studentService.getStudentByEmail(email);
     }
 
-    /**
-     * Deletes a student from the system based on their email address.
-     *
-     * @param email the email of the student to delete
-     * @return true if the student was successfully deleted, false otherwise
-     */
     @DeleteMapping("/{email}")
     @Operation(summary = "Delete a student", description = "Deletes a student based on the email provided")
     public boolean deleteStudent(

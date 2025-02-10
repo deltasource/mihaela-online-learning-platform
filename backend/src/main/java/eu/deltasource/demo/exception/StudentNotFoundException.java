@@ -6,11 +6,7 @@ package eu.deltasource.demo.exception;
  * that does not exist in the database.
  */
 public class StudentNotFoundException extends RuntimeException {
-    /**
-     * Constructs a new StudentNotFoundException with a detailed message.
-     *
-     * @param email the email address of the student that was not found
-     */
+
     public StudentNotFoundException(String email) {
         super("Student not found with this email: " + email);
     }

@@ -8,11 +8,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Unit tests for the StudentRepository class.
- * These tests verify the behavior of the StudentRepository's methods
- * for saving, retrieving, and removing student data.
- */
 class StudentRepositoryTest {
 
     private final StudentRepository studentRepository = new StudentRepository();

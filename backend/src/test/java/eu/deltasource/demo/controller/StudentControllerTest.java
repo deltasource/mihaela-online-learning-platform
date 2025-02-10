@@ -17,11 +17,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Unit tests for the StudentController class.
- * These tests verify the behavior of the StudentController's endpoints
- * using Spring's MockMvc for simulating HTTP requests.
- */
 @WebMvcTest(StudentController.class)
 public class StudentControllerTest {
 
