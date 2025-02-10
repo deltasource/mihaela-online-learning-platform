@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Service class for managing student-related operations.
+ * This class acts as an intermediary between the controller and the repository,
+ * handling business logic for student management.
+ */
 @RequiredArgsConstructor
 @Service
 public class StudentService {

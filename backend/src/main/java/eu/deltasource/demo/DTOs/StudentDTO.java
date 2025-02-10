@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+/**
+ * Data Transfer Object (DTO) representing a student in the system.
+ * This class encapsulates student information for transfer between layers of the application.
+ */
 @Getter
 @Setter
 @Builder
