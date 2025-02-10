@@ -8,6 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Repository class for managing Student entities.
+ * This class provides in-memory storage and retrieval operations for Student objects.
+ */
 @Getter
 @Component
 public class StudentRepository {

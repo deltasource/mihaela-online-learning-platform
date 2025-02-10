@@ -8,6 +8,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for managing student-related operations.
+ * This controller handles CRUD operations for students in the system.
+ */
 @RestController
 @RequestMapping("/students/v1")
 @Tag(name = "Student Management", description = "Operations pertaining to students in the system")
