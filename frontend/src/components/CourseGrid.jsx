@@ -1,4 +1,4 @@
-import React from 'react';
+import { Card, CardContent, Grid, Typography } from "@mui/material"
 
 const CourseGrid = () => {
   const courses = [
@@ -11,16 +11,22 @@ const CourseGrid = () => {
   ]
 
   return (
-    <div className="courses-grid">
-      {courses.map((course, index) => (
-        <div key={index} className="course-card">
-          <div className="course-content">
-            <h3>{course.title}</h3>
-            <p>{course.description}</p>
-          </div>
-        </div>
-      ))}
-    </div>
+      <Grid container spacing={3} flex={1}>
+        {courses.map((course, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {course.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {course.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+        ))}
+      </Grid>
   )
 }
 

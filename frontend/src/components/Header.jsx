@@ -1,15 +1,21 @@
-import React from 'react';
+import { AppBar, Button, Toolbar, Typography } from "@mui/material"
 
-const Header = () => {  
-    return(
-        <header>
-            <div className = "logo"> Elearning platform</div>
-            <nav>
-                <button className = "btn-primary">Log in</button>
-                <button className = "btn-primary">Sign up</button>
-            </nav>
-        </header>
+const Header = () => {
+    return (
+        <AppBar position="static" color="transparent" elevation={0}>
+            <Toolbar>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: "bold" }}>
+                    Elearn
+                </Typography>
+                <Button color="primary" sx={{ mr: 2 }}>
+                    Log in
+                </Button>
+                <Button variant="contained" color="primary">
+                    Sign up
+                </Button>
+            </Toolbar>
+        </AppBar>
     )
 }
 
-export default Header;
+export default Header

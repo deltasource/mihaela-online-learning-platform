@@ -1,11 +1,22 @@
-import React from 'react';
+import { Container, InputAdornment, TextField } from "@mui/material"
+import SearchIcon from "@mui/icons-material/Search"
 
-const Search = () =>{
+const Search = () => {
     return (
-        <div className = "search-wrapper">
-            <input type="text" id="searchInput" placeholder="Search..." />
-        </div>
+        <Container maxWidth="md" sx={{ py: 4 }}>
+            <TextField
+                fullWidth
+                placeholder="Search..."
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    ),
+                }}
+            />
+        </Container>
     )
 }
 
-export default Search;
+export default Search

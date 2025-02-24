@@ -1,18 +1,46 @@
-import React from 'react';
+import { Box, Button, Paper, Typography } from "@mui/material"
+import CodeIcon from "@mui/icons-material/Code"
+import CloudIcon from "@mui/icons-material/Cloud"
+import StorageIcon from "@mui/icons-material/Storage"
+import ScienceIcon from "@mui/icons-material/Science"
 
 const Categories = () => {
+    const categories = [
+        { name: "Web development", icon: <CodeIcon /> },
+        { name: "IoT", icon: <CloudIcon /> },
+        { name: "AWS", icon: <StorageIcon /> },
+        { name: "Data science", icon: <ScienceIcon /> },
+    ]
 
-    return(
-    <aside className = "categories">
-        <div className = "category-list">
-     <h3>Categories</h3>
-        <button className = "category-btn active">Web development</button>
-        <button className = "category-btn">IoT</button>
-        <button className = "category-btn">AWS</button>
-        <button className = "category-btn">Data science</button>
-        </div>
-    </aside>
+    return (
+        <Paper sx={{ width: 240, p: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+                Categories
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                {categories.map((category) => (
+                    <Button
+                        key={category.name}
+                        variant="text"
+                        color="inherit"
+                        startIcon={category.icon}
+                        sx={{
+                            justifyContent: "flex-start",
+                            px: 2,
+                            py: 1,
+                            "&.active": {
+                                bgcolor: "primary.main",
+                                color: "primary.contrastText",
+                            },
+                        }}
+                        className={category.name === "Web development" ? "active" : ""}
+                    >
+                        {category.name}
+                    </Button>
+                ))}
+            </Box>
+        </Paper>
     )
 }
 
-export default Categories;
+export default Categories
