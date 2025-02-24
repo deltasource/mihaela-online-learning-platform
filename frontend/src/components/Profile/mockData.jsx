@@ -28,4 +28,49 @@ export const mockUserData = {
             progress: 90,
         },
     ],
+    instructor: {
+        id: 2,
+        name: "Eray",
+        role: "Instructor",
+        title: "Full Stack Developer",
+        bio: "Passionate about teaching and coding.",
+        avatar: "",
+        coverImage: "",
+        socialLinks: {
+            linkedin: "https://www.linkedin.com/in/erayali/",
+            twitter: "",
+            github: "",
+        },
+        courses: [
+            {
+                title: "Advanced React",
+                description: "Dive deep into React and build production-ready apps.",
+                progress: 100,
+            },
+            {
+                title: "Java for Backend Developers",
+                description: "Master Node.js and build scalable backends.",
+                progress: 85,
+            },
+            {
+                title: "Docker and Kubernetes Essentials",
+                description: "Learn the basics of containerization and orchestration.",
+                progress: 70,
+            },
+        ],
+        teaching: [
+            {
+                courseId: 1,
+                courseTitle: "Web Development Bootcamp",
+                startDate: "2024-01-15",
+                endDate: "2024-06-30",
+            },
+            {
+                courseId: 2,
+                courseTitle: "Advanced React",
+                startDate: "2024-02-01",
+                endDate: "2024-05-30",
+            },
+        ],
+    }
 }
