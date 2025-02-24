@@ -14,6 +14,7 @@ import lombok.*;
 @Schema(description = "Represents a student in the system")
 public class Student {
 
+
     @Schema(description = "The unique identifier of the student", example = "1")
     private int id;
 

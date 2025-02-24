@@ -1,12 +1,15 @@
 package eu.deltasource.demo.controller;
 
 import eu.deltasource.demo.DTOs.StudentDTO;
+import eu.deltasource.demo.model.Student;
 import eu.deltasource.demo.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+
 
 /**
  * REST controller for managing student-related operations.
