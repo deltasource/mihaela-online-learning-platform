@@ -1,12 +1,13 @@
-import { Container, InputAdornment, TextField } from "@mui/material"
+import { Box, InputAdornment, TextField } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
 
 const Search = () => {
     return (
-        <Container maxWidth="md" sx={{ py: 4 }}>
+        <Box sx={{ py: 4, textAlign: "center" }}>
             <TextField
-                fullWidth
-                placeholder="Search..."
+                placeholder="Search for courses..."
+                variant="outlined"
+                sx={{ width: "100%", maxWidth: 600 }}
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position="start">
@@ -15,7 +16,7 @@ const Search = () => {
                     ),
                 }}
             />
-        </Container>
+        </Box>
     )
 }
 
