@@ -7,7 +7,8 @@ import Categories from "./components/Categories"
 import CourseGrid from "./components/CourseGrid"
 import YourCourses from "./components/YourCourses"
 import Footer from "./components/Footer"
-import ProfilePage from "../src/components/Profile/ProfilePage.jsx"
+import ProfilePage from "./components/Profile/ProfilePage.jsx"
+import InstructorPage from "./components/Instructor/InstructorPage.jsx"
 
 const theme = createTheme({
     palette: {
@@ -43,14 +44,8 @@ function App() {
                     <Header />
                     <Routes>
                         <Route path="/" element={<HomePage />} />
-                        <Route
-                            path="/profile"
-                            element={
-                                <ProfilePage
-                                    onBackClick={() => window.history.back()}
-                                />
-                            }
-                        />
+                        <Route path="/profile" element={<ProfilePage onBackClick={() => window.history.back()} />} />
+                        <Route path="/instructor" element={<InstructorPage onBackClick={() => window.history.back()} />} />
                     </Routes>
                     <Footer />
                 </Container>
