@@ -1,21 +1,23 @@
 package eu.deltasource.demo.DTOs;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import java.util.UUID;
 
 /**
- * Represents the student data transfer object.
+ * Data Transfer Object for Student entity.
  */
-@Schema(description = "Represents a student DTO")
-@Getter
-@Setter
+@Data
+@Schema(description = "Student information")
 public class StudentDTO {
 
-    @Schema(description = "The person details of the student")
+    @Schema(description = "Student ID", example = "123e4567-e89b-12d3-a456-426614174000")
+    private UUID id;
+
+    @Valid
+    @NotNull(message = "Person information is required")
+    @Schema(description = "Person information", required = true)
     private PersonDTO person;
-
-    @Schema(description = "The student number", example = "S12345")
-    private String studentNumber;
-
 }

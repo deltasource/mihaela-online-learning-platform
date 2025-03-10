@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -47,8 +48,25 @@ public class InstructorController {
     @Operation(summary = "Get an instructor by email", description = "Returns an instructor based on the email provided")
     public InstructorDTO getInstructorByEmail(
             @Parameter(description = "Email of the instructor to be retrieved")
-            @PathVariable String email) {
+            @PathVariable @NotNull String email) {
         return instructorService.getInstructorByEmail(email);
+    }
+
+    /**
+     * Updates an instructor by their email address.
+     *
+     * @param email the email of the instructor to update
+     * @param instructorDTO the DTO containing the updated instructor information
+     * @return the updated InstructorDTO
+     */
+    @PutMapping("/{email}")
+    @Operation(summary = "Update an instructor by email", description = "Updates an instructor's details based on the email provided")
+    public InstructorDTO updateInstructorByEmail(
+            @Parameter(description = "Email of the instructor to be updated")
+            @PathVariable @NotNull String email,
+            @Parameter(description = "Updated instructor information")
+            @RequestBody @Valid InstructorDTO instructorDTO) {
+        return instructorService.updateInstructorByEmail(email, instructorDTO);
     }
 
     /**

@@ -1,21 +1,16 @@
 package eu.deltasource.demo.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+
+import java.util.UUID;
 
 /**
- * Represents a person with common attributes.
+ * Entity class representing a person.
+ * Contains basic personal information.
  */
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class Person {
-
-    private int id;
-
+    private UUID id;
     private String email;
-
     private String fullName;
 }

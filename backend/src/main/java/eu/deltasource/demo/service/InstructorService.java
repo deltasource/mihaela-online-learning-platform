@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 /**
  * Service class for managing instructor-related operations.
  * This class acts as an intermediary between the controller and the repository,
@@ -30,6 +32,12 @@ public class InstructorService {
     @Transactional
     public InstructorDTO createInstructor(InstructorDTO instructorDTO) {
         Instructor instructor = mapToInstructor(instructorDTO);
+        if (instructor.getId() == null) {
+            instructor.setId(UUID.randomUUID());
+        }
+        if (instructor.getPerson() != null && instructor.getPerson().getId() == null) {
+            instructor.getPerson().setId(UUID.randomUUID());
+        }
         instructorRepository.save(instructor);
         return mapToInstructorDTO(instructor);
     }
@@ -48,6 +56,30 @@ public class InstructorService {
     }
 
     /**
+     * Updates an instructor by their email.
+     *
+     * @param email         The email of the instructor to update.
+     * @param instructorDTO The DTO containing the updated instructor details.
+     * @return The updated InstructorDTO.
+     * @throws InstructorNotFoundException If the instructor is not found.
+     */
+    @Transactional
+    public InstructorDTO updateInstructorByEmail(String email, InstructorDTO instructorDTO) {
+        Instructor instructor = instructorRepository.getByEmail(email)
+                .orElseThrow(() -> new InstructorNotFoundException("Instructor with email " + email + " not found"));
+
+        instructor.setDepartment(instructorDTO.getDepartment());
+        if (instructorDTO.getId() != null) {
+            instructor.setId(instructorDTO.getId());
+        }
+        if (instructorDTO.getPerson() != null) {
+            instructor.getPerson().setFullName(instructorDTO.getPerson().getFullName());
+        }
+        instructor = instructorRepository.save(instructor);
+        return mapToInstructorDTO(instructor);
+    }
+
+    /**
      * Deletes an instructor by their email.
      *
      * @param email The email of the instructor.
@@ -55,10 +87,10 @@ public class InstructorService {
      * @throws InstructorNotFoundException If the instructor is not found.
      */
     public boolean deleteInstructor(String email) {
-        if (!instructorRepository.remove(email)) {
+        if (!instructorRepository.existsByEmail(email)) {
             throw new InstructorNotFoundException("Instructor with email " + email + " not found");
         }
-        return true;
+        return instructorRepository.remove(email);
     }
 
     /**
@@ -80,9 +112,9 @@ public class InstructorService {
         }
 
         Instructor instructor = new Instructor();
+        instructor.setId(instructorDTO.getId());
         instructor.setPerson(person);
         instructor.setDepartment(instructorDTO.getDepartment());
-        instructor.setSalary(instructorDTO.getSalary());
 
         return instructor;
     }
@@ -106,9 +138,9 @@ public class InstructorService {
         }
 
         InstructorDTO instructorDTO = new InstructorDTO();
+        instructorDTO.setId(instructor.getId());
         instructorDTO.setPerson(personDTO);
         instructorDTO.setDepartment(instructor.getDepartment());
-        instructorDTO.setSalary(instructor.getSalary());
 
         return instructorDTO;
     }

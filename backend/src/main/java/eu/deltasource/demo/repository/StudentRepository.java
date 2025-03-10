@@ -3,7 +3,6 @@ package eu.deltasource.demo.repository;
 import eu.deltasource.demo.model.Student;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,24 +32,20 @@ public class StudentRepository {
 
     /**
      * Saves a student to the database.
-     * Uses the student's email (from Person object) as the key.
+     * Uses the student's email as the key.
      *
      * @param student The student to save
      * @return The saved student
-     * @throws IllegalArgumentException if student or student's person or email is null
+     * @throws IllegalArgumentException if student or student's email is null
      */
     public Student save(Student student) {
         if (student == null) {
             throw new IllegalArgumentException("Student cannot be null");
         }
-        if (student.getPerson() == null) {
-            throw new IllegalArgumentException("Student's person cannot be null");
-        }
-        if (student.getPerson().getEmail() == null) {
+        if (student.getEmail() == null) {
             throw new IllegalArgumentException("Student's email cannot be null");
         }
-
-        studentDatabase.put(student.getPerson().getEmail(), student);
+        studentDatabase.put(student.getEmail(), student);
         return student;
     }
 
@@ -88,11 +83,11 @@ public class StudentRepository {
      * @throws IllegalArgumentException if student doesn't exist
      */
     public Student update(Student student) {
-        if (student == null || student.getPerson() == null || student.getPerson().getEmail() == null) {
+        if (student == null || student.getEmail() == null) {
             throw new IllegalArgumentException("Invalid student data");
         }
 
-        String email = student.getPerson().getEmail();
+        String email = student.getEmail();
         if (!studentDatabase.containsKey(email)) {
             throw new IllegalArgumentException("Student with email " + email + " not found");
         }

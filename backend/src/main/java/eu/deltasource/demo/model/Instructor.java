@@ -1,23 +1,16 @@
 package eu.deltasource.demo.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+
+import java.util.UUID;
 
 /**
- * Represents an instructor entity in the system.
+ * Entity class representing an instructor.
+ * Contains instructor-specific information and a reference to the person.
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class Instructor {
-
+    private UUID id;
     private Person person;
-
     private String department;
-
-    private double salary;
 }
