@@ -1,10 +1,10 @@
 package eu.deltasource.demo.controller.globalExceptionHandler;
 
 import eu.deltasource.demo.DTOs.ErrorResponse;
+import eu.deltasource.demo.exception.InstructorNotFoundException;
 import eu.deltasource.demo.exception.StudentNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
@@ -13,7 +13,6 @@ import org.springframework.web.context.request.WebRequest;
  * Provides centralized exception handling across all @RequestMapping methods
  * through @ExceptionHandler methods.
  */
-@ControllerAdvice
 public class ELearningGlobalExceptionHandler {
 
     /**
@@ -25,6 +24,19 @@ public class ELearningGlobalExceptionHandler {
      */
     @ExceptionHandler(StudentNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(StudentNotFoundException e, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    /**
+     * Handles InstructorNotFoundException and returns a NOT_FOUND error response.
+     *
+     * @param e The InstructorNotFoundException that was thrown
+     * @param request The current request
+     * @return A ResponseEntity with NOT_FOUND status and error details
+     */
+    @ExceptionHandler(InstructorNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleInstructorNotFoundException(InstructorNotFoundException e, WebRequest request) {
         ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }

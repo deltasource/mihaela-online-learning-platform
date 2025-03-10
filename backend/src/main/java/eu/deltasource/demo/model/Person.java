@@ -5,11 +5,11 @@ import lombok.Data;
 import java.util.UUID;
 
 /**
- * Entity class representing a student.
- * Contains student-specific information.
+ * Entity class representing a person.
+ * Contains basic personal information.
  */
 @Data
-public class Student {
+public class Person {
     private UUID id;
     private String email;
     private String fullName;
