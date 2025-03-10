@@ -1,20 +1,16 @@
 package eu.deltasource.demo.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Data;
+
+import java.util.UUID;
 
 /**
- * Represents a student entity in the system.
+ * Entity class representing a student.
+ * Contains student-specific information.
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class Student {
-
-    private int id;
-
+    private UUID id;
     private String email;
-
     private String fullName;
 }

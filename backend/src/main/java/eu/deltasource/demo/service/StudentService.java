@@ -3,13 +3,13 @@ package eu.deltasource.demo.service;
 import eu.deltasource.demo.DTOs.PersonDTO;
 import eu.deltasource.demo.DTOs.StudentDTO;
 import eu.deltasource.demo.exception.StudentNotFoundException;
-import eu.deltasource.demo.model.Person;
 import eu.deltasource.demo.model.Student;
 import eu.deltasource.demo.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service class for managing student-related operations.
@@ -22,53 +22,116 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
+    /**
+     * Creates a new student and saves it to the repository.
+     *
+     * @param studentDTO The DTO containing the student details.
+     * @return The created StudentDTO.
+     */
+    @Transactional
     public StudentDTO createStudent(StudentDTO studentDTO) {
+        Student student = mapToStudent(studentDTO);
 
-        Person person = new Person();
-        person.setId(studentDTO.getPerson().getId());
-        person.setEmail(studentDTO.getPerson().getEmail());
-        person.setFullName(studentDTO.getPerson().getFullName());
-
-        Student student = new Student();
-        student.setPerson(person);
-        student.setStudentNumber(studentDTO.getStudentNumber());
-
-        Student savedStudent = studentRepository.save(student);
-
-        PersonDTO personDTO = new PersonDTO();
-        personDTO.setId(savedStudent.getPerson().getId());
-        personDTO.setEmail(savedStudent.getPerson().getEmail());
-        personDTO.setFullName(savedStudent.getPerson().getFullName());
-
-        StudentDTO responseDTO = new StudentDTO();
-        responseDTO.setPerson(personDTO);
-        responseDTO.setStudentNumber(savedStudent.getStudentNumber());
-
-        return responseDTO;
-    }
-
-    public StudentDTO getStudentByEmail(String email) {
-        Optional<Student> optionalStudent = studentRepository.getByEmail(email);
-
-        if (optionalStudent.isEmpty()) {
-            throw new StudentNotFoundException(email);
+        // Generate UUID for new student
+        if (student.getId() == null) {
+            student.setId(UUID.randomUUID());
         }
 
-        Student student = optionalStudent.get();
-
-        PersonDTO personDTO = new PersonDTO();
-        personDTO.setId(student.getPerson().getId());
-        personDTO.setEmail(student.getPerson().getEmail());
-        personDTO.setFullName(student.getPerson().getFullName());
-
-        StudentDTO studentDTO = new StudentDTO();
-        studentDTO.setPerson(personDTO);
-        studentDTO.setStudentNumber(student.getStudentNumber());
-
-        return studentDTO;
+        Student savedStudent = studentRepository.save(student);
+        return mapToStudentDTO(savedStudent);
     }
 
+    /**
+     * Retrieves a student by their email.
+     *
+     * @param email The email of the student.
+     * @return The StudentDTO with the student details.
+     * @throws StudentNotFoundException If the student is not found.
+     */
+    public StudentDTO getStudentByEmail(String email) {
+        Student student = studentRepository.getByEmail(email)
+                .orElseThrow(() -> new StudentNotFoundException("Student with email " + email + " not found"));
+        return mapToStudentDTO(student);
+    }
+
+    /**
+     * Updates a student by their email.
+     *
+     * @param email The email of the student to update.
+     * @param studentDTO The DTO containing the updated student details.
+     * @return The updated StudentDTO.
+     * @throws StudentNotFoundException If the student is not found.
+     */
+    @Transactional
+    public StudentDTO updateStudentByEmail(String email, StudentDTO studentDTO) {
+        Student existingStudent = studentRepository.getByEmail(email)
+                .orElseThrow(() -> new StudentNotFoundException("Student with email " + email + " not found"));
+
+        Student student = mapToStudent(studentDTO);
+        // Preserve the ID and email
+        student.setId(existingStudent.getId());
+        student.setEmail(email);
+
+        Student updatedStudent = studentRepository.save(student);
+        return mapToStudentDTO(updatedStudent);
+    }
+
+    /**
+     * Deletes a student by their email.
+     *
+     * @param email The email of the student to delete.
+     * @return A boolean indicating whether the deletion was successful.
+     * @throws StudentNotFoundException If the student is not found.
+     */
     public boolean deleteStudent(String email) {
+        if (!studentRepository.existsByEmail(email)) {
+            throw new StudentNotFoundException("Student with email " + email + " not found");
+        }
         return studentRepository.remove(email);
+    }
+
+    /**
+     * Maps a StudentDTO to a Student entity.
+     *
+     * @param studentDTO The DTO to map.
+     * @return The mapped Student entity.
+     */
+    private Student mapToStudent(StudentDTO studentDTO) {
+        if (studentDTO == null) {
+            throw new IllegalArgumentException("StudentDTO cannot be null");
+        }
+
+        Student student = new Student();
+        student.setId(studentDTO.getId());
+
+        if (studentDTO.getPerson() != null) {
+            student.setEmail(studentDTO.getPerson().getEmail());
+            student.setFullName(studentDTO.getPerson().getFullName());
+        }
+
+        return student;
+    }
+
+    /**
+     * Maps a Student entity to a StudentDTO.
+     *
+     * @param student The entity to map.
+     * @return The mapped StudentDTO.
+     */
+    private StudentDTO mapToStudentDTO(Student student) {
+        if (student == null) {
+            throw new IllegalArgumentException("Student cannot be null");
+        }
+
+        PersonDTO personDTO = new PersonDTO();
+        personDTO.setId(student.getId());
+        personDTO.setEmail(student.getEmail());
+        personDTO.setFullName(student.getFullName());
+
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setId(student.getId());
+        studentDTO.setPerson(personDTO);
+
+        return studentDTO;
     }
 }

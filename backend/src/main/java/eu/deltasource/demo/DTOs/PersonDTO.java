@@ -1,24 +1,27 @@
 package eu.deltasource.demo.DTOs;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+import java.util.UUID;
 
 /**
- * Represents the person data transfer object.
+ * Data Transfer Object for Person entity.
  */
-@Schema(description = "Represents a person DTO")
-@Getter
-@Setter
+@Data
+@Schema(description = "Person information")
 public class PersonDTO {
 
-    @Schema(description = "The unique identifier of the person", example = "1")
-    private int id;
+    @Schema(description = "Person ID", example = "123e4567-e89b-12d3-a456-426614174000")
+    private UUID id;
 
-    @Schema(description = "The email address of the person", example = "person@example.com")
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
+    @Schema(description = "Person email address", example = "john.doe@example.com", required = true)
     private String email;
 
-    @Schema(description = "The full name of the person", example = "John Doe")
+    @NotBlank(message = "Full name is required")
+    @Schema(description = "Person full name", example = "John Doe", required = true)
     private String fullName;
-
 }
