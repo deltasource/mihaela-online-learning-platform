@@ -20,7 +20,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class InstructorService {
-
     private final InstructorRepository instructorRepository;
 
     /**
@@ -38,7 +37,7 @@ public class InstructorService {
         if (instructor.getPerson() != null && instructor.getPerson().getId() == null) {
             instructor.getPerson().setId(UUID.randomUUID());
         }
-        instructorRepository.save(instructor);
+        instructor = instructorRepository.save(instructor);
         return mapToInstructorDTO(instructor);
     }
 
@@ -50,7 +49,7 @@ public class InstructorService {
      * @throws InstructorNotFoundException If the instructor is not found.
      */
     public InstructorDTO getInstructorByEmail(String email) {
-        Instructor instructor = instructorRepository.getByEmail(email)
+        Instructor instructor = instructorRepository.findByPersonEmail(email)
                 .orElseThrow(() -> new InstructorNotFoundException("Instructor with email " + email + " not found"));
         return mapToInstructorDTO(instructor);
     }
@@ -65,7 +64,7 @@ public class InstructorService {
      */
     @Transactional
     public InstructorDTO updateInstructorByEmail(String email, InstructorDTO instructorDTO) {
-        Instructor instructor = instructorRepository.getByEmail(email)
+        Instructor instructor = instructorRepository.findByPersonEmail(email)
                 .orElseThrow(() -> new InstructorNotFoundException("Instructor with email " + email + " not found"));
 
         instructor.setDepartment(instructorDTO.getDepartment());
@@ -86,11 +85,13 @@ public class InstructorService {
      * @return A boolean indicating whether the deletion was successful.
      * @throws InstructorNotFoundException If the instructor is not found.
      */
+    @Transactional
     public boolean deleteInstructor(String email) {
-        if (!instructorRepository.existsByEmail(email)) {
+        if (!instructorRepository.existsByPersonEmail(email)) {
             throw new InstructorNotFoundException("Instructor with email " + email + " not found");
         }
-        return instructorRepository.remove(email);
+        int deletedCount = instructorRepository.deleteByPersonEmail(email);
+        return deletedCount > 0;
     }
 
     /**

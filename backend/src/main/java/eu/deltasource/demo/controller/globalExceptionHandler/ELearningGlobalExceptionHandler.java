@@ -5,14 +5,18 @@ import eu.deltasource.demo.exception.InstructorNotFoundException;
 import eu.deltasource.demo.exception.StudentNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+
+import java.time.LocalDateTime;
 
 /**
  * Global exception handler for the E-Learning application.
  * Provides centralized exception handling across all @RequestMapping methods
  * through @ExceptionHandler methods.
  */
+@ControllerAdvice
 public class ELearningGlobalExceptionHandler {
 
     /**
@@ -24,7 +28,7 @@ public class ELearningGlobalExceptionHandler {
      */
     @ExceptionHandler(StudentNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(StudentNotFoundException e, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -37,7 +41,7 @@ public class ELearningGlobalExceptionHandler {
      */
     @ExceptionHandler(InstructorNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleInstructorNotFoundException(InstructorNotFoundException e, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -51,7 +55,7 @@ public class ELearningGlobalExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleException(RuntimeException e, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }

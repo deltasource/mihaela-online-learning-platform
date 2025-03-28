@@ -32,7 +32,6 @@ public class StudentService {
     public StudentDTO createStudent(StudentDTO studentDTO) {
         Student student = mapToStudent(studentDTO);
 
-        // Generate UUID for new student
         if (student.getId() == null) {
             student.setId(UUID.randomUUID());
         }
@@ -49,7 +48,7 @@ public class StudentService {
      * @throws StudentNotFoundException If the student is not found.
      */
     public StudentDTO getStudentByEmail(String email) {
-        Student student = studentRepository.getByEmail(email)
+        Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new StudentNotFoundException("Student with email " + email + " not found"));
         return mapToStudentDTO(student);
     }
@@ -64,11 +63,10 @@ public class StudentService {
      */
     @Transactional
     public StudentDTO updateStudentByEmail(String email, StudentDTO studentDTO) {
-        Student existingStudent = studentRepository.getByEmail(email)
+        Student existingStudent = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new StudentNotFoundException("Student with email " + email + " not found"));
 
         Student student = mapToStudent(studentDTO);
-        // Preserve the ID and email
         student.setId(existingStudent.getId());
         student.setEmail(email);
 
@@ -83,11 +81,13 @@ public class StudentService {
      * @return A boolean indicating whether the deletion was successful.
      * @throws StudentNotFoundException If the student is not found.
      */
+    @Transactional
     public boolean deleteStudent(String email) {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException("Student with email " + email + " not found");
         }
-        return studentRepository.remove(email);
+        studentRepository.deleteByEmail(email);
+        return true;
     }
 
     /**
