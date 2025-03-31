@@ -12,6 +12,5 @@ public class ElearningApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ElearningApplication.class, args);
-
     }
 }

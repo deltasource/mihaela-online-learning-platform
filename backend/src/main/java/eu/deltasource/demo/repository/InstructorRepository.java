@@ -10,11 +10,11 @@ import java.util.UUID;
  * Repository interface for managing Instructor entities.
  */
 @Repository
-public interface InstructorRepository extends JpaRepository<Instructor, UUID> {
+public interface InstructorRepository extends JpaRepository<Instructor, UgitUID> {
 
     Optional<Instructor> findByPersonEmail(String email);
 
     boolean existsByPersonEmail(String email);
 
-    void deleteByPersonEmail(String email);
+    int deleteByPersonEmail(String email);
 }
