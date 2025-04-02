@@ -13,7 +13,8 @@ import java.util.UUID;
 @Table(name = "students")
 public class Student {
     @Id
-    @Column(columnDefinition = "BINARY(16)")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column
     private UUID id;
 
     @Column(unique = true, nullable = false)

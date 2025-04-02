@@ -2,24 +2,25 @@ package eu.deltasource.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.util.UUID;
 
-/**
- * Entity class representing a person.
- * Contains basic personal information.
- */
 @Data
 @Entity
-@Table(name = "persons")
-public class Person {
+@Table(name = "videos")
+public class Video {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column
     private UUID id;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    private Course course;
 
     @Column(nullable = false)
-    private String fullName;
+    private String fileName;
+
+    @Column(nullable = false)
+    private String filePath;
 }

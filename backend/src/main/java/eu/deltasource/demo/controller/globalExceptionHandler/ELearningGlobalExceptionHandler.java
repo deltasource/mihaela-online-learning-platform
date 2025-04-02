@@ -1,8 +1,10 @@
 package eu.deltasource.demo.controller.globalExceptionHandler;
 
 import eu.deltasource.demo.DTOs.ErrorResponse;
+import eu.deltasource.demo.exception.CourseNotFoundException;
 import eu.deltasource.demo.exception.InstructorNotFoundException;
 import eu.deltasource.demo.exception.StudentNotFoundException;
+import eu.deltasource.demo.exception.VideoNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -45,6 +47,31 @@ public class ELearningGlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    /**
+     * Handles CourseNotFoundException and returns a NOT_FOUND error response.
+     *
+     * @param e The CourseNotFoundException that was thrown
+     * @param request The current request
+     * @return A ResponseEntity with NOT_FOUND status and error details
+     */
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException e, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    /**
+     * Handles VideoNotFoundException and returns a NOT_FOUND error response.
+     *
+     * @param e The VideoNotFoundException that was thrown
+     * @param request The current request
+     * @return A ResponseEntity with NOT_FOUND status and error details
+     */
+    @ExceptionHandler(VideoNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleVideoNotFoundException(VideoNotFoundException e, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
     /**
      * Handles general RuntimeExceptions and returns a BAD_REQUEST error response.
      * Acts as a catch-all for RuntimeExceptions not handled by more specific handlers.

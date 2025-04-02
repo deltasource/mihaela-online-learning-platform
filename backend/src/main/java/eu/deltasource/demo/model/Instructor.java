@@ -13,7 +13,8 @@ import java.util.UUID;
 @Table(name = "instructors")
 public class Instructor {
     @Id
-    @Column(columnDefinition = "BINARY(16)")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "VARCHAR(36)")
     private UUID id;
 
     @OneToOne(cascade = CascadeType.ALL)
