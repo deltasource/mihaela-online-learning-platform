@@ -116,7 +116,6 @@ public class CourseService {
      */
     private CourseDTO mapToCourseDTO(Course course) {
         CourseDTO courseDTO = new CourseDTO();
-        courseDTO.setId(course.getId());
         courseDTO.setName(course.getName());
         courseDTO.setDescription(course.getDescription());
         courseDTO.setInstructorId(course.getInstructor().getId());

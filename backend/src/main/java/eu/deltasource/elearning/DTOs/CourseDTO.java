@@ -13,9 +13,6 @@ import java.util.List;
 @Schema(description = "Course information")
 public class CourseDTO {
 
-    @Schema(description = "Course ID", example = "123e4567-e89b-12d3-a456-426614174000")
-    private UUID id;
-
     @NotBlank(message = "Course name is required")
     @Schema(description = "Course name", example = "Java Programming", required = true)
     private String name;

@@ -8,8 +8,6 @@ import java.util.UUID;
 @Data
 @Schema(description = "Video information")
 public class VideoDTO {
-    @Schema(description = "Video ID", example = "123e4567-e89b-12d3-a456-426614174000")
-    private UUID id;
 
     @Schema(description = "Video file name", example = "introduction.mp4")
     private String fileName;

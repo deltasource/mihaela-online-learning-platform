@@ -38,7 +38,7 @@ public class VideoService {
 
     @Transactional
     public Video uploadVideo(UUID courseId, MultipartFile file) throws IOException {
-        // Check file size
+
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new InvalidVideoFormatException("File size exceeds the maximum allowed size of 10 GB");
         }
@@ -90,7 +90,6 @@ public class VideoService {
 
     public VideoDTO mapToVideoDTO(Video video) {
         VideoDTO dto = new VideoDTO();
-        dto.setId(video.getId());
         dto.setFileName(video.getFileName());
         dto.setFilePath(video.getFilePath());
         dto.setCourseId(video.getCourse().getId());
