@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import java.util.UUID;
 
 /**
  * Data Transfer Object for Instructor entity.
@@ -13,9 +12,6 @@ import java.util.UUID;
 @Data
 @Schema(description = "Instructor information")
 public class InstructorDTO {
-
-    @Schema(description = "Instructor ID", example = "123e4567-e89b-12d3-a456-426614174000")
-    private UUID id;
 
     @Valid
     @NotNull(message = "Person information is required")

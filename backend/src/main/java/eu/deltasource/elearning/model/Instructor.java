@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Instructor {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "VARCHAR(36)")
+    @Column
     private UUID id;
 
     @OneToOne(cascade = CascadeType.ALL)

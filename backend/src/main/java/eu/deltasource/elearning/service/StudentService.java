@@ -32,10 +32,6 @@ public class StudentService {
     public StudentDTO createStudent(StudentDTO studentDTO) {
         Student student = mapToStudent(studentDTO);
 
-        if (student.getId() == null) {
-            student.setId(UUID.randomUUID());
-        }
-
         Student savedStudent = studentRepository.save(student);
         return mapToStudentDTO(savedStudent);
     }
@@ -102,7 +98,6 @@ public class StudentService {
         }
 
         Student student = new Student();
-        student.setId(studentDTO.getId());
 
         if (studentDTO.getPerson() != null) {
             student.setEmail(studentDTO.getPerson().getEmail());
@@ -122,16 +117,11 @@ public class StudentService {
         if (student == null) {
             throw new IllegalArgumentException("Student cannot be null");
         }
-
         PersonDTO personDTO = new PersonDTO();
-        personDTO.setId(student.getId());
         personDTO.setEmail(student.getEmail());
         personDTO.setFullName(student.getFullName());
-
         StudentDTO studentDTO = new StudentDTO();
-        studentDTO.setId(student.getId());
         studentDTO.setPerson(personDTO);
-
         return studentDTO;
     }
 }

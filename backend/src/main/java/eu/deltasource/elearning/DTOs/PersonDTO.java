@@ -13,9 +13,6 @@ import java.util.UUID;
 @Schema(description = "Person information")
 public class PersonDTO {
 
-    @Schema(description = "Person ID", example = "123e4567-e89b-12d3-a456-426614174000")
-    private UUID id;
-
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     @Schema(description = "Person email address", example = "john.doe@example.com", required = true)
