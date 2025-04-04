@@ -58,14 +58,12 @@ The Spring Boot application will be accessible at http://localhost:8080 by defau
 
 The frontend is built with React.js and Vite, providing a user interface that interacts with the backend API.
 
-1. **Navigate to the frontend directory**:  
-
-2. **Install the required dependencies: Make sure you have Node.js installed on your machine. If not, download and install it from here. Then, run the following command to install the necessary packages**:
+1. **Install the required dependencies: Make sure you have Node.js installed on your machine. If not, download and install it from here. Then, run the following command to install the necessary packages**:
    Navigate to the `target` folder:  
     ```bash
    npm install
     ```  
-3. **Start the development server: After the dependencies are installed, you can run the frontend application**:
+2. **Start the development server: After the dependencies are installed, you can run the frontend application**:
    
     ```bash
    npm run dev
@@ -74,6 +72,7 @@ This will start the Vite development server. The frontend will be accessible at 
 
 ## Accessing the Platform
 Backend (API): http://localhost:8080
+
 Frontend (UI): http://localhost:3000
 
 ### OpenAPI Documentation 
