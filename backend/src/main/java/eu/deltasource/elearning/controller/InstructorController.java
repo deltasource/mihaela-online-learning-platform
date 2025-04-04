@@ -24,12 +24,6 @@ public class InstructorController {
         this.instructorService = instructorService;
     }
 
-    /**
-     * Creates a new instructor in the system.
-     *
-     * @param instructorDTO the DTO containing the instructor information
-     * @return the created InstructorDTO
-     */
     @PostMapping
     @Operation(summary = "Create a new instructor", description = "Creates a new instructor with the provided details")
     public InstructorDTO createInstructor(
@@ -38,12 +32,6 @@ public class InstructorController {
         return instructorService.createInstructor(instructorDTO);
     }
 
-    /**
-     * Retrieves an instructor by their email address.
-     *
-     * @param email the email of the instructor to retrieve
-     * @return the InstructorDTO of the found instructor
-     */
     @GetMapping("/{email}")
     @Operation(summary = "Get an instructor by email", description = "Returns an instructor based on the email provided")
     public InstructorDTO getInstructorByEmail(
@@ -51,14 +39,6 @@ public class InstructorController {
             @PathVariable @NotNull String email) {
         return instructorService.getInstructorByEmail(email);
     }
-
-    /**
-     * Updates an instructor by their email address.
-     *
-     * @param email the email of the instructor to update
-     * @param instructorDTO the DTO containing the updated instructor information
-     * @return the updated InstructorDTO
-     */
     @PutMapping("/{email}")
     @Operation(summary = "Update an instructor by email", description = "Updates an instructor's details based on the email provided")
     public InstructorDTO updateInstructorByEmail(
@@ -69,12 +49,6 @@ public class InstructorController {
         return instructorService.updateInstructorByEmail(email, instructorDTO);
     }
 
-    /**
-     * Deletes an instructor from the system based on their email address.
-     *
-     * @param email the email of the instructor to delete
-     * @return true if the instructor was successfully deleted, false otherwise
-     */
     @DeleteMapping("/{email}")
     @Operation(summary = "Delete an instructor", description = "Deletes an instructor based on the email provided")
     public boolean deleteInstructor(

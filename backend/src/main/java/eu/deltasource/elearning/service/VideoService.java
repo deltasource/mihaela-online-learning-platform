@@ -56,13 +56,8 @@ public class VideoService {
                 .orElseThrow(() -> new CourseNotFoundException(courseId));
 
         String originalFilename = file.getOriginalFilename();
-        String fileName = UUID.randomUUID() + "-" + (originalFilename != null ? originalFilename : "video.mp4");
+        String fileName = originalFilename != null ? originalFilename : "video.mp4";
         String filePath = Paths.get(videoUploadDirectory, fileName).toString();
-
-        File directory = new File(videoUploadDirectory);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
 
         File destinationFile = new File(filePath);
         Files.copy(file.getInputStream(), destinationFile.toPath(),
@@ -121,16 +116,6 @@ public class VideoService {
     public void deleteVideo(UUID videoId) {
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new VideoNotFoundException(videoId));
-
-        try {
-            File file = new File(video.getFilePath());
-            if (file.exists()) {
-                file.delete();
-            }
-        } catch (Exception e) {
-            System.out.println("Error deleting file: " + e.getMessage());
-        }
-
         videoRepository.delete(video);
     }
 }

@@ -12,9 +12,9 @@ import java.util.UUID;
 @Repository
 public interface InstructorRepository extends JpaRepository<Instructor, UUID> {
 
-    Optional<Instructor> findByPersonEmail(String email);
+    Optional<Instructor> findByEmail(String email);
 
-    boolean existsByPersonEmail(String email);
+    boolean existsByEmail(String email);
 
-    int deleteByPersonEmail(String email);
+    int deleteByEmail(String email);
 }

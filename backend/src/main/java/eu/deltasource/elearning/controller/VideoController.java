@@ -20,8 +20,10 @@ import java.util.UUID;
 public class VideoController {
 
     private final VideoService videoService;
-
-    private static final long MAX_FILE_SIZE = 10L * 1024 * 1024 * 1024;
+    private static final long BYTES_IN_KB = 1024L;
+    private static final long BYTES_IN_MB = BYTES_IN_KB * 1024L;
+    private static final long BYTES_IN_GB = BYTES_IN_MB * 1024L;
+    private static final long MAX_FILE_SIZE = 10L * BYTES_IN_GB;
 
     public VideoController(VideoService videoService) {
         this.videoService = videoService;

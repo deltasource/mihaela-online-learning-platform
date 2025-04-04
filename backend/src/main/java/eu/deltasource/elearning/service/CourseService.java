@@ -24,69 +24,38 @@ public class CourseService {
     private final InstructorRepository instructorRepository;
     private final StudentRepository studentRepository;
 
-    /**
-     * Creates a new course and saves it to the repository.
-     *
-     * @param courseDTO The DTO containing the course details.
-     * @return The created CourseDTO.
-     */
     @Transactional
     public CourseDTO createCourse(CourseDTO courseDTO) {
         Instructor instructor = instructorRepository.findById(courseDTO.getInstructorId())
                 .orElseThrow(() -> new IllegalArgumentException("Instructor not found"));
-
         List<Student> students = studentRepository.findAllById(courseDTO.getStudentIds());
-
         Course course = new Course();
-        course.setId(UUID.randomUUID());
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
         course.setInstructor(instructor);
         course.setStudents(students);
-
         course = courseRepository.save(course);
         return mapToCourseDTO(course);
     }
 
-    /**
-     * Retrieves a course by its ID.
-     *
-     * @param courseId The ID of the course to retrieve.
-     * @return The CourseDTO with course details.
-     */
     public CourseDTO getCourseById(UUID courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
         return mapToCourseDTO(course);
     }
 
-    /**
-     * Retrieves all courses.
-     *
-     * @return A list of all courses.
-     */
     public List<CourseDTO> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
         return courses.stream().map(this::mapToCourseDTO).collect(Collectors.toList());
     }
 
-    /**
-     * Updates a course by its ID.
-     *
-     * @param courseId  The ID of the course to update.
-     * @param courseDTO The updated course details.
-     * @return The updated CourseDTO.
-     */
     @Transactional
     public CourseDTO updateCourse(UUID courseId, CourseDTO courseDTO) {
         Course existingCourse = courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
-
         Instructor instructor = instructorRepository.findById(courseDTO.getInstructorId())
                 .orElseThrow(() -> new IllegalArgumentException("Instructor not found"));
-
         List<Student> students = studentRepository.findAllById(courseDTO.getStudentIds());
-
         existingCourse.setName(courseDTO.getName());
         existingCourse.setDescription(courseDTO.getDescription());
         existingCourse.setInstructor(instructor);
@@ -96,11 +65,6 @@ public class CourseService {
         return mapToCourseDTO(existingCourse);
     }
 
-    /**
-     * Deletes a course by its ID.
-     *
-     * @param courseId The ID of the course to delete.
-     */
     @Transactional
     public void deleteCourse(UUID courseId) {
         Course course = courseRepository.findById(courseId)
@@ -108,12 +72,7 @@ public class CourseService {
         courseRepository.delete(course);
     }
 
-    /**
-     * Maps a Course entity to a CourseDTO.
-     *
-     * @param course The entity to map.
-     * @return The mapped CourseDTO.
-     */
+
     private CourseDTO mapToCourseDTO(Course course) {
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setName(course.getName());

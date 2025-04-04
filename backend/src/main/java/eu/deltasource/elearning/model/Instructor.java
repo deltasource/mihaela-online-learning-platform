@@ -17,9 +17,11 @@ public class Instructor {
     @Column
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id", referencedColumnName = "id")
-    private Person person;
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String fullName;
 
     @Column(nullable = false)
     private String department;
