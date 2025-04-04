@@ -1,10 +1,6 @@
-# Online Learning Platform API  
+# Online Learning Platform 
 
-This project is an Online Learning Platform that consists of a React.js frontend built with Vite and a Spring Boot backend API.
-
-The backend provides endpoints for managing students, instructors, courses, and video content, while the frontend offers a dynamic and responsive user interface for students and instructors.
-
-The platform allows instructors to create and manage courses, upload videos, and track student progress. Students can enroll in courses, access materials, and monitor their learning progress.
+The Online Learning Platform provides a solution for managing and delivering online education. Instructors can create courses, upload videos, and track student progress, while students can enroll, access materials, and monitor their learning. Built with a React.js frontend using Vite and a Spring Boot backend API, the platform offers a scalable and secure environment for both educators and learners.
 
 ## Features  
 
