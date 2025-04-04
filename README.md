@@ -81,7 +81,15 @@ Backend (API): http://localhost:8080
 Frontend (UI): http://localhost:3000
 
 ### OpenAPI Documentation 
+The OpenAPI documentation for the Online Learning Platform API is available in the backend/videos folder of the project. You can access the documentation directly by opening the api-docs.json file located there.
 
+1.**Navigate to the backend/videos folder**:
+
+      cd backend/videos
+    
+2. **Open the api-docs.json file in any text editor to explore the complete API documentation.**
+
+Alternatively, you can use tools like Swagger UI or Postman to visualize and interact with the API documentation in a more user-friendly interface.
 
 ## API Endpoints  
 
