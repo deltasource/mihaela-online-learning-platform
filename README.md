@@ -1,6 +1,10 @@
 # Online Learning Platform API  
 
-The Online Learning Platform API is a backend service built with Spring Boot that powers an online learning platform. It provides endpoints for managing students, instructors, courses, and videos, enabling instructors to create and manage content, while students can enroll, access course materials, and track their progress. This API is designed to be scalable, secure, and easy to integrate with frontend applications for a seamless learning experience.
+This project is an Online Learning Platform that consists of a React.js frontend built with Vite and a Spring Boot backend API.
+
+The backend provides endpoints for managing students, instructors, courses, and video content, while the frontend offers a dynamic and responsive user interface for students and instructors.
+
+The platform allows instructors to create and manage courses, upload videos, and track student progress. Students can enroll in courses, access materials, and monitor their learning progress.
 
 ## Features  
 
@@ -59,10 +63,6 @@ The Spring Boot application will be accessible at http://localhost:8080 by defau
 The frontend is built with React.js and Vite, providing a user interface that interacts with the backend API.
 
 1. **Navigate to the frontend directory**:  
-    ```bash
-    cd frontend
-    ```  
-   This will compile the code and package the application into a `.jar` file.  
 
 2. **Install the required dependencies: Make sure you have Node.js installed on your machine. If not, download and install it from here. Then, run the following command to install the necessary packages**:
    Navigate to the `target` folder:  
@@ -85,7 +85,7 @@ The OpenAPI documentation for the Online Learning Platform API is available in t
 
 1.**Navigate to the backend/videos folder**:
 
-      cd backend/videos
+http://localhost:8080/swagger-ui/index.html#
     
 2. **Open the api-docs.json file in any text editor to explore the complete API documentation.**
 
