@@ -83,7 +83,7 @@ Frontend (UI): http://localhost:3000
 ### OpenAPI Documentation 
 The OpenAPI documentation for the Online Learning Platform API is available in the backend/videos folder of the project. You can access the documentation directly by opening the api-docs.json file located there.
 
-1.**Navigate to the backend/videos folder**:
+1.**Navigate to**:
 
 http://localhost:8080/swagger-ui/index.html#
     
