@@ -1,6 +1,6 @@
 # Online Learning Platform API  
 
-This repository contains the Online Learning Platform API, which provides endpoints for managing students, instructors, courses, and videos.  
+The Online Learning Platform API is a backend service built with Spring Boot that powers an online learning platform. It provides endpoints for managing students, instructors, courses, and videos, enabling instructors to create and manage content, while students can enroll, access course materials, and track their progress. This API is designed to be scalable, secure, and easy to integrate with frontend applications for a seamless learning experience.
 
 ## Features  
 
@@ -24,9 +24,9 @@ This repository contains the Online Learning Platform API, which provides endpoi
     cd online-learning-platform
     ```  
 
-### How to Run the Program  
+### Backend: Running the Spring Boot Application
 
-There are two ways to run the application:  
+The backend is built with Spring Boot and is responsible for handling business logic, managing databases, and providing API endpoints.
 
 #### Option 1: Using Maven Commands  
 1. **Run the Maven build**:  
@@ -50,9 +50,38 @@ There are two ways to run the application:
 1. Open IntelliJ IDEA.  
 2. Go to `File` > `Settings` > `Build, Execution, Deployment` > `Build Tools` > `Maven` > `Runner`.  
 3. Enable the option **"Delegate IDE build/run actions to Maven"**.  
-4. Run the application directly using the IntelliJ IDEA run configuration.  
+4. Run the application directly using the IntelliJ IDEA run configuration.
+   
+The Spring Boot application will be accessible at http://localhost:8080 by default.
 
-The application should now be running and accessible.  
+### Frontend: Running the React + Vite Application
+
+The frontend is built with React.js and Vite, providing a user interface that interacts with the backend API.
+
+1. **Navigate to the frontend directory**:  
+    ```bash
+    cd frontend
+    ```  
+   This will compile the code and package the application into a `.jar` file.  
+
+2. **Install the required dependencies: Make sure you have Node.js installed on your machine. If not, download and install it from here. Then, run the following command to install the necessary packages**:
+   Navigate to the `target` folder:  
+    ```bash
+   npm install
+    ```  
+3. **Start the development server: After the dependencies are installed, you can run the frontend application**:
+   
+    ```bash
+   npm run dev
+    ```  
+This will start the Vite development server. The frontend will be accessible at http://localhost:3000 by default.
+
+## Accessing the Platform
+Backend (API): http://localhost:8080
+Frontend (UI): http://localhost:3000
+
+### OpenAPI Documentation 
+
 
 ## API Endpoints  
 
