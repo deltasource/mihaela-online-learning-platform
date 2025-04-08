@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.util.UUID;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 @Data
 @Schema(description = "Video information")
 public class VideoDTO {
@@ -16,6 +18,6 @@ public class VideoDTO {
     private String filePath;
 
     @NotNull(message = "Course ID is required")
-    @Schema(description = "Course ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
+    @Schema(description = "Course ID", example = "123e4567-e89b-12d3-a456-426614174000", requiredMode = REQUIRED)
     private UUID courseId;
 }

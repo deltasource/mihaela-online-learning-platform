@@ -6,6 +6,8 @@ import lombok.Data;
 import java.util.UUID;
 import java.util.List;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 /**
  * Data Transfer Object for Course entity.
  */
@@ -14,11 +16,11 @@ import java.util.List;
 public class CourseDTO {
 
     @NotBlank(message = "Course name is required")
-    @Schema(description = "Course name", example = "Java Programming", required = true)
+    @Schema(description = "Course name", example = "Java Programming", requiredMode = REQUIRED)
     private String name;
 
     @NotBlank(message = "Course description is required")
-    @Schema(description = "Course description", example = "Learn Java from scratch", required = true)
+    @Schema(description = "Course description", example = "Learn Java from scratch", requiredMode = REQUIRED)
     private String description;
 
     @Schema(description = "Instructor ID for the course", example = "123e4567-e89b-12d3-a456-426614174000")

@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.util.UUID;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 /**
  * Data Transfer Object for Student entity.
  */
@@ -17,10 +19,14 @@ public class StudentDTO {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
-    @Schema(description = "Person email address", example = "john.doe@example.com", required = true)
+    @Schema(description = "Students email address", example = "mihaela.kolarova@example.com",requiredMode = REQUIRED)
     private String email;
 
     @NotBlank(message = "Full name is required")
-    @Schema(description = "Person full name", example = "John Doe", required = true)
-    private String fullName;
+    @Schema(description = "Students first name", example = "Mihaela", requiredMode = REQUIRED)
+    private String firstName;
+
+    @NotBlank(message = "Full name is required")
+    @Schema(description = "Students last name", example = "Kolarova", requiredMode = REQUIRED)
+    private String lastName;
 }

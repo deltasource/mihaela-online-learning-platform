@@ -39,6 +39,7 @@ public class InstructorController {
             @PathVariable @NotNull String email) {
         return instructorService.getInstructorByEmail(email);
     }
+
     @PutMapping("/{email}")
     @Operation(summary = "Update an instructor by email", description = "Updates an instructor's details based on the email provided")
     public InstructorDTO updateInstructorByEmail(

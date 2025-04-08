@@ -91,6 +91,15 @@ public class VideoService {
         return dto;
     }
 
+    public VideoDTO mapToVideoResponseDTO(Video video) {
+        VideoDTO dto = new VideoDTO();
+        dto.setCourseId(video.getId());
+        dto.setFileName(video.getFileName());
+        dto.setFilePath(video.getFilePath());
+        dto.setCourseId(video.getCourse().getId());
+        return dto;
+    }
+
     public List<VideoDTO> getVideosByCourseIdAsDTO(UUID courseId) {
         return getVideosByCourseId(courseId).stream()
                 .map(this::mapToVideoDTO)

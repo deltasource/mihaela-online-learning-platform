@@ -21,5 +21,8 @@ public class Student {
     private String email;
 
     @Column(nullable = false)
-    private String fullName;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 }

@@ -44,7 +44,8 @@ public class InstructorService {
 
         instructor.setDepartment(instructorDTO.getDepartment());
         if (instructorDTO.getEmail() != null) {
-            instructor.setFullName(instructorDTO.getFullName());
+            instructor.setFirstName(instructorDTO.getFirstName());
+            instructor.setLastName(instructorDTO.getLastName());
         }
         instructor = instructorRepository.save(instructor);
         return mapToInstructorDTO(instructor);
@@ -65,7 +66,8 @@ public class InstructorService {
         }
         Instructor instructor = new Instructor();
         instructor.setEmail(instructorDTO.getEmail());
-        instructor.setFullName(instructorDTO.getFullName());
+        instructor.setFirstName(instructorDTO.getFirstName());
+        instructor.setLastName(instructorDTO.getLastName());
         instructor.setDepartment(instructorDTO.getDepartment());
         return instructor;
     }
@@ -76,7 +78,7 @@ public class InstructorService {
         }
         InstructorDTO instructorDTO = new InstructorDTO();
         instructorDTO.setEmail(instructor.getEmail());
-        instructorDTO.setFullName((instructor.getFullName()));
+        instructorDTO.setFirstName((instructor.getFirstName()));
         instructorDTO.setDepartment(instructor.getDepartment());
         return instructorDTO;
     }

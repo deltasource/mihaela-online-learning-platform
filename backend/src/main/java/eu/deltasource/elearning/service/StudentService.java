@@ -60,7 +60,8 @@ public class StudentService {
         }
         Student student = new Student();
         student.setEmail(studentDTO.getEmail());
-        student.setFullName(studentDTO.getFullName());
+        student.setFirstName(studentDTO.getFirstName());
+        student.setLastName(studentDTO.getLastName());
         return student;
     }
 
@@ -70,7 +71,8 @@ public class StudentService {
         }
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setEmail(student.getEmail());
-        studentDTO.setFullName(student.getFullName());
+        studentDTO.setFirstName(student.getFirstName());
+        studentDTO.setLastName(student.getLastName());
         return studentDTO;
     }
 }
