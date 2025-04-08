@@ -33,7 +33,7 @@ public class VideoController {
             summary = "Upload a video for a course",
             description = "Uploads a video file and associates it with a specific course"
     )
-    @PostMapping("/{courseId}/upload")
+    @PostMapping(value = "/{courseId}/upload", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
     public VideoDTO uploadVideo(
             @PathVariable UUID courseId,
