@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Repository interface for managing Instructor entities.
- */
 @Repository
 public interface InstructorRepository extends JpaRepository<Instructor, UUID> {
 

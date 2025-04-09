@@ -1,12 +1,16 @@
 package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.StudentDTO;
+import eu.deltasource.elearning.exception.StudentAlreadyExistsException;
 import eu.deltasource.elearning.exception.StudentNotFoundException;
 import eu.deltasource.elearning.model.Student;
 import eu.deltasource.elearning.repository.StudentRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * Service class for managing student-related operations.
@@ -21,10 +25,15 @@ public class StudentService {
 
     @Transactional
     public StudentDTO createStudent(StudentDTO studentDTO) {
+        Optional<Student> existingStudent = studentRepository.findByEmail(studentDTO.getEmail());
+        if (existingStudent.isPresent()) {
+            throw new StudentAlreadyExistsException("Student with email " + studentDTO.getEmail() + " already exists.");
+        }
         Student student = mapToStudent(studentDTO);
         Student savedStudent = studentRepository.save(student);
         return mapToStudentDTO(savedStudent);
     }
+
 
     public StudentDTO getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email)
@@ -46,18 +55,18 @@ public class StudentService {
     }
 
     @Transactional
-    public boolean deleteStudent(String email) {
+    public void deleteStudent(String email) {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException("Student with email " + email + " not found");
         }
         studentRepository.deleteByEmail(email);
-        return true;
+        if (studentRepository.existsByEmail(email)) {
+            throw new StudentAlreadyExistsException("Failed to delete student with email " + email);
+        }
     }
 
+    @NotNull
     private Student mapToStudent(StudentDTO studentDTO) {
-        if (studentDTO == null) {
-            throw new IllegalArgumentException("StudentDTO cannot be null");
-        }
         Student student = new Student();
         student.setEmail(studentDTO.getEmail());
         student.setFirstName(studentDTO.getFirstName());
@@ -65,10 +74,8 @@ public class StudentService {
         return student;
     }
 
+    @NotNull
     private StudentDTO mapToStudentDTO(Student student) {
-        if (student == null) {
-            throw new IllegalArgumentException("Student cannot be null");
-        }
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setEmail(student.getEmail());
         studentDTO.setFirstName(student.getFirstName());

@@ -1,13 +1,19 @@
 package eu.deltasource.elearning.controller;
 
 import eu.deltasource.elearning.DTOs.InstructorDTO;
+import eu.deltasource.elearning.model.Instructor;
 import eu.deltasource.elearning.service.InstructorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 /**
  * REST controller for managing instructor-related operations.
@@ -52,9 +58,10 @@ public class InstructorController {
 
     @DeleteMapping("/{email}")
     @Operation(summary = "Delete an instructor", description = "Deletes an instructor based on the email provided")
-    public boolean deleteInstructor(
+    @ResponseStatus(NO_CONTENT)
+    public void deleteInstructor(
             @Parameter(description = "Email of the instructor to be deleted")
             @PathVariable String email) {
-        return instructorService.deleteInstructor(email);
+        instructorService.deleteInstructor(email);
     }
 }

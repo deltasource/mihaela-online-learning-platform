@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Repository interface for managing Student entities.
- */
 @Repository
 public interface StudentRepository extends JpaRepository<Student, UUID> {
 

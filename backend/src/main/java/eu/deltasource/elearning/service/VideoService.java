@@ -7,6 +7,7 @@ import eu.deltasource.elearning.exception.VideoNotFoundException;
 import eu.deltasource.elearning.model.Video;
 import eu.deltasource.elearning.repository.VideoRepository;
 import eu.deltasource.elearning.repository.CourseRepository;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -49,7 +51,7 @@ public class VideoService {
 
         String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("video/")) {
-            throw new InvalidVideoFormatException("Only video files are allowed");
+            throw new UnsupportedEncodingException("Only video files are allowed");
         }
 
         var course = courseRepository.findById(courseId)
@@ -83,6 +85,7 @@ public class VideoService {
         return videoRepository.findByCourseId(courseId);
     }
 
+    @NotNull
     public VideoDTO mapToVideoDTO(Video video) {
         VideoDTO dto = new VideoDTO();
         dto.setFileName(video.getFileName());
@@ -91,6 +94,7 @@ public class VideoService {
         return dto;
     }
 
+    @NotNull
     public VideoDTO mapToVideoResponseDTO(Video video) {
         VideoDTO dto = new VideoDTO();
         dto.setCourseId(video.getId());

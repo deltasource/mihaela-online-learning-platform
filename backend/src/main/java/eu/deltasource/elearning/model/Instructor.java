@@ -12,8 +12,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "instructors")
 public class Instructor {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID )
     @Column
     private UUID id;
 

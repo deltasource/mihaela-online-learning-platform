@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 /**
  * REST controller for managing student-related operations.
  * This controller handles CRUD operations for students in the system.
@@ -51,10 +53,11 @@ public class StudentController {
     }
 
     @DeleteMapping("/{email}")
-    @Operation(summary = "Delete a student", description = "Deletes a student based on the email provided")
-    public boolean deleteStudent(
+    @Operation(summary = "Delete a s", description = "Deletes a student based on the email provided")
+    @ResponseStatus(NO_CONTENT)
+    public void deleteInstructor(
             @Parameter(description = "Email of the student to be deleted")
-            @PathVariable @NotNull String email) {
-        return studentService.deleteStudent(email);
+            @PathVariable String email) {
+        studentService.deleteStudent(email);
     }
 }

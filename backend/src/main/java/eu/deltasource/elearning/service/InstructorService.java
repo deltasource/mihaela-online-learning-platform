@@ -4,6 +4,7 @@ import eu.deltasource.elearning.DTOs.InstructorDTO;
 import eu.deltasource.elearning.exception.InstructorNotFoundException;
 import eu.deltasource.elearning.model.Instructor;
 import eu.deltasource.elearning.repository.InstructorRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,10 +61,8 @@ public class InstructorService {
         return deletedCount > 0;
     }
 
+    @NotNull
     private Instructor mapToInstructor(InstructorDTO instructorDTO) {
-        if (instructorDTO == null) {
-            throw new IllegalArgumentException("InstructorDTO cannot be null");
-        }
         Instructor instructor = new Instructor();
         instructor.setEmail(instructorDTO.getEmail());
         instructor.setFirstName(instructorDTO.getFirstName());
@@ -72,10 +71,8 @@ public class InstructorService {
         return instructor;
     }
 
+    @NotNull
     private InstructorDTO mapToInstructorDTO(Instructor instructor) {
-        if (instructor == null) {
-            throw new IllegalArgumentException("Instructor cannot be null");
-        }
         InstructorDTO instructorDTO = new InstructorDTO();
         instructorDTO.setEmail(instructor.getEmail());
         instructorDTO.setFirstName((instructor.getFirstName()));

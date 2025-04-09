@@ -1,10 +1,7 @@
 package eu.deltasource.elearning.controller.globalExceptionHandler;
 
 import eu.deltasource.elearning.DTOs.ErrorResponse;
-import eu.deltasource.elearning.exception.CourseNotFoundException;
-import eu.deltasource.elearning.exception.InstructorNotFoundException;
-import eu.deltasource.elearning.exception.StudentNotFoundException;
-import eu.deltasource.elearning.exception.VideoNotFoundException;
+import eu.deltasource.elearning.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,65 +18,42 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class ELearningGlobalExceptionHandler {
 
-    /**
-     * Handles StudentNotFoundException and returns a NOT_FOUND error response.
-     *
-     * @param e The StudentNotFoundException that was thrown
-     * @param request The current request
-     * @return A ResponseEntity with NOT_FOUND status and error details
-     */
     @ExceptionHandler(StudentNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(StudentNotFoundException e, WebRequest request) {
         ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    /**
-     * Handles InstructorNotFoundException and returns a NOT_FOUND error response.
-     *
-     * @param e The InstructorNotFoundException that was thrown
-     * @param request The current request
-     * @return A ResponseEntity with NOT_FOUND status and error details
-     */
+    @ExceptionHandler(StudentAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleStudentAlreadyExistsException(StudentAlreadyExistsException e, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(InstructorNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleInstructorNotFoundException(InstructorNotFoundException e, WebRequest request) {
         ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    /**
-     * Handles CourseNotFoundException and returns a NOT_FOUND error response.
-     *
-     * @param e The CourseNotFoundException that was thrown
-     * @param request The current request
-     * @return A ResponseEntity with NOT_FOUND status and error details
-     */
     @ExceptionHandler(CourseNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException e, WebRequest request) {
         ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    /**
-     * Handles VideoNotFoundException and returns a NOT_FOUND error response.
-     *
-     * @param e The VideoNotFoundException that was thrown
-     * @param request The current request
-     * @return A ResponseEntity with NOT_FOUND status and error details
-     */
     @ExceptionHandler(VideoNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleVideoNotFoundException(VideoNotFoundException e, WebRequest request) {
         ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
-    /**
-     * Handles general RuntimeExceptions and returns a BAD_REQUEST error response.
-     * Acts as a catch-all for RuntimeExceptions not handled by more specific handlers.
-     *
-     * @param e The RuntimeException that was thrown
-     * @param request The current request
-     * @return A ResponseEntity with BAD_REQUEST status and error details
-     */
+
+    @ExceptionHandler(UnsupportedFileTypeException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedFileType(UnsupportedFileTypeException ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleException(RuntimeException e, WebRequest request) {
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());

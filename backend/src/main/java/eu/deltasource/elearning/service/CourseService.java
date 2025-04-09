@@ -2,12 +2,14 @@ package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.CourseDTO;
 import eu.deltasource.elearning.exception.CourseNotFoundException;
+import eu.deltasource.elearning.exception.InstructorNotFoundException;
 import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.Instructor;
 import eu.deltasource.elearning.model.Student;
 import eu.deltasource.elearning.repository.CourseRepository;
 import eu.deltasource.elearning.repository.InstructorRepository;
 import eu.deltasource.elearning.repository.StudentRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,7 +74,7 @@ public class CourseService {
         courseRepository.delete(course);
     }
 
-
+    @NotNull
     private CourseDTO mapToCourseDTO(Course course) {
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setName(course.getName());
@@ -80,5 +82,18 @@ public class CourseService {
         courseDTO.setInstructorId(course.getInstructor().getId());
         courseDTO.setStudentIds(course.getStudents().stream().map(Student::getId).collect(Collectors.toList()));
         return courseDTO;
+    }
+
+    @NotNull
+    private Course mapToCourse(CourseDTO courseDTO) {
+        Course course = new Course();
+        course.setName(courseDTO.getName());
+        course.setDescription(courseDTO.getDescription());
+        Instructor instructor = instructorRepository.findById(courseDTO.getInstructorId())
+                .orElseThrow(() -> new InstructorNotFoundException("Instructor not found"));
+        course.setInstructor(instructor);
+        List<Student> students = studentRepository.findAllById(courseDTO.getStudentIds());
+        course.setStudents(students);
+        return course;
     }
 }
