@@ -2,6 +2,7 @@ package eu.deltasource.elearning.config;
 
 import eu.deltasource.elearning.exception.InvalidVideoFormatException;
 import eu.deltasource.elearning.exception.VideoOperationException;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,11 +25,9 @@ public class VideoConfig {
     @Value("${video.upload.directory}")
     private String videoUploadDirectory;
 
-    // Constants
     public static final long BYTES_IN_GB = 1024L * 1024L * 1024L;
     public static final long MAX_FILE_SIZE = 10L * BYTES_IN_GB;
 
-    // Allowed video formats
     private static final Set<String> ALLOWED_VIDEO_FORMATS = new HashSet<>(
             Arrays.asList("video/mp4", "video/avi", "video/mpeg", "video/quicktime", "video/x-matroska")
     );
@@ -80,7 +79,6 @@ public class VideoConfig {
     public void saveVideoFile(MultipartFile file, String filePath) {
         try {
             File destinationFile = new File(filePath);
-            // Create directories if they don't exist
             Path parentDir = Paths.get(filePath).getParent();
             if (parentDir != null) {
                 Files.createDirectories(parentDir);
@@ -100,11 +98,8 @@ public class VideoConfig {
      * @param filePath The path of the file to delete
      * @return true if the file was deleted successfully, false otherwise
      */
+    @NotNull
     public boolean deleteVideoFile(String filePath) {
-        if (filePath == null || filePath.isEmpty()) {
-            return false;
-        }
-
         try {
             File file = new File(filePath);
             boolean deleted = file.exists() && file.delete();
