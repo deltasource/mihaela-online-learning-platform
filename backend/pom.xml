@@ -15,6 +15,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<mysql.connector.version>8.0.33</mysql.connector.version>
+		<springdoc.version>2.7.0</springdoc.version>
 	</properties>
 	<dependencies>
 
@@ -53,7 +54,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.7.0</version>
+			<version>${springdoc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

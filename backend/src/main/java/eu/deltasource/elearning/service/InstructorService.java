@@ -1,6 +1,7 @@
 package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.InstructorDTO;
+import eu.deltasource.elearning.exception.InstructorAlreadyExistsException;
 import eu.deltasource.elearning.exception.InstructorNotFoundException;
 import eu.deltasource.elearning.model.Instructor;
 import eu.deltasource.elearning.repository.InstructorRepository;
@@ -25,8 +26,8 @@ public class InstructorService {
     public InstructorDTO createInstructor(InstructorDTO instructorDTO) {
         Instructor instructor = mapToInstructor(instructorDTO);
         Optional<Instructor> existingInstructor = instructorRepository.findByEmail(instructor.getEmail());
-        if(existingInstructor.isPresent()){
-            return mapToInstructorDTO(existingInstructor.get());
+        if (existingInstructor.isPresent()) {
+            throw new InstructorAlreadyExistsException("Instructor with email " + instructor.getEmail() + " already exists.");
         }
         instructor = instructorRepository.save(instructor);
         return mapToInstructorDTO(instructor);

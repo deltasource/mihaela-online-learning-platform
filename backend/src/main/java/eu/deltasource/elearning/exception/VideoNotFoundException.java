@@ -2,7 +2,7 @@ package eu.deltasource.elearning.exception;
 
 import java.util.UUID;
 
-public class VideoNotFoundException extends RuntimeException {
+public class VideoNotFoundException extends NotFoundException {
 
     public VideoNotFoundException(String message) {
         super(message);
