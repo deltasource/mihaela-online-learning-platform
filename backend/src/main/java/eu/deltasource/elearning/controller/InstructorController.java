@@ -1,17 +1,13 @@
 package eu.deltasource.elearning.controller;
 
 import eu.deltasource.elearning.DTOs.InstructorDTO;
-import eu.deltasource.elearning.model.Instructor;
 import eu.deltasource.elearning.service.InstructorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
