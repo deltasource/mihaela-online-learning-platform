@@ -9,8 +9,7 @@ import eu.deltasource.elearning.model.Video;
 import eu.deltasource.elearning.repository.CourseRepository;
 import eu.deltasource.elearning.repository.VideoRepository;
 import jakarta.validation.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,9 +18,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class VideoService {
-    private static final Logger logger = LoggerFactory.getLogger(VideoService.class);
 
     private final VideoRepository videoRepository;
     private final CourseRepository courseRepository;
@@ -49,10 +48,7 @@ public class VideoService {
 
             return videoRepository.save(video);
         } catch (Exception e) {
-            if (e instanceof VideoOperationException) {
-                throw e;
-            }
-            logger.error("Error uploading video: {}", e.getMessage());
+            log.error("Error uploading video: {}", e.getMessage());
             throw new VideoOperationException("Failed to upload video", e);
         }
     }
@@ -117,10 +113,7 @@ public class VideoService {
             videoConfig.deleteVideoFile(video.getFilePath());
             videoRepository.delete(video);
         } catch (Exception e) {
-            if (e instanceof VideoOperationException) {
-                throw e;
-            }
-            logger.error("Error deleting video: {}", e.getMessage());
+            log.error("Error deleting video: {}", e.getMessage());
             throw new VideoOperationException("Failed to delete video", e);
         }
     }

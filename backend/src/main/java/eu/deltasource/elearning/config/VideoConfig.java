@@ -3,8 +3,7 @@ package eu.deltasource.elearning.config;
 import eu.deltasource.elearning.exception.InvalidVideoFormatException;
 import eu.deltasource.elearning.exception.VideoOperationException;
 import jakarta.validation.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,9 +17,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Component
 public class VideoConfig {
-    private static final Logger logger = LoggerFactory.getLogger(VideoConfig.class);
 
     @Value("${video.upload.directory}")
     private String videoUploadDirectory;
@@ -32,11 +31,6 @@ public class VideoConfig {
             Arrays.asList("video/mp4", "video/avi", "video/mpeg", "video/quicktime", "video/x-matroska")
     );
 
-    /**
-     * Validates if the file is a valid video file
-     * @param file The file to validate
-     * @throws InvalidVideoFormatException If the file is invalid
-     */
     public void validateVideoFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new InvalidVideoFormatException("File cannot be empty");
@@ -52,30 +46,15 @@ public class VideoConfig {
         }
     }
 
-    /**
-     * Gets the upload directory for videos
-     * @return The directory path
-     */
     public String getVideoUploadDirectory() {
         return videoUploadDirectory;
     }
 
-    /**
-     * Generates a file path for storing a video
-     * @param originalFilename The original filename
-     * @return The full file path
-     */
     public String generateFilePath(String originalFilename) {
         String fileName = originalFilename != null ? originalFilename : "video.mp4";
         return Paths.get(videoUploadDirectory, fileName).toString();
     }
 
-    /**
-     * Saves a video file to disk
-     * @param file The multipart file
-     * @param filePath The path where to save the file
-     * @throws VideoOperationException If an error occurs during file saving
-     */
     public void saveVideoFile(MultipartFile file, String filePath) {
         try {
             File destinationFile = new File(filePath);
@@ -86,31 +65,26 @@ public class VideoConfig {
             Files.copy(file.getInputStream(), destinationFile.toPath(),
                     java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
-            logger.info("Video file saved successfully at: {}", filePath);
+            log.info("Video file saved successfully at: {}", filePath);
         } catch (IOException e) {
-            logger.error("Failed to save video file: {}", e.getMessage());
+            log.error("Failed to save video file: {}", e.getMessage());
             throw new VideoOperationException("Failed to save video file", e);
         }
     }
 
-    /**
-     * Deletes a video file from disk
-     * @param filePath The path of the file to delete
-     * @return true if the file was deleted successfully, false otherwise
-     */
     @NotNull
     public boolean deleteVideoFile(String filePath) {
         try {
             File file = new File(filePath);
             boolean deleted = file.exists() && file.delete();
             if (deleted) {
-                logger.info("Video file deleted successfully: {}", filePath);
+                log.info("Video file deleted successfully: {}", filePath);
             } else {
-                logger.warn("Video file could not be deleted: {}", filePath);
+                log.warn("Video file could not be deleted: {}", filePath);
             }
             return deleted;
         } catch (Exception e) {
-            logger.error("Error deleting video file: {}", e.getMessage());
+            log.error("Error deleting video file: {}", e.getMessage());
             throw new VideoOperationException("Failed to delete video file", e);
         }
     }

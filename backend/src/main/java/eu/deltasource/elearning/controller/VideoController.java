@@ -1,22 +1,14 @@
 package eu.deltasource.elearning.controller;
 
 import eu.deltasource.elearning.DTOs.VideoDTO;
-import eu.deltasource.elearning.exception.CourseNotFoundException;
-import eu.deltasource.elearning.exception.InvalidVideoFormatException;
-import eu.deltasource.elearning.exception.VideoNotFoundException;
-import eu.deltasource.elearning.exception.VideoOperationException;
 import eu.deltasource.elearning.model.Video;
 import eu.deltasource.elearning.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -60,27 +52,5 @@ public class VideoController {
     @ResponseStatus(NO_CONTENT)
     public void deleteVideo(@PathVariable UUID videoId) {
         videoService.deleteVideo(videoId);
-    }
-
-    @ExceptionHandler({
-            InvalidVideoFormatException.class,
-            VideoOperationException.class,
-            VideoNotFoundException.class,
-            CourseNotFoundException.class
-    })
-    public ResponseEntity<Map<String, String>> handleExceptions(Exception e) {
-        Map<String, String> response = new HashMap<>();
-        HttpStatus status;
-
-        if (e instanceof InvalidVideoFormatException) {
-            status = HttpStatus.BAD_REQUEST;
-        } else if (e instanceof VideoNotFoundException || e instanceof CourseNotFoundException) {
-            status = HttpStatus.NOT_FOUND;
-        } else {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-
-        response.put("error", e.getMessage());
-        return new ResponseEntity<>(response, status);
     }
 }
