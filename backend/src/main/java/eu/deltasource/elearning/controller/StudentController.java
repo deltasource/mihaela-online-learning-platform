@@ -53,7 +53,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/{email}")
-    @Operation(summary = "Delete a s", description = "Deletes a student based on the email provided")
+    @Operation(summary = "Delete a student", description = "Deletes a student based on the email provided")
     @ResponseStatus(NO_CONTENT)
     public void deleteInstructor(
             @Parameter(description = "Email of the student to be deleted")
