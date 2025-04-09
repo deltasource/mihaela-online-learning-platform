@@ -1,76 +1,60 @@
 package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.VideoDTO;
+import eu.deltasource.elearning.config.VideoConfig;
 import eu.deltasource.elearning.exception.CourseNotFoundException;
-import eu.deltasource.elearning.exception.InvalidVideoFormatException;
 import eu.deltasource.elearning.exception.VideoNotFoundException;
+import eu.deltasource.elearning.exception.VideoOperationException;
 import eu.deltasource.elearning.model.Video;
-import eu.deltasource.elearning.repository.VideoRepository;
 import eu.deltasource.elearning.repository.CourseRepository;
+import eu.deltasource.elearning.repository.VideoRepository;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class VideoService {
-
-    @Value("${video.upload.directory}")
-    private String videoUploadDirectory;
-
-    private static final long MAX_FILE_SIZE = 10L * 1024 * 1024 * 1024;
+    private static final Logger logger = LoggerFactory.getLogger(VideoService.class);
 
     private final VideoRepository videoRepository;
     private final CourseRepository courseRepository;
+    private final VideoConfig videoConfig;
 
-    public VideoService(VideoRepository videoRepository, CourseRepository courseRepository) {
+    public VideoService(VideoRepository videoRepository, CourseRepository courseRepository, VideoConfig videoConfig) {
         this.videoRepository = videoRepository;
         this.courseRepository = courseRepository;
+        this.videoConfig = videoConfig;
     }
 
     @Transactional
-    public Video uploadVideo(UUID courseId, MultipartFile file) throws IOException {
+    public Video uploadVideo(UUID courseId, MultipartFile file) {
+        try {
+            videoConfig.validateVideoFile(file);
+            var course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new CourseNotFoundException(courseId));
+            String originalFilename = file.getOriginalFilename();
+            String filePath = videoConfig.generateFilePath(originalFilename);
+            videoConfig.saveVideoFile(file, filePath);
+            Video video = new Video();
+            video.setCourse(course);
+            video.setFileName(originalFilename != null ? originalFilename : "video.mp4");
+            video.setFilePath(filePath);
 
-        if (file.getSize() > MAX_FILE_SIZE) {
-            throw new InvalidVideoFormatException("File size exceeds the maximum allowed size of 10 GB");
+            return videoRepository.save(video);
+        } catch (Exception e) {
+            if (e instanceof VideoOperationException) {
+                throw e;
+            }
+            logger.error("Error uploading video: {}", e.getMessage());
+            throw new VideoOperationException("Failed to upload video", e);
         }
-
-        if (file.isEmpty()) {
-            throw new InvalidVideoFormatException("File cannot be empty");
-        }
-
-        String contentType = file.getContentType();
-        if (contentType == null || !contentType.startsWith("video/")) {
-            throw new UnsupportedEncodingException("Only video files are allowed");
-        }
-
-        var course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new CourseNotFoundException(courseId));
-
-        String originalFilename = file.getOriginalFilename();
-        String fileName = originalFilename != null ? originalFilename : "video.mp4";
-        String filePath = Paths.get(videoUploadDirectory, fileName).toString();
-
-        File destinationFile = new File(filePath);
-        Files.copy(file.getInputStream(), destinationFile.toPath(),
-                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-
-        Video video = new Video();
-        video.setCourse(course);
-        video.setFileName(fileName);
-        video.setFilePath(filePath);
-
-        return videoRepository.save(video);
     }
 
     public Video getVideoById(UUID videoId) {
@@ -127,8 +111,17 @@ public class VideoService {
 
     @Transactional
     public void deleteVideo(UUID videoId) {
-        Video video = videoRepository.findById(videoId)
-                .orElseThrow(() -> new VideoNotFoundException(videoId));
-        videoRepository.delete(video);
+        try {
+            Video video = videoRepository.findById(videoId)
+                    .orElseThrow(() -> new VideoNotFoundException(videoId));
+            videoConfig.deleteVideoFile(video.getFilePath());
+            videoRepository.delete(video);
+        } catch (Exception e) {
+            if (e instanceof VideoOperationException) {
+                throw e;
+            }
+            logger.error("Error deleting video: {}", e.getMessage());
+            throw new VideoOperationException("Failed to delete video", e);
+        }
     }
 }
