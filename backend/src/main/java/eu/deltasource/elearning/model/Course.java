@@ -2,6 +2,7 @@ package eu.deltasource.elearning.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "courses")
 public class Course {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
