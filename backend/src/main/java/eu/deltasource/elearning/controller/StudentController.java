@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class StudentController {
     @Operation(summary = "Get a student by email", description = "Returns a student based on the email provided")
     public StudentDTO getStudentByEmail(
             @Parameter(description = "Email of the student to be retrieved")
-            @PathVariable @NotNull String email) {
+            @PathVariable @NotNull @Email(message = "Invalid email format") String email) {
         return studentService.getStudentByEmail(email);
     }
 
@@ -46,7 +47,7 @@ public class StudentController {
     @Operation(summary = "Update a student by email", description = "Updates a student's details based on the email provided")
     public StudentDTO updateStudentByEmail(
             @Parameter(description = "Email of the student to be updated")
-            @PathVariable @NotNull String email,
+            @PathVariable @NotNull @Email(message = "Invalid email format") String email,
             @Parameter(description = "Updated student information")
             @RequestBody @Valid StudentDTO studentDTO) {
         return studentService.updateStudentByEmail(email, studentDTO);
@@ -55,9 +56,9 @@ public class StudentController {
     @DeleteMapping("/{email}")
     @Operation(summary = "Delete a student", description = "Deletes a student based on the email provided")
     @ResponseStatus(NO_CONTENT)
-    public void deleteInstructor(
+    public void deleteStudent(
             @Parameter(description = "Email of the student to be deleted")
-            @PathVariable String email) {
+            @PathVariable @NotNull @Email(message = "Invalid email format") String email) {
         studentService.deleteStudent(email);
     }
 }

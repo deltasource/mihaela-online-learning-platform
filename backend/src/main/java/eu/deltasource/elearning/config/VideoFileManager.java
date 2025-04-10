@@ -21,21 +21,13 @@ import java.nio.file.Paths;
  * (e.g., size, type), generate file paths for storing them, and perform file operations like saving
  * and deleting the video files.
  *
- * <p>Key features:</p>
- * <ul>
- *     <li>Validates uploaded video files (checks file size and content type).</li>
- *     <li>Generates file paths for saving video files.</li>
- *     <li>Saves video files to the configured directory.</li>
- *     <li>Deletes video files when necessary.</li>
- * </ul>
- *
  * <p>Note: The directory for storing videos is configurable via the {@code video.upload.directory}
  * property in the application's configuration files (e.g., application.properties or application.yml).</p>
  */
 @Data
 @Slf4j
 @Component
-public class VideoConfig {
+public class VideoFileManager {
 
     @Value("${video.upload.directory}")
     private String videoUploadDirectory;

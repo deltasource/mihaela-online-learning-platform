@@ -1,7 +1,7 @@
 package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.VideoDTO;
-import eu.deltasource.elearning.config.VideoConfig;
+import eu.deltasource.elearning.config.VideoFileManager;
 import eu.deltasource.elearning.exception.CourseNotFoundException;
 import eu.deltasource.elearning.exception.VideoNotFoundException;
 import eu.deltasource.elearning.exception.VideoOperationException;
@@ -23,9 +23,9 @@ public class VideoService {
 
     private final VideoRepository videoRepository;
     private final CourseRepository courseRepository;
-    private final VideoConfig videoConfig;
+    private final VideoFileManager videoConfig;
 
-    public VideoService(VideoRepository videoRepository, CourseRepository courseRepository, VideoConfig videoConfig) {
+    public VideoService(VideoRepository videoRepository, CourseRepository courseRepository, VideoFileManager videoConfig) {
         this.videoRepository = videoRepository;
         this.courseRepository = courseRepository;
         this.videoConfig = videoConfig;

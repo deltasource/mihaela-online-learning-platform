@@ -5,6 +5,8 @@ import eu.deltasource.elearning.model.Video;
 import eu.deltasource.elearning.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,27 +33,27 @@ public class VideoController {
     )
     @PostMapping(value = "/{courseId}/upload", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
-    public VideoDTO uploadVideo(@PathVariable UUID courseId, @RequestParam("file") MultipartFile file) {
+    public VideoDTO uploadVideo(@PathVariable @NotNull UUID courseId, @RequestParam("file") @NotNull MultipartFile file) {
         Video uploadedVideo = videoService.uploadVideo(courseId, file);
         return videoService.mapToVideoDTO(uploadedVideo);
     }
 
     @Operation(summary = "Get videos by course", description = "Retrieves all videos associated with a specific course")
     @GetMapping("/courses/{courseId}")
-    public List<VideoDTO> getVideosByCourse(@PathVariable UUID courseId) {
+    public List<VideoDTO> getVideosByCourse(@PathVariable @NotNull UUID courseId) {
         return videoService.getVideosByCourseIdAsDTO(courseId);
     }
 
     @Operation(summary = "Update a video", description = "Updates an existing video's metadata")
     @PutMapping("/{videoId}")
-    public VideoDTO updateVideo(@PathVariable UUID videoId, @RequestBody VideoDTO videoDTO) {
+    public VideoDTO updateVideo(@PathVariable @NotNull UUID videoId, @RequestBody @NotNull @Valid VideoDTO videoDTO) {
         return videoService.updateVideo(videoId, videoDTO);
     }
 
     @Operation(summary = "Delete a video", description = "Deletes a video by its ID")
     @DeleteMapping("/{videoId}")
     @ResponseStatus(NO_CONTENT)
-    public void deleteVideo(@PathVariable UUID videoId) {
+    public void deleteVideo(@PathVariable @NotNull UUID videoId) {
         videoService.deleteVideo(videoId);
     }
 }

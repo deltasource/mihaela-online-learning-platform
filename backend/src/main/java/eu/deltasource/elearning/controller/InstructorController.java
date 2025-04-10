@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class InstructorController {
     @Operation(summary = "Get an instructor by email", description = "Returns an instructor based on the email provided")
     public InstructorDTO getInstructorByEmail(
             @Parameter(description = "Email of the instructor to be retrieved")
-            @PathVariable @NotNull String email) {
+            @PathVariable @NotNull @Email(message = "Invalid email format") String email) {
         return instructorService.getInstructorByEmail(email);
     }
 
@@ -46,7 +47,7 @@ public class InstructorController {
     @Operation(summary = "Update an instructor by email", description = "Updates an instructor's details based on the email provided")
     public InstructorDTO updateInstructorByEmail(
             @Parameter(description = "Email of the instructor to be updated")
-            @PathVariable @NotNull String email,
+            @PathVariable @NotNull @Email(message = "Invalid email format") String email,
             @Parameter(description = "Updated instructor information")
             @RequestBody @Valid InstructorDTO instructorDTO) {
         return instructorService.updateInstructorByEmail(email, instructorDTO);
@@ -57,7 +58,7 @@ public class InstructorController {
     @ResponseStatus(NO_CONTENT)
     public void deleteInstructor(
             @Parameter(description = "Email of the instructor to be deleted")
-            @PathVariable String email) {
+            @PathVariable @NotNull @Email(message = "Invalid email format") String email) {
         instructorService.deleteInstructor(email);
     }
 }
