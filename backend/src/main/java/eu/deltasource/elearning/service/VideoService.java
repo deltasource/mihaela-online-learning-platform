@@ -8,7 +8,6 @@ import eu.deltasource.elearning.exception.VideoOperationException;
 import eu.deltasource.elearning.model.Video;
 import eu.deltasource.elearning.repository.CourseRepository;
 import eu.deltasource.elearning.repository.VideoRepository;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +64,6 @@ public class VideoService {
         return videoRepository.findByCourseId(courseId);
     }
 
-    @NotNull
     public VideoDTO mapToVideoDTO(Video video) {
         VideoDTO dto = new VideoDTO();
         dto.setFileName(video.getFileName());
@@ -74,7 +72,6 @@ public class VideoService {
         return dto;
     }
 
-    @NotNull
     public VideoDTO mapToVideoResponseDTO(Video video) {
         VideoDTO dto = new VideoDTO();
         dto.setCourseId(video.getId());

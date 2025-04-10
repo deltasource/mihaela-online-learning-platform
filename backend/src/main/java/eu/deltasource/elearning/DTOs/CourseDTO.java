@@ -3,8 +3,9 @@ package eu.deltasource.elearning.DTOs;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import java.util.UUID;
+
 import java.util.List;
+import java.util.UUID;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
