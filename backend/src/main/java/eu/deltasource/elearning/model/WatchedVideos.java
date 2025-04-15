@@ -1,6 +1,7 @@
 package eu.deltasource.elearning.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.UUID;
@@ -16,12 +17,13 @@ public class WatchedVideos {
 
     @ManyToOne
     @JoinColumn(name = "student_progress_id", referencedColumnName = "id")
+    @NotNull(message = "Student progress cannot be null")
     private StudentProgress studentProgress;
 
     @ManyToOne
     @JoinColumn(name = "video_id", referencedColumnName = "id")
+    @NotNull(message = "Video cannot be null")
     private Video video;
 
-    @Column(nullable = false)
     private boolean watched;
 }

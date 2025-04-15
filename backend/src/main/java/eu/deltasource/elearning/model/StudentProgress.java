@@ -34,12 +34,4 @@ public class StudentProgress {
 
     @Column(nullable = false)
     private double progressPercentage;
-
-    public void updateProgress() {
-        if (totalVideos > 0) {
-            this.progressPercentage = (videosWatched * 100.0) / totalVideos;
-        } else {
-            this.progressPercentage = 0;
-        }
-    }
 }

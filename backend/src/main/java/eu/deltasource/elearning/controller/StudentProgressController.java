@@ -6,20 +6,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @Tag(name = "Student Progress ", description = "Track how much percent of the course the student has finished")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/students/progress/v1")
 public class StudentProgressController {
 
     private final StudentProgressService studentProgressService;
-
-    public StudentProgressController(StudentProgressService studentProgressService) {
-        this.studentProgressService = studentProgressService;
-    }
 
     @GetMapping("/{studentId}/courses/{courseId}")
     @Operation(summary = "Get student progress in a course", description = "Returns progress percentage for a student in a specific course")

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service class for managing student-related operations.
@@ -34,6 +35,11 @@ public class StudentService {
         return mapToStudentDTO(savedStudent);
     }
 
+    public Student getStudentById(UUID studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new StudentNotFoundException(
+                        String.format("Student with ID %s not found", studentId)));
+    }
 
     public StudentDTO getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email)
