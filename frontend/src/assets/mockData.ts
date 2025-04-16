@@ -1,4 +1,50 @@
-export const mockUserData = {
+export interface Course {
+    title: string
+    description: string
+    progress: number
+}
+
+export interface TeachingSchedule {
+    courseId: number
+    courseTitle: string
+    startDate: string
+    endDate: string
+}
+
+export interface SocialLinks {
+    linkedin?: string
+    instagram?: string
+    github?: string
+    twitter?: string
+}
+
+export interface Instructor {
+    id: number
+    name: string
+    role: string
+    title: string
+    bio: string
+    avatar: string
+    coverImage: string
+    socialLinks: SocialLinks
+    courses: Course[]
+    teaching: TeachingSchedule[]
+}
+
+export interface User {
+    id: number
+    name: string
+    role: string
+    title: string
+    bio: string
+    avatar: string
+    coverImage: string
+    socialLinks: SocialLinks
+    courses: Course[]
+    instructor: Instructor
+}
+
+export const mockUserData: User = {
     id: 1,
     name: "Mihaela",
     role: "Student",
@@ -72,5 +118,5 @@ export const mockUserData = {
                 endDate: "2024-05-30",
             },
         ],
-    }
+    },
 }

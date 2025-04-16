@@ -1,0 +1,94 @@
+:root {
+    --primary-blue: #6a95d6;
+    --dark-blue: #90b2e6;
+    --light-blue: #e7f1ff;
+    --black: #212529;
+    --white: #ffffff;
+    --gray: #6c757d;
+    --light-gray: #f8f9fa;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    color: var(--black);
+    background-color: var(--light-gray);
+}
+
+.app-container {
+    background-color: var(--white);
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue);
+}
+
+.btn-outline-primary {
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.course-card {
+    height: 100%;
+}
+
+.course-card .card-img-top {
+    height: 160px;
+    object-fit: cover;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+    color: var(--white);
+    padding: 5rem 0;
+}
+
+.category-badge {
+    background-color: var(--light-blue);
+    color: var(--primary-blue);
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 50px;
+}
+
+.instructor-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.rating-stars {
+    color: #ffc107;
+}
+
+.footer {
+    background-color: var(--black);
+    color: var(--white);
+    padding: 2rem 0;
+}
+
+.text-light-blue {
+       color: #92b3dc;
+}
