@@ -9,9 +9,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "videos")
 public class Video {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column
     private UUID id;
 
     @ManyToOne
