@@ -33,7 +33,6 @@ export default function InstructorProfile() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 
-    // Simulate fetch from backend
     useEffect(() => {
         const timeout = setTimeout(() => {
             try {
