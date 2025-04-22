@@ -1,155 +1,79 @@
+import { Container, Row, Col } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react"
 
 const Footer = () => {
     return (
-        <footer className="footer mt-auto">
-            <div className="container py-5">
-                <div className="row">
-                    <div className="col-12 col-md-4 mb-4 mb-md-0">
-                        <h5 className="text-white fw-bold mb-4">Elearning</h5>
-                        <p className="text-light">
-                            Empowering individuals and organizations through high-quality online learning experiences.
-                        </p>
-                        <div className="d-flex gap-3 mt-4">
-                            <a href="#" className="text-white">
-                                <Facebook size={20} />
-                            </a>
-                            <a href="#" className="text-white">
-                                <Twitter size={20} />
-                            </a>
-                            <a href="#" className="text-white">
-                                <Instagram size={20} />
-                            </a>
-                            <a href="#" className="text-white">
-                                <Linkedin size={20} />
-                            </a>
-                            <a href="#" className="text-white">
-                                <Youtube size={20} />
-                            </a>
-                        </div>
-                    </div>
-
-                    <div className="col-6 col-md-2 mb-3">
-                        <h6 className="text-white fw-bold mb-3">Learn</h6>
-                        <ul className="nav flex-column">
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Popular Courses
+        <footer className="bg-dark text-light py-4 mt-5">
+            <Container>
+                <Row>
+                    <Col md={4} className="mb-3 mb-md-0">
+                        <h5 className="mb-3">LearnHub</h5>
+                        <p className="text-muted">Empowering learners worldwide with accessible, quality education.</p>
+                    </Col>
+                    <Col md={2} className="mb-3 mb-md-0">
+                        <h5 className="mb-3">Links</h5>
+                        <ul className="list-unstyled">
+                            <li>
+                                <Link to="/" className="text-decoration-none text-muted">
+                                    Home
                                 </Link>
                             </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Categories
+                            <li>
+                                <Link to="/courses" className="text-decoration-none text-muted">
+                                    Courses
                                 </Link>
                             </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Certificates
+                            <li>
+                                <Link to="/login" className="text-decoration-none text-muted">
+                                    Login
                                 </Link>
                             </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Free Courses
+                            <li>
+                                <Link to="/register" className="text-decoration-none text-muted">
+                                    Register
                                 </Link>
                             </li>
                         </ul>
-                    </div>
-
-                    <div className="col-6 col-md-2 mb-3">
-                        <h6 className="text-white fw-bold mb-3">Company</h6>
-                        <ul className="nav flex-column">
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    About Us
-                                </Link>
-                            </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Careers
-                                </Link>
-                            </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
+                    </Col>
+                    <Col md={3} className="mb-3 mb-md-0">
+                        <h5 className="mb-3">Resources</h5>
+                        <ul className="list-unstyled">
+                            <li>
+                                <a href="#" className="text-decoration-none text-muted">
                                     Blog
-                                </Link>
+                                </a>
                             </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Press
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div className="col-6 col-md-2 mb-3">
-                        <h6 className="text-white fw-bold mb-3">Support</h6>
-                        <ul className="nav flex-column">
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Contact Us
-                                </Link>
-                            </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
+                            <li>
+                                <a href="#" className="text-decoration-none text-muted">
                                     Help Center
-                                </Link>
+                                </a>
                             </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
+                            <li>
+                                <a href="#" className="text-decoration-none text-muted">
+                                    Tutorials
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-decoration-none text-muted">
                                     FAQ
-                                </Link>
-                            </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Accessibility
-                                </Link>
+                                </a>
                             </li>
                         </ul>
-                    </div>
-
-                    <div className="col-6 col-md-2 mb-3">
-                        <h6 className="text-white fw-bold mb-3">Legal</h6>
-                        <ul className="nav flex-column">
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Terms
-                                </Link>
-                            </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Privacy
-                                </Link>
-                            </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Cookie Settings
-                                </Link>
-                            </li>
-                            <li className="nav-item mb-2">
-                                <Link to="#" className="nav-link p-0 text-light">
-                                    Sitemap
-                                </Link>
-                            </li>
+                    </Col>
+                    <Col md={3}>
+                        <h5 className="mb-3">Contact</h5>
+                        <ul className="list-unstyled text-muted">
+                            <li>Email: contact@learnhub.com</li>
+                            <li>Phone: +1 (123) 456-7890</li>
+                            <li>Address: 123 Education St, Learning City</li>
                         </ul>
-                    </div>
+                    </Col>
+                </Row>
+                <hr className="my-3 bg-secondary" />
+                <div className="text-center text-muted">
+                    <small>&copy; {new Date().getFullYear()} LearnHub. All rights reserved.</small>
                 </div>
-
-                <div className="d-flex flex-column flex-sm-row justify-content-between pt-4 mt-4 border-top border-secondary">
-                    <p className="text-light">© 2025 Elearning, Inc. All rights reserved.</p>
-                    <div className="d-flex gap-3">
-                        <select
-                            className="form-select form-select-sm bg-dark text-light border-secondary"
-                            style={{ width: "auto" }}
-                        >
-                            <option value="en">English</option>
-                            <option value="es">Español</option>
-                            <option value="fr">Français</option>
-                            <option value="de">Deutsch</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+            </Container>
         </footer>
     )
 }
