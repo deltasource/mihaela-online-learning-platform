@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import type { Course } from "../types/Course"
+import {Course} from "../types";
 
 interface CourseCardProps {
     course: Course
@@ -28,7 +28,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <div className="d-flex align-items-center">
                             <img
-                                src={course.instructor.avatarUrl || "/placeholder.svg"}
+                                src={course.instructor.avatar || "/placeholder.svg"}
                                 alt={course.instructor.name}
                                 className="rounded-circle me-2"
                                 width="24"

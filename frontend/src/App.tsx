@@ -14,7 +14,8 @@ import RegisterPage from "./pages/RegisterPage"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 import { UserContext } from "./context/UserContext"
-import {UserType} from "./types.ts";
+import {UserType} from "./types";
+
 
 function App() {
     const [user, setUser] = useState<UserType | null>(null)
