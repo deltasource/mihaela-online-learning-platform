@@ -1,49 +1,34 @@
-export interface UserType {
-    id: number
+export interface Course {
+    id: string
     name: string
-    role: string
+    description: string
+    instructorEmail: string
+    duration: number
 }
 
-export interface Course {
-    id: number
+export interface Instructor {
+    id: string
+    name: string
+    email: string
+    bio: string
+}
+
+export interface Student {
+    id: string
+    name: string
+    email: string
+    courses: string[]
+}
+
+export interface Video {
+    id: string
+    courseId: string
     title: string
-    description: string
-    thumbnail?: string
-    price: number
-    duration: string
-    category: string
-    rating: number
-    reviewCount: number
-    instructor: {
-        name: string
-        title?: string
-        avatar?: string
-        bio?: string
-    }
-    learningOutcomes?: string[]
-    modules?: {
-        title: string
-        lessons: {
-            title: string
-            duration: string
-            videoUrl: string
-        }[]
-    }[]
-    lessons?: {
-        title: string
-        duration: string
-        videoUrl: string
-    }[]
-    resources?: {
-        title: string
-        type: string
-        url: string
-    }[]
-    reviews?: {
-        name: string
-        avatar?: string
-        rating: number
-        date: string
-        comment: string
-    }[]
+    videoUrl: string
+}
+
+export interface StudentProgress {
+    studentId: string
+    courseId: string
+    videosWatched: string[]
 }
