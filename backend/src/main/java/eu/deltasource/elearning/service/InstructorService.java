@@ -78,6 +78,7 @@ public class InstructorService {
         InstructorDTO instructorDTO = new InstructorDTO();
         instructorDTO.setEmail(instructor.getEmail());
         instructorDTO.setFirstName((instructor.getFirstName()));
+        instructorDTO.setLastName(instructor.getLastName());
         instructorDTO.setDepartment(instructor.getDepartment());
         return instructorDTO;
     }
