@@ -1,43 +1,29 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { Suspense, lazy } from "react"
-import Navbar from "./components/common/Navbar"
-import Footer from "./components/common/Footer"
-import HomePage from "./pages/HomePage"
-import LoadingSpinner from "./components/common/LoadingSpinner"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+import { Container } from "react-bootstrap"
+import Navigation from "./components/Navigation"
+import Home from "./pages/Home"
+import Students from "./pages/Students"
+import Instructors from "./pages/Instructors"
+import Courses from "./pages/Courses"
+import Videos from "./pages/Videos"
+import StudentProgress from "./pages/StudentProgress"
+import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
-import CoursesPage from "./pages/courses/CoursePage";
-
-const CourseDetailPage = lazy(() => import("./pages/courses/CourseDetailPage"))
-const InstructorsPage = lazy(() => import("./pages/instructors/InstructorsPage"))
-const StudentsPage = lazy(() => import("./pages/students/StudentsPage"))
-const StudentProgressPage = lazy(() => import("./pages/students/StudentProgressPage"))
-const VideoUploadPage = lazy(() => import("./pages/videos/VideoUploadPage"))
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
 
 function App() {
     return (
         <BrowserRouter>
-            <div className="app-container">
-                <Navbar />
-                <main className="main-content">
-                    <Suspense fallback={<LoadingSpinner />}>
-                        <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/courses" element={<CoursesPage />} />
-                            <Route path="/courses/:id" element={<CourseDetailPage />} />
-                            <Route path="/instructors" element={<InstructorsPage />} />
-                            <Route path="/students" element={<StudentsPage />} />
-                            <Route path="/students/:studentId/progress/:courseId" element={<StudentProgressPage />} />
-                            <Route path="/videos/upload/:courseId" element={<VideoUploadPage />} />
-                            <Route path="*" element={<NotFoundPage />} />
-                        </Routes>
-                    </Suspense>
-                </main>
-                <Footer />
-                <ToastContainer position="bottom-right" />
-            </div>
+            <Navigation />
+            <Container className="py-4">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/students" element={<Students />} />
+                    <Route path="/instructors" element={<Instructors />} />
+                    <Route path="/courses" element={<Courses />} />
+                    <Route path="/videos" element={<Videos />} />
+                    <Route path="/progress" element={<StudentProgress />} />
+                </Routes>
+            </Container>
         </BrowserRouter>
     )
 }

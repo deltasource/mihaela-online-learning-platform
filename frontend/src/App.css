@@ -1,68 +1,73 @@
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+:root {
+  --primary-color: #5e72e4;
+  --secondary-color: #f7fafc;
+  --accent-color: #11cdef;
+  --success-color: #2dce89;
+  --warning-color: #fb6340;
+  --danger-color: #f5365c;
+  --dark-color: #32325d;
+  --light-color: #f8f9fe;
 }
 
-.main-content {
-  flex: 1;
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
+body {
+  background-color: var(--secondary-color);
+  color: var(--dark-color);
+}
+
+.main-container {
+  min-height: calc(100vh - 72px);
 }
 
 .card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
-.form-container {
-  max-width: 600px;
-  margin: 0 auto;
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
-.page-header {
+.btn-primary:hover {
+  background-color: #4a5cd0;
+  border-color: #4a5cd0;
+}
+
+.hero-section {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 4rem 0;
+  border-radius: 0.5rem;
   margin-bottom: 2rem;
 }
 
-.page-title {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+.course-card {
+  height: 100%;
 }
 
-.page-description {
-  color: #6c757d;
+.course-card .card-img-top {
+  height: 180px;
+  object-fit: cover;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-}
-
-.error-message {
-  color: #dc3545;
-  margin: 1rem 0;
+.course-progress {
+  height: 8px;
 }
 
 .video-container {
   position: relative;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
   height: 0;
   overflow: hidden;
-  margin-bottom: 1rem;
+  border-radius: 0.5rem;
 }
 
 .video-container video {
@@ -73,11 +78,93 @@
   height: 100%;
 }
 
-.progress-card {
-  margin-bottom: 1.5rem;
+.sidebar {
+  height: calc(100vh - 72px);
+  position: sticky;
+  top: 72px;
+  overflow-y: auto;
 }
 
-.progress-bar-container {
-  height: 10px;
-  margin: 0.5rem 0;
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-lg {
+  width: 100px;
+  height: 100px;
+}
+
+.badge-pill {
+  border-radius: 50rem;
+  padding: 0.35em 0.65em;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.instructor-card {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--light-color);
+}
+
+.instructor-card img {
+  margin-right: 1rem;
+}
+
+.course-section {
+  margin-bottom: 1rem;
+}
+
+.course-section-header {
+  background-color: var(--light-color);
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.course-lesson {
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+  border-left: 2px solid var(--light-color);
+  cursor: pointer;
+}
+
+.course-lesson.active {
+  border-left: 2px solid var(--primary-color);
+  background-color: rgba(94, 114, 228, 0.1);
+}
+
+.course-lesson:hover {
+  background-color: rgba(94, 114, 228, 0.05);
+}
+
+.stats-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.stats-card .icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.stats-card .number {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.stats-card .label {
+  color: #8898aa;
+  font-size: 0.875rem;
 }
