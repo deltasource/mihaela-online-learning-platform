@@ -1,45 +1,44 @@
-"use client"
-
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import { useState } from "react"
-import Navbar from "./components/Navbar"
-import Footer from "./components/Footer"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Suspense, lazy } from "react"
+import Navbar from "./components/common/Navbar"
+import Footer from "./components/common/Footer"
 import HomePage from "./pages/HomePage"
-import CoursesPage from "./pages/CoursesPage"
-import CourseDetailPage from "./pages/CourseDetailPage"
-import StudentProfilePage from "./pages/StudentProfilePage"
-import InstructorProfilePage from "./pages/InstructorProfilePage"
-import LoginPage from "./pages/LoginPage"
-import RegisterPage from "./pages/RegisterPage"
-import "bootstrap/dist/css/bootstrap.min.css"
+import LoadingSpinner from "./components/common/LoadingSpinner"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 import "./App.css"
-import { UserContext } from "./context/UserContext"
-import {UserType} from "./types";
+import CoursesPage from "./pages/courses/CoursePage";
 
+const CourseDetailPage = lazy(() => import("./pages/courses/CourseDetailPage"))
+const InstructorsPage = lazy(() => import("./pages/instructors/InstructorsPage"))
+const StudentsPage = lazy(() => import("./pages/students/StudentsPage"))
+const StudentProgressPage = lazy(() => import("./pages/students/StudentProgressPage"))
+const VideoUploadPage = lazy(() => import("./pages/videos/VideoUploadPage"))
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
 
 function App() {
-    const [user, setUser] = useState<UserType | null>(null)
-
     return (
-        <UserContext.Provider value={{ user, setUser }}>
-            <Router>
-                <div className="d-flex flex-column min-vh-100">
-                    <Navbar />
-                    <main className="flex-grow-1">
+        <BrowserRouter>
+            <div className="app-container">
+                <Navbar />
+                <main className="main-content">
+                    <Suspense fallback={<LoadingSpinner />}>
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/courses" element={<CoursesPage />} />
                             <Route path="/courses/:id" element={<CourseDetailPage />} />
-                            <Route path="/profile/student" element={<StudentProfilePage />} />
-                            <Route path="/profile/instructor" element={<InstructorProfilePage />} />
-                            <Route path="/login" element={<LoginPage />} />
-                            <Route path="/register" element={<RegisterPage />} />
+                            <Route path="/instructors" element={<InstructorsPage />} />
+                            <Route path="/students" element={<StudentsPage />} />
+                            <Route path="/students/:studentId/progress/:courseId" element={<StudentProgressPage />} />
+                            <Route path="/videos/upload/:courseId" element={<VideoUploadPage />} />
+                            <Route path="*" element={<NotFoundPage />} />
                         </Routes>
-                    </main>
-                    <Footer />
-                </div>
-            </Router>
-        </UserContext.Provider>
+                    </Suspense>
+                </main>
+                <Footer />
+                <ToastContainer position="bottom-right" />
+            </div>
+        </BrowserRouter>
     )
 }
 
