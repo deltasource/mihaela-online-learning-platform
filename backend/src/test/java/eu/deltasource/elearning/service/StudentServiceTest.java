@@ -1,8 +1,11 @@
 package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.StudentDTO;
+import eu.deltasource.elearning.exception.StudentAlreadyExistsException;
+import eu.deltasource.elearning.exception.StudentNotFoundException;
 import eu.deltasource.elearning.model.Student;
 import eu.deltasource.elearning.repository.StudentRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,10 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,78 +27,133 @@ class StudentServiceTest {
     @InjectMocks
     private StudentService studentService;
 
-    @Test
-    void givenNewStudent_whenCreatingStudent_thenStudentIsCreatedSuccessfully() {
-        // Given
-        StudentDTO newStudent = new StudentDTO(1, "test@example.com", "Test Student");
-        Student savedStudent = new Student(1, "test@example.com", "Test Student");
+    private Student student;
+    private StudentDTO studentDTO;
+    private final String email = "test@student.com";
+    private final UUID studentId = UUID.randomUUID();
 
-        // When
-        StudentDTO result = studentService.createStudent(newStudent);
+    @BeforeEach
+    void setUp() {
+        student = new Student();
+        student.setId(studentId);
+        student.setEmail(email);
+        student.setFirstName("John");
+        student.setLastName("Doe");
 
-        // Then
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(newStudent.getId());
-        assertThat(result.getEmail()).isEqualTo(newStudent.getEmail());
-        assertThat(result.getFullName()).isEqualTo(newStudent.getFullName());
-        verify(studentRepository, times(1)).save(any(Student.class));
+        studentDTO = new StudentDTO();
+        studentDTO.setEmail(email);
+        studentDTO.setFirstName("John");
+        studentDTO.setLastName("Doe");
     }
 
     @Test
-    void givenExistingStudent_whenGettingStudentByEmail_thenCorrectStudentIsReturned() {
-        // Given
-        String email = "test@example.com";
-        Student existingStudent = new Student(1, email, "Test Student");
-        when(studentRepository.getByEmail(email)).thenReturn(Optional.of(existingStudent));
+    void createStudent_ShouldSaveAndReturnDTO_WhenEmailNotExists() {
+        when(studentRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(studentRepository.save(any(Student.class))).thenReturn(student);
 
-        // When
+        StudentDTO result = studentService.createStudent(studentDTO);
+
+        assertEquals(email, result.getEmail());
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+
+        verify(studentRepository).findByEmail(email);
+        verify(studentRepository).save(any(Student.class));
+    }
+
+    @Test
+    void createStudent_ShouldThrow_WhenEmailAlreadyExists() {
+        when(studentRepository.findByEmail(email)).thenReturn(Optional.of(student));
+
+        assertThrows(StudentAlreadyExistsException.class,
+                () -> studentService.createStudent(studentDTO));
+
+        verify(studentRepository).findByEmail(email);
+        verify(studentRepository, never()).save(any());
+    }
+
+    @Test
+    void getStudentById_ShouldReturnStudent() {
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+
+        Student result = studentService.getStudentById(studentId);
+
+        assertNotNull(result);
+        assertEquals(studentId, result.getId());
+    }
+
+    @Test
+    void getStudentById_ShouldThrow_WhenNotFound() {
+        when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
+
+        assertThrows(StudentNotFoundException.class,
+                () -> studentService.getStudentById(studentId));
+    }
+
+    @Test
+    void getStudentByEmail_ShouldReturnDTO() {
+        when(studentRepository.findByEmail(email)).thenReturn(Optional.of(student));
+
         StudentDTO result = studentService.getStudentByEmail(email);
 
-        // Then
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(existingStudent.getId());
-        assertThat(result.getEmail()).isEqualTo(existingStudent.getEmail());
-        assertThat(result.getFullName()).isEqualTo(existingStudent.getFullName());
-        verify(studentRepository, times(1)).getByEmail(email);
+        assertEquals(email, result.getEmail());
     }
 
     @Test
-    void givenNonExistentStudent_whenGettingStudentByEmail_thenExceptionIsThrown() {
-        // Given
-        String nonExistentEmail = "nonexistent@example.com";
-        when(studentRepository.getByEmail(nonExistentEmail)).thenReturn(Optional.empty());
+    void getStudentByEmail_ShouldThrow_WhenNotFound() {
+        when(studentRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        // When & Then
-        assertThatThrownBy(() -> studentService.getStudentByEmail(nonExistentEmail))
-                .isInstanceOf(RuntimeException.class);
-        verify(studentRepository, times(1)).getByEmail(nonExistentEmail);
+        assertThrows(StudentNotFoundException.class,
+                () -> studentService.getStudentByEmail(email));
     }
 
     @Test
-    void givenExistingStudent_whenDeletingStudent_thenDeletionSucceeds() {
-        // Given
-        String email = "test@example.com";
-        when(studentRepository.remove(email)).thenReturn(true);
+    void updateStudentByEmail_ShouldUpdateAndReturnDTO() {
+        when(studentRepository.findByEmail(email)).thenReturn(Optional.of(student));
+        when(studentRepository.save(any(Student.class))).thenReturn(student);
 
-        // When
-        boolean result = studentService.deleteStudent(email);
+        StudentDTO result = studentService.updateStudentByEmail(email, studentDTO);
 
-        // Then
-        assertThat(result).isTrue();
-        verify(studentRepository, times(1)).remove(email);
+        assertNotNull(result);
+        assertEquals(email, result.getEmail());
+        verify(studentRepository).save(any(Student.class));
     }
 
     @Test
-    void givenNonExistentEmail_whenDeletingStudent_thenDeletionFails() {
-        // Given
-        String nonExistentEmail = "nonexistent@example.com";
-        when(studentRepository.remove(nonExistentEmail)).thenReturn(false);
+    void updateStudentByEmail_ShouldThrow_WhenNotFound() {
+        when(studentRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        // When
-        boolean result = studentService.deleteStudent(nonExistentEmail);
+        assertThrows(StudentNotFoundException.class,
+                () -> studentService.updateStudentByEmail(email, studentDTO));
+    }
 
-        // Then
-        assertThat(result).isFalse();
-        verify(studentRepository, times(1)).remove(nonExistentEmail);
+    @Test
+    void deleteStudent_ShouldDelete_WhenExists() {
+        when(studentRepository.existsByEmail(email)).thenReturn(true).thenReturn(false);
+
+        studentService.deleteStudent(email);
+
+        verify(studentRepository).deleteByEmail(email);
+    }
+
+    @Test
+    void deleteStudent_ShouldThrow_WhenNotFoundInitially() {
+        when(studentRepository.existsByEmail(email)).thenReturn(false);
+
+        assertThrows(StudentNotFoundException.class,
+                () -> studentService.deleteStudent(email));
+
+        verify(studentRepository, never()).deleteByEmail(email);
+    }
+
+    @Test
+    void deleteStudent_ShouldThrow_WhenDeleteFails() {
+        when(studentRepository.existsByEmail(email)).thenReturn(true);
+        when(studentRepository.existsByEmail(email)).thenReturn(true);
+
+        doNothing().when(studentRepository).deleteByEmail(email);
+
+        assertThrows(StudentAlreadyExistsException.class,
+                () -> studentService.deleteStudent(email));
     }
 }
