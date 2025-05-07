@@ -1,6 +1,5 @@
 const API_BASE_URL = "http://localhost:8080"
 
-// Generic API request function
 async function apiRequest<T>(endpoint: string, method = "GET", data?: any, isFormData = false): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`
 
@@ -26,7 +25,6 @@ async function apiRequest<T>(endpoint: string, method = "GET", data?: any, isFor
 
     const response = await fetch(url, options)
 
-    // For DELETE requests with 204 No Content
     if (response.status === 204) {
         return {} as T
     }
@@ -36,7 +34,6 @@ async function apiRequest<T>(endpoint: string, method = "GET", data?: any, isFor
         throw new Error(errorData.message || `API request failed with status ${response.status}`)
     }
 
-    // For endpoints that don't return JSON
     if (response.headers.get("content-type")?.includes("application/json")) {
         return await response.json()
     }
