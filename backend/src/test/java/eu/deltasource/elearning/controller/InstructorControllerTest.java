@@ -41,13 +41,16 @@ public class InstructorControllerTest {
 
     @Test
     public void createInstructor_givenValidRequest_thenReturnInstructorDTO() throws Exception {
+        // Given
         InstructorDTO instructor = new InstructorDTO();
         instructor.setEmail("instructor@example.com");
         instructor.setFirstName("John");
         instructor.setLastName("Doe");
 
+        // When
         when(instructorService.createInstructor(any(InstructorDTO.class))).thenReturn(instructor);
 
+        // Then
         mockMvc.perform(post("/instructors/v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(instructor)))
@@ -59,14 +62,17 @@ public class InstructorControllerTest {
 
     @Test
     public void createInstructor_givenInvalidEmail_thenBadRequest() throws Exception {
+        // Given
         InstructorDTO instructor = new InstructorDTO();
         instructor.setEmail("invalid-email");
         instructor.setFirstName("John");
         instructor.setLastName("Doe");
 
+        // When
         when(instructorService.createInstructor(any(InstructorDTO.class)))
                 .thenThrow(new ConstraintViolationException("Invalid email format", null));
 
+        // Then
         mockMvc.perform(post("/instructors/v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(instructor)))
@@ -75,14 +81,17 @@ public class InstructorControllerTest {
 
     @Test
     public void getInstructorByEmail_givenValidEmail_thenReturnInstructorDTO() throws Exception {
+        // Given
         String email = "instructor@example.com";
         InstructorDTO instructor = new InstructorDTO();
         instructor.setEmail(email);
         instructor.setFirstName("John");
         instructor.setLastName("Doe");
 
+        // When
         when(instructorService.getInstructorByEmail(email)).thenReturn(instructor);
 
+        // Then
         mockMvc.perform(get("/instructors/v1/{email}", email))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(email))
@@ -92,10 +101,14 @@ public class InstructorControllerTest {
 
     @Test
     public void getInstructorByEmail_givenNonExistingEmail_thenNotFound() throws Exception {
+        // Given
         String email = "nonexistent@example.com";
+
+        // When
         when(instructorService.getInstructorByEmail(email))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found"));
 
+        // Then
         mockMvc.perform(get("/instructors/v1/{email}", email))
                 .andExpect(status().isNotFound());
     }
@@ -122,15 +135,18 @@ public class InstructorControllerTest {
 
     @Test
     public void updateInstructorByEmail_givenInvalidEmail_thenBadRequest() throws Exception {
+        // Given
         String email = "invalid-email";
         InstructorDTO updatedInstructor = new InstructorDTO();
         updatedInstructor.setEmail(email);
         updatedInstructor.setFirstName("Jane");
         updatedInstructor.setLastName("Smith");
 
+        // When
         when(instructorService.updateInstructorByEmail(eq(email), any(InstructorDTO.class)))
                 .thenThrow(new ConstraintViolationException("Invalid email format", null));
 
+        // Then
         mockMvc.perform(put("/instructors/v1/{email}", email)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedInstructor)))
@@ -139,21 +155,28 @@ public class InstructorControllerTest {
 
     @Test
     public void deleteInstructor_givenValidEmail_thenReturnNoContent() throws Exception {
+        // Given
         String email = "instructor@example.com";
         doNothing().when(instructorService).deleteInstructor(email);
 
+        // When
         mockMvc.perform(delete("/instructors/v1/{email}", email))
                 .andExpect(status().isNoContent());
 
+        // Then
         verify(instructorService, times(1)).deleteInstructor(email);
     }
 
     @Test
     public void deleteInstructor_givenNonExistingEmail_thenNotFound() throws Exception {
+        // Given
         String email = "nonexistent@example.com";
+
+        // When
         doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found"))
                 .when(instructorService).deleteInstructor(email);
 
+        // Then
         mockMvc.perform(delete("/instructors/v1/{email}", email))
                 .andExpect(status().isNotFound());
     }

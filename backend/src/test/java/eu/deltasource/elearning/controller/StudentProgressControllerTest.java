@@ -50,16 +50,16 @@ public class StudentProgressControllerTest {
 
     @Test
     public void updateProgress_givenValidUUIDs_whenPostRequest_thenProgressIsUpdated() throws Exception {
-        //Given
+        // Given
         UUID studentId = UUID.randomUUID();
         UUID courseId = UUID.randomUUID();
         UUID videoId = UUID.randomUUID();
 
-       //When
+       // When
         mockMvc.perform(post("/students/progress/v1/{studentId}/courses/{courseId}/videos/{videoId}/update",
                         studentId, courseId, videoId))
 
-                //Then
+                // Then
                 .andExpect(status().isOk());
         verify(studentProgressService, times(1)).updateProgress(studentId, courseId, videoId);
     }

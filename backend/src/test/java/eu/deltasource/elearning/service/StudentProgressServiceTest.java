@@ -62,34 +62,42 @@ class StudentProgressServiceTest {
 
     @Test
     void getProgressPercentage_ShouldThrowException_WhenProgressNotFound() {
+        //Given
         when(studentService.getStudentById(studentId)).thenReturn(student);
         when(studentProgressRepository.findByStudentIdAndCourseId(studentId, courseId))
                 .thenReturn(Optional.empty());
 
+        //When & Then
         assertThrows(StudentProgressNotFoundException.class,
                 () -> studentProgressService.getProgressPercentage(studentId, courseId));
     }
 
     @Test
     void updateProgress_ShouldCreateNewProgress_WhenNotExists() {
+        //Given
         when(studentProgressRepository.findByStudentIdAndCourseId(studentId, courseId)).thenReturn(Optional.empty());
         when(studentService.getStudentById(studentId)).thenReturn(student);
         when(videoService.getVideoById(videoId)).thenReturn(video);
 
+        //When
         studentProgressService.updateProgress(studentId, courseId, videoId);
 
+        //Then
         verify(studentProgressRepository).save(any(StudentProgress.class));
         verify(watchedVideosRepository).save(any(WatchedVideos.class));
     }
 
     @Test
     void updateProgress_ShouldUpdateExistingProgress() {
+        //Given
         studentProgress.setTotalVideos(5);
         when(studentProgressRepository.findByStudentIdAndCourseId(studentId, courseId)).thenReturn(Optional.of(studentProgress));
         when(videoService.getVideoById(videoId)).thenReturn(video);
 
+        //When
         studentProgressService.updateProgress(studentId, courseId, videoId);
 
+        //Then
         verify(studentProgressRepository).save(studentProgress);
         verify(watchedVideosRepository).save(any(WatchedVideos.class));
         assertEquals(6, studentProgress.getVideosWatched());
@@ -98,13 +106,16 @@ class StudentProgressServiceTest {
 
     @Test
     void updateProgress_ShouldHandleZeroTotalVideos() {
+        // Given
         studentProgress.setTotalVideos(0);
         studentProgress.setVideosWatched(0);
         when(studentProgressRepository.findByStudentIdAndCourseId(studentId, courseId)).thenReturn(Optional.of(studentProgress));
         when(videoService.getVideoById(videoId)).thenReturn(video);
 
+        // When
         studentProgressService.updateProgress(studentId, courseId, videoId);
 
+        // Then
         assertEquals(1, studentProgress.getVideosWatched());
         assertEquals(0.0, studentProgress.getProgressPercentage());
     }
@@ -130,7 +141,6 @@ class StudentProgressServiceTest {
         assertEquals(progress.getVideosWatched(), dto.getVideosWatched());
     }
 
-    // Helper method to test (assuming it's static for simplicity)
     private StudentProgressDTO mapToStudentProgressDTO(StudentProgress progress, UUID studentId, UUID courseId) {
         StudentProgressDTO dto = new StudentProgressDTO();
         dto.setStudentId(studentId.toString());
