@@ -22,6 +22,5 @@ jobs:
 
     - name: Build with Maven
       run: |
-        |
-        cd   # <-- Replace with actual path to directory with pom.xml
+        cd path/to/your/module  # <-- Replace with actual path to directory with pom.xml
         mvn clean install
