@@ -1,0 +1,103 @@
+==========================================================
+TEST COVERAGE GUIDE - JACOCO REPORTS
+==========================================================
+
+This document explains how to generate and view test coverage reports
+for this Spring Boot project using JaCoCo.
+
+----------------------------------------------------------
+GENERATING COVERAGE REPORTS
+----------------------------------------------------------
+
+1. Run tests with coverage:
+
+   mvn test
+
+   This automatically:
+   - Executes all tests
+   - Generates JaCoCo coverage data
+   - Creates HTML, XML, and CSV reports
+
+2. Alternative commands:
+
+   # Clean and run tests with coverage
+   mvn clean test
+
+   # Generate report without running tests (if tests already ran)
+   mvn jacoco:report
+
+----------------------------------------------------------
+VIEWING COVERAGE REPORTS
+----------------------------------------------------------
+
+1. HTML Report (recommended for local viewing):
+
+   Location: target/site/jacoco/index.html
+
+   Open in browser:
+   - macOS:     open target/site/jacoco/index.html
+   - Windows:   start target/site/jacoco/index.html
+   - Linux:     xdg-open target/site/jacoco/index.html
+
+2. Other Report Formats:
+
+   - XML: target/site/jacoco/jacoco.xml
+   - CSV: target/site/jacoco/jacoco.csv
+
+----------------------------------------------------------
+UNDERSTANDING THE REPORT
+----------------------------------------------------------
+
+The HTML report shows:
+
+1. Line Coverage: Percentage of code lines executed during tests
+   - Green: Fully covered
+   - Yellow: Partially covered
+   - Red: Not covered
+
+2. Branch Coverage: Percentage of decision branches tested
+   (if/else statements, switch cases, etc.)
+
+3. Package/Class/Method Coverage: Drill down to see coverage
+   at different levels of granularity
+
+----------------------------------------------------------
+EXCLUDED FILES
+----------------------------------------------------------
+
+The following files are excluded from coverage tracking:
+- Configuration classes
+- Constants
+- DTOs and Entities
+- Main application class
+- Exception classes
+- Generated code
+
+----------------------------------------------------------
+QUICK COMMANDS
+----------------------------------------------------------
+
+# One-line command to run tests and open report (macOS)
+mvn test && open target/site/jacoco/index.html
+
+# One-line command to run tests and open report (Windows)
+mvn test && start target/site/jacoco/index.html
+
+# One-line command to run tests and open report (Linux)
+mvn test && xdg-open target/site/jacoco/index.html
+
+----------------------------------------------------------
+TROUBLESHOOTING
+----------------------------------------------------------
+
+1. If reports are not generated:
+   - Check that JaCoCo plugin is in pom.xml
+   - Verify tests are running successfully
+   - Look for errors in Maven output
+
+2. If coverage is lower than expected:
+   - Check test quality and assertions
+   - Verify excluded files are appropriate
+   - Add tests for uncovered code paths
+
+==========================================================
