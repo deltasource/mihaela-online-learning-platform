@@ -139,7 +139,6 @@
 				</executions>
 				<configuration>
 					<excludes>
-						<!-- Example exclusions -->
 						<exclude>**/config/**</exclude>
 						<exclude>**/repository/**</exclude>
 						<exclude>**/model/**</exclude>
