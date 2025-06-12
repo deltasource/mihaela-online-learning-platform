@@ -64,6 +64,7 @@ public class StudentController {
             @Parameter(description = "Email of the student to be deleted")
             @PathVariable @NotNull @Email(message = "Invalid email format") String email) {
         studentService.deleteStudent(email);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
