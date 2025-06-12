@@ -1,6 +1,7 @@
 package eu.deltasource.elearning.controller;
 
 import eu.deltasource.elearning.DTOs.StudentDTO;
+import eu.deltasource.elearning.model.Student;
 import eu.deltasource.elearning.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -8,7 +9,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
@@ -56,9 +60,18 @@ public class StudentController {
     @DeleteMapping("/{email}")
     @Operation(summary = "Delete a student", description = "Deletes a student based on the email provided")
     @ResponseStatus(NO_CONTENT)
-    public void deleteStudent(
+    public ResponseEntity<Void> deleteStudent(
             @Parameter(description = "Email of the student to be deleted")
             @PathVariable @NotNull @Email(message = "Invalid email format") String email) {
         studentService.deleteStudent(email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a student by ID", description = "Returns a student based on the ID provided")
+    public Student getStudentById(
+            @Parameter(description = "ID of the student to be retrieved")
+            @PathVariable @NotNull UUID id) {
+        return studentService.getStudentById(id);
     }
 }

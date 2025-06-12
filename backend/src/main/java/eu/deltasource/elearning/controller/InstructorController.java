@@ -3,62 +3,73 @@ package eu.deltasource.elearning.controller;
 import eu.deltasource.elearning.DTOs.InstructorDTO;
 import eu.deltasource.elearning.service.InstructorService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import java.util.List;
+import java.util.UUID;
 
-/**
- * REST controller for managing instructor-related operations.
- * This controller handles CRUD operations for instructors in the system.
- */
 @RestController
-@RequestMapping("/instructors/v1")
+@RequestMapping("/instructors")
 @Tag(name = "Instructor Management", description = "Operations pertaining to instructors in the system")
 public class InstructorController {
 
     private final InstructorService instructorService;
 
+    @Autowired
     public InstructorController(InstructorService instructorService) {
         this.instructorService = instructorService;
     }
 
     @PostMapping
-    @Operation(summary = "Create a new instructor", description = "Creates a new instructor with the provided details")
-    public InstructorDTO createInstructor(
-            @Parameter(description = "Instructor information for a new instructor to be created")
-            @Valid @RequestBody InstructorDTO instructorDTO) {
-        return instructorService.createInstructor(instructorDTO);
+    @Operation(summary = "Create a new instructor", description = "Creates a new instructor in the system")
+    public ResponseEntity<InstructorDTO> createInstructor(@RequestBody InstructorDTO instructorDTO) {
+        InstructorDTO createdInstructor = instructorService.createInstructor(instructorDTO);
+        return new ResponseEntity<>(createdInstructor, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{email}")
-    @Operation(summary = "Get an instructor by email", description = "Returns an instructor based on the email provided")
-    public InstructorDTO getInstructorByEmail(
-            @Parameter(description = "Email of the instructor to be retrieved")
-            @PathVariable @NotNull @Email(message = "Invalid email format") String email) {
-        return instructorService.getInstructorByEmail(email);
+    @GetMapping("/{id}")
+    @Operation(summary = "Get instructor by ID", description = "Returns an instructor based on the provided ID")
+    public ResponseEntity<InstructorDTO> getInstructorById(@PathVariable UUID id) {
+        InstructorDTO instructor = instructorService.getInstructorById(id);
+        return new ResponseEntity<>(instructor, HttpStatus.OK);
     }
 
-    @PutMapping("/{email}")
-    @Operation(summary = "Update an instructor by email", description = "Updates an instructor's details based on the email provided")
-    public InstructorDTO updateInstructorByEmail(
-            @Parameter(description = "Email of the instructor to be updated")
-            @PathVariable @NotNull @Email(message = "Invalid email format") String email,
-            @Parameter(description = "Updated instructor information")
-            @RequestBody @Valid InstructorDTO instructorDTO) {
-        return instructorService.updateInstructorByEmail(email, instructorDTO);
+    @GetMapping("/email/{email}")
+    @Operation(summary = "Get instructor by email", description = "Returns an instructor based on the provided email")
+    public ResponseEntity<InstructorDTO> getInstructorByEmail(@PathVariable String email) {
+        InstructorDTO instructor = instructorService.getInstructorByEmail(email);
+        return new ResponseEntity<>(instructor, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{email}")
-    @Operation(summary = "Delete an instructor", description = "Deletes an instructor based on the email provided")
-    @ResponseStatus(NO_CONTENT)
-    public void deleteInstructor(
-            @Parameter(description = "Email of the instructor to be deleted")
-            @PathVariable @NotNull @Email(message = "Invalid email format") String email) {
-        instructorService.deleteInstructor(email);
+    @GetMapping
+    @Operation(summary = "Get all instructors", description = "Returns a list of all instructors in the system")
+    public ResponseEntity<List<InstructorDTO>> getAllInstructors() {
+        List<InstructorDTO> instructors = instructorService.getAllInstructors();
+        return new ResponseEntity<>(instructors, HttpStatus.OK);
+    }
+
+    @PutMapping("/email/{email}")
+    @Operation(summary = "Update instructor by email", description = "Updates an instructor based on the provided email")
+    public ResponseEntity<InstructorDTO> updateInstructorByEmail(@PathVariable String email, @RequestBody InstructorDTO instructorDTO) {
+        InstructorDTO updatedInstructor = instructorService.updateInstructorByEmail(email, instructorDTO);
+        return new ResponseEntity<>(updatedInstructor, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete instructor by ID", description = "Deletes an instructor based on the provided ID")
+    public ResponseEntity<Void> deleteInstructorById(@PathVariable UUID id) {
+        instructorService.deleteInstructorById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/email/{email}")
+    @Operation(summary = "Delete instructor by email", description = "Deletes an instructor based on the provided email")
+    public ResponseEntity<Void> deleteInstructorByEmail(@PathVariable String email) {
+        boolean deleted = instructorService.deleteInstructorByEmail(email);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
