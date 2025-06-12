@@ -3,6 +3,7 @@ package eu.deltasource.elearning.controller;
 import eu.deltasource.elearning.DTOs.CourseDTO;
 import eu.deltasource.elearning.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/courses")
 @CrossOrigin(origins = "*")
+@Tag(name = "Course Management", description = "Operations pertaining to courses in the system")
 public class CourseController {
 
     private final CourseService courseService;
@@ -85,12 +87,5 @@ public class CourseController {
     public ResponseEntity<List<CourseDTO>> getCoursesByInstructorId(@PathVariable UUID instructorId) {
         List<CourseDTO> courses = courseService.getCoursesByInstructorId(instructorId);
         return ResponseEntity.ok(courses);
-    }
-
-    @PostMapping("/fix-orphan-courses")
-    @Operation(summary = "Fix courses without instructors")
-    public ResponseEntity<String> fixOrphanCourses(@RequestParam String instructorEmail) {
-        String result = courseService.fixOrphanCourses(instructorEmail);
-        return ResponseEntity.ok(result);
     }
 }

@@ -3,6 +3,7 @@ package eu.deltasource.elearning.controller;
 import eu.deltasource.elearning.DTOs.InstructorDTO;
 import eu.deltasource.elearning.service.InstructorService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/instructors")
+@Tag(name = "Instructor Management", description = "Operations pertaining to instructors in the system")
 public class InstructorController {
 
     private final InstructorService instructorService;
