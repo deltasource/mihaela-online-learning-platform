@@ -29,4 +29,7 @@ public class Instructor {
 
     @Column(nullable = false)
     private String department;
+
+    private String username;
+    private String password;
 }
