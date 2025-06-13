@@ -14,4 +14,6 @@ public interface InstructorRepository extends JpaRepository<Instructor, UUID> {
     boolean existsByEmail(String email);
 
     int deleteByEmail(String email);
+
+    Optional<Instructor> findByUsername(String username);
 }

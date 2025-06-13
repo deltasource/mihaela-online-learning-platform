@@ -14,4 +14,6 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
     boolean existsByEmail(String email);
 
     void deleteByEmail(String email);
+
+    Optional<Student> findByUsername(String name);
 }

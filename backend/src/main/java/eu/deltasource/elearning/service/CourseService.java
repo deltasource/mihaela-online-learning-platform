@@ -11,6 +11,7 @@ import eu.deltasource.elearning.repository.InstructorRepository;
 import eu.deltasource.elearning.repository.StudentRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +73,16 @@ public class CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found"));
         courseRepository.delete(course);
+    }
+
+    public void enrollInCourse(UUID courseId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Student student = studentRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        student.getCourses().add(course);
+        studentRepository.save(student);
     }
 
     @NotNull

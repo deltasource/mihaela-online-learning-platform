@@ -2,9 +2,13 @@ package eu.deltasource.elearning.controller;
 
 import eu.deltasource.elearning.DTOs.CourseDTO;
 import eu.deltasource.elearning.service.CourseService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +39,7 @@ public class CourseController {
         return courseService.getCourseById(courseId);
     }
 
-    @GetMapping
+    @GetMapping("/courses")
     public List<CourseDTO> getAllCourses() {
         return courseService.getAllCourses();
     }
@@ -50,4 +54,13 @@ public class CourseController {
     public void deleteCourse(@PathVariable @NotNull @Valid UUID courseId) {
         courseService.deleteCourse(courseId);
     }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('STUDENT')")
+    @PostMapping("/{courseId}/enroll")
+    public ResponseEntity<?> enrollInCourse(@PathVariable UUID courseId) {
+        courseService.enrollInCourse(courseId);
+        return ResponseEntity.ok().build();
+    }
+
 }

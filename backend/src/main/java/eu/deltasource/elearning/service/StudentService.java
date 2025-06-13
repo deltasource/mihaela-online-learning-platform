@@ -3,13 +3,16 @@ package eu.deltasource.elearning.service;
 import eu.deltasource.elearning.DTOs.StudentDTO;
 import eu.deltasource.elearning.exception.StudentAlreadyExistsException;
 import eu.deltasource.elearning.exception.StudentNotFoundException;
+import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.Student;
 import eu.deltasource.elearning.repository.StudentRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,6 +74,12 @@ public class StudentService {
         }
     }
 
+    public List<Course> getCoursesForCurrentStudent() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Student student = studentRepository.findByUsername(username)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found"));
+        return student.getCourses();
+    }
     @NotNull
     private Student mapToStudent(StudentDTO studentDTO) {
         Student student = new Student();
