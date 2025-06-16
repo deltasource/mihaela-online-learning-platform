@@ -20,6 +20,8 @@
 		<mockito.version>5.10.0</mockito.version>
 		<jacoco.version>0.8.11</jacoco.version>
 		<lombok.version>1.18.30</lombok.version>
+		<mapstruct.version>1.5.3.Final</mapstruct.version>
+		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -63,7 +65,7 @@
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
-			<version>1.5.3.Final</version>
+			<version>${mapstruct.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -72,7 +74,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.12.1</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<release>21</release>
 					<annotationProcessorPaths>
