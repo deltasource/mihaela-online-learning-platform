@@ -10,7 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Service class for managing instructor-related operations.
@@ -34,10 +37,23 @@ public class InstructorService {
         return mapToInstructorDTO(instructor);
     }
 
+    public InstructorDTO getInstructorById(UUID id) {
+        Instructor instructor = instructorRepository.findById(id)
+                .orElseThrow(() -> new InstructorNotFoundException("Instructor with ID " + id + " not found"));
+        return mapToInstructorDTO(instructor);
+    }
+
     public InstructorDTO getInstructorByEmail(String email) {
         Instructor instructor = instructorRepository.findByEmail(email)
                 .orElseThrow(() -> new InstructorNotFoundException("Instructor with email " + email + " not found"));
         return mapToInstructorDTO(instructor);
+    }
+
+    public List<InstructorDTO> getAllInstructors() {
+        List<Instructor> instructors = instructorRepository.findAll();
+        return instructors.stream()
+                .map(this::mapToInstructorDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -46,16 +62,33 @@ public class InstructorService {
                 .orElseThrow(() -> new InstructorNotFoundException("Instructor with email " + email + " not found"));
 
         instructor.setDepartment(instructorDTO.getDepartment());
-        if (instructorDTO.getEmail() != null) {
+        if (instructorDTO.getFirstName() != null) {
             instructor.setFirstName(instructorDTO.getFirstName());
+        }
+        if (instructorDTO.getLastName() != null) {
             instructor.setLastName(instructorDTO.getLastName());
+        }
+        // Note: Email updates should be handled carefully due to uniqueness constraints
+        if (instructorDTO.getEmail() != null && !instructorDTO.getEmail().equals(email)) {
+            if (instructorRepository.existsByEmail(instructorDTO.getEmail())) {
+                throw new InstructorAlreadyExistsException("Instructor with email " + instructorDTO.getEmail() + " already exists.");
+            }
+            instructor.setEmail(instructorDTO.getEmail());
         }
         instructor = instructorRepository.save(instructor);
         return mapToInstructorDTO(instructor);
     }
 
     @Transactional
-    public boolean deleteInstructor(String email) {
+    public void deleteInstructorById(UUID id) {
+        if (!instructorRepository.existsById(id)) {
+            throw new InstructorNotFoundException("Instructor with ID " + id + " not found");
+        }
+        instructorRepository.deleteById(id);
+    }
+
+    @Transactional
+    public boolean deleteInstructorByEmail(String email) {
         if (!instructorRepository.existsByEmail(email)) {
             throw new InstructorNotFoundException("Instructor with email " + email + " not found");
         }
@@ -76,8 +109,9 @@ public class InstructorService {
     @NotNull
     private InstructorDTO mapToInstructorDTO(Instructor instructor) {
         InstructorDTO instructorDTO = new InstructorDTO();
+        instructorDTO.setId(instructor.getId()); // Assuming InstructorDTO has an ID field
         instructorDTO.setEmail(instructor.getEmail());
-        instructorDTO.setFirstName((instructor.getFirstName()));
+        instructorDTO.setFirstName(instructor.getFirstName());
         instructorDTO.setLastName(instructor.getLastName());
         instructorDTO.setDepartment(instructor.getDepartment());
         return instructorDTO;
