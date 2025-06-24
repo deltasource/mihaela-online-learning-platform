@@ -29,4 +29,5 @@ public class StudentDTO {
     @NotBlank(message = "Full name is required")
     @Schema(description = "Students last name", example = "Kolarova", requiredMode = REQUIRED)
     private String lastName;
+
 }
