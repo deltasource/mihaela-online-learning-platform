@@ -2,16 +2,15 @@ package eu.deltasource.elearning.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.cglib.core.Local;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "lessons")
-public class Lesson {
+@Table(name = "quizzes")
+public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -25,12 +24,9 @@ public class Lesson {
 
     private String description;
 
-    @Column(columnDefinition = "TEXT")
-    private String content;
+    private Integer passingScore;
 
-    private String videoUrl;
-
-    private Integer duration;
+    private Integer timeLimit;
 
     private Integer order;
 
@@ -39,4 +35,7 @@ public class Lesson {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    private List<Question> questions;
 }

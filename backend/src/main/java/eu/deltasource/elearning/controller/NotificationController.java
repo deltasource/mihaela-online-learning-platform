@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +30,6 @@ public class NotificationController {
     @Operation(summary = "Create a notification", description = "Creates a new notification for one or multiple users")
     @PostMapping
     @ResponseStatus(CREATED)
-    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<?> createNotification(@Valid @RequestBody CreateNotificationRequest request) {
         if (request.getUserId() != null) {
             NotificationDTO notification = notificationService.createNotification(request);
