@@ -18,6 +18,9 @@
 		<springdoc.version>2.7.0</springdoc.version>
 		<spring-dotenv.version>2.2.0</spring-dotenv.version>
 		<jwt.version>0.11.5</jwt.version>
+		<mockito.version>5.10.0</mockito.version>
+		<jacoco.version>0.8.11</jacoco.version>
+		<lombok.version>1.18.30</lombok.version>
 	</properties>
 	<dependencies>
 
