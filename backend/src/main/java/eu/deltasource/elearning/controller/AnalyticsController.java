@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -37,7 +36,6 @@ public class AnalyticsController {
 
     @Operation(summary = "Get dashboard statistics", description = "Retrieves overall platform statistics for admin dashboard")
     @GetMapping("/dashboard")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DashboardStatsDTO> getDashboardStats() {
         DashboardStatsDTO stats = analyticsService.getDashboardStats();
         return ResponseEntity.ok(stats);
@@ -45,7 +43,6 @@ public class AnalyticsController {
 
     @Operation(summary = "Get user analytics", description = "Retrieves analytics data for a specific user")
     @GetMapping("/users/{userId}")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('STUDENT') and #userId == authentication.principal.id) or (hasRole('INSTRUCTOR') and #userId == authentication.principal.id)")
     public ResponseEntity<UserAnalyticsDTO> getUserAnalytics(
             @Parameter(description = "User ID") @PathVariable UUID userId) {
         UserAnalyticsDTO analytics = analyticsService.getUserAnalytics(userId);
@@ -54,7 +51,6 @@ public class AnalyticsController {
 
     @Operation(summary = "Get course analytics", description = "Retrieves analytics data for a specific course")
     @GetMapping("/courses/{courseId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<CourseAnalyticsDTO> getCourseAnalytics(
             @Parameter(description = "Course ID") @PathVariable UUID courseId) {
         CourseAnalyticsDTO analytics = analyticsService.getCourseAnalytics(courseId);
@@ -79,7 +75,6 @@ public class AnalyticsController {
 
     @Operation(summary = "Clean up old analytics data", description = "Removes analytics data older than specified days")
     @DeleteMapping("/cleanup")
-    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(NO_CONTENT)
     public void cleanupOldData(
             @Parameter(description = "Days to keep") @RequestParam(defaultValue = "365") int daysToKeep) {
