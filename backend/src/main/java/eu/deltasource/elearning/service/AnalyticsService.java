@@ -29,9 +29,6 @@ public class AnalyticsService {
     private final VideoRepository videoRepository;
     private final EnrollmentRepository enrollmentRepository;
 
-    /**
-     * Track an analytics event
-     */
     @Transactional
     public void trackEvent(AnalyticsEventDTO eventDTO, HttpServletRequest request) {
         User user = userRepository.findById(eventDTO.getUserId())
@@ -70,9 +67,6 @@ public class AnalyticsService {
         log.debug("Tracked analytics event: {} for user: {}", eventDTO.getEventType(), user.getEmail());
     }
 
-    /**
-     * Get dashboard statistics
-     */
     public DashboardStatsDTO getDashboardStats() {
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
         LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
@@ -92,8 +86,8 @@ public class AnalyticsService {
                 .map(row -> DashboardStatsDTO.PopularCourseDTO.builder()
                         .courseName((String) row[0])
                         .enrollmentCount((Long) row[1])
-                        .averageRating(0.0) // TODO: Implement rating system
-                        .completionCount(0L) // TODO: Calculate completion count
+                        .averageRating(0.0)
+                        .completionCount(0L)
                         .build())
                 .collect(Collectors.toList());
 
@@ -119,7 +113,7 @@ public class AnalyticsService {
                 .activeUsers(activeUsers)
                 .newUsersThisMonth(newUsersThisMonth)
                 .courseCompletionRate(completionRate)
-                .averageVideoWatchTime(0.0) // TODO: Calculate average watch time
+                .averageVideoWatchTime(0.0)
                 .popularCourses(popularCourses)
                 .dailyActiveUsers(dailyActiveUsers)
                 .monthlyEnrollments(monthlyEnrollments)
@@ -127,9 +121,7 @@ public class AnalyticsService {
                 .build();
     }
 
-    /**
-     * Get user-specific analytics
-     */
+
     public UserAnalyticsDTO getUserAnalytics(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -139,7 +131,7 @@ public class AnalyticsService {
         long coursesCompleted = analyticsRepository.getCoursesCompletedCount(user);
 
         List<Object[]> learningPatterns = analyticsRepository.getUserLearningPatterns(user);
-        int favoriteHour = learningPatterns.isEmpty() ? 9 : // Default to 9 AM
+        int favoriteHour = learningPatterns.isEmpty() ? 9 :
                 ((Number) learningPatterns.get(0)[0]).intValue();
 
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
@@ -154,24 +146,21 @@ public class AnalyticsService {
         return UserAnalyticsDTO.builder()
                 .userId(userId.toString())
                 .userFullName(user.getFirstName() + " " + user.getLastName())
-                .totalLearningTime(totalLearningTime != null ? totalLearningTime / 60 : 0) // Convert to minutes
+                .totalLearningTime(totalLearningTime != null ? totalLearningTime / 60 : 0)
                 .coursesEnrolled((int) coursesEnrolled)
                 .coursesCompleted((int) coursesCompleted)
-                .videosWatched(0) // TODO: Calculate videos watched
-                .averageSessionDuration(0.0) // TODO: Calculate average session duration
+                .videosWatched(0)
+                .averageSessionDuration(0.0)
                 .lastLogin(user.getLastLoginAt())
                 .joinDate(user.getCreatedAt())
-                .learningStreak(0) // TODO: Calculate learning streak
+                .learningStreak(0)
                 .favoriteHour(favoriteHour)
-                .courseProgress(new ArrayList<>()) // TODO: Get course progress
+                .courseProgress(new ArrayList<>())
                 .dailyActivity(dailyActivity)
-                .achievements(new ArrayList<>()) // TODO: Implement achievements
+                .achievements(new ArrayList<>())
                 .build();
     }
 
-    /**
-     * Get course-specific analytics
-     */
     public CourseAnalyticsDTO getCourseAnalytics(UUID courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
@@ -194,14 +183,14 @@ public class AnalyticsService {
                 .totalEnrollments(totalEnrollments)
                 .activeStudents(activeStudents)
                 .completionRate(completionRate)
-                .averageCompletionTime(0.0) // TODO: Calculate average completion time
+                .averageCompletionTime(0.0)
                 .dropOffRate(dropOffRate)
-                .averageRating(0.0) // TODO: Implement rating system
-                .totalWatchTime(0.0) // TODO: Calculate total watch time
-                .popularVideos(new ArrayList<>()) // TODO: Get popular videos
-                .enrollmentTrends(new HashMap<>()) // TODO: Get enrollment trends
-                .videoEngagement(new HashMap<>()) // TODO: Get video engagement
-                .dropOffPoints(new ArrayList<>()) // TODO: Get drop-off points
+                .averageRating(0.0)
+                .totalWatchTime(0.0)
+                .popularVideos(new ArrayList<>())
+                .enrollmentTrends(new HashMap<>())
+                .videoEngagement(new HashMap<>())
+                .dropOffPoints(new ArrayList<>())
                 .demographics(CourseAnalyticsDTO.DemographicsDTO.builder()
                         .ageGroups(new HashMap<>())
                         .locations(new HashMap<>())
@@ -210,9 +199,6 @@ public class AnalyticsService {
                 .build();
     }
 
-    /**
-     * Track user login
-     */
     public void trackUserLogin(UUID userId, HttpServletRequest request) {
         AnalyticsEventDTO eventDTO = AnalyticsEventDTO.builder()
                 .userId(userId)
@@ -221,9 +207,6 @@ public class AnalyticsService {
         trackEvent(eventDTO, request);
     }
 
-    /**
-     * Track course enrollment
-     */
     public void trackCourseEnrollment(UUID userId, UUID courseId) {
         AnalyticsEventDTO eventDTO = AnalyticsEventDTO.builder()
                 .userId(userId)
@@ -233,9 +216,6 @@ public class AnalyticsService {
         trackEvent(eventDTO, null);
     }
 
-    /**
-     * Track video interaction
-     */
     public void trackVideoEvent(UUID userId, UUID courseId, UUID videoId,
                                 Analytics.EventType eventType, Long duration, Double completionPercentage) {
         AnalyticsEventDTO eventDTO = AnalyticsEventDTO.builder()
@@ -249,9 +229,7 @@ public class AnalyticsService {
         trackEvent(eventDTO, null);
     }
 
-    /**
-     * Clean up old analytics data
-     */
+
     @Transactional
     public void cleanupOldData(int daysToKeep) {
         LocalDateTime cutoffDate = LocalDateTime.now().minusDays(daysToKeep);
@@ -259,9 +237,6 @@ public class AnalyticsService {
         log.info("Cleaned up analytics data older than {} days", daysToKeep);
     }
 
-    /**
-     * Get client IP address from request
-     */
     private String getClientIpAddress(HttpServletRequest request) {
         String xForwardedFor = request.getHeader("X-Forwarded-For");
         if (xForwardedFor != null && !xForwardedFor.isEmpty()) {

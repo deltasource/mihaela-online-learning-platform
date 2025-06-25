@@ -28,9 +28,6 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
 
-    /**
-     * Create a notification for a single user
-     */
     @Transactional
     public NotificationDTO createNotification(CreateNotificationRequest request) {
         if (request.getUserId() == null) {
@@ -57,9 +54,6 @@ public class NotificationService {
         return mapToDTO(notification);
     }
 
-    /**
-     * Create notifications for multiple users
-     */
     @Transactional
     public List<NotificationDTO> createBulkNotifications(CreateNotificationRequest request) {
         if (request.getUserIds() == null || request.getUserIds().isEmpty()) {
@@ -92,9 +86,6 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get paginated notifications for a user
-     */
     public Page<NotificationDTO> getUserNotifications(UUID userId, int page, int size) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
@@ -105,9 +96,6 @@ public class NotificationService {
         return notifications.map(this::mapToDTO);
     }
 
-    /**
-     * Get unread notifications for a user
-     */
     public List<NotificationDTO> getUnreadNotifications(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
@@ -119,18 +107,12 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Mark a notification as read
-     */
     @Transactional
     public void markAsRead(UUID notificationId) {
         notificationRepository.markAsRead(notificationId, LocalDateTime.now());
         log.info("Marked notification {} as read", notificationId);
     }
 
-    /**
-     * Mark all notifications as read for a user
-     */
     @Transactional
     public void markAllAsRead(UUID userId) {
         User user = userRepository.findById(userId)
@@ -140,9 +122,6 @@ public class NotificationService {
         log.info("Marked all notifications as read for user {}", user.getEmail());
     }
 
-    /**
-     * Get notification summary for a user
-     */
     public NotificationSummaryDTO getNotificationSummary(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
@@ -162,9 +141,6 @@ public class NotificationService {
                 .build();
     }
 
-    /**
-     * Delete a notification
-     */
     @Transactional
     public void deleteNotification(UUID notificationId) {
         if (!notificationRepository.existsById(notificationId)) {
@@ -174,9 +150,6 @@ public class NotificationService {
         log.info("Deleted notification {}", notificationId);
     }
 
-    /**
-     * Clean up old notifications (older than specified days)
-     */
     @Transactional
     public void cleanupOldNotifications(UUID userId, int daysOld) {
         User user = userRepository.findById(userId)
@@ -187,9 +160,6 @@ public class NotificationService {
         log.info("Cleaned up old notifications for user {} older than {} days", user.getEmail(), daysOld);
     }
 
-    /**
-     * Helper method to create system notifications
-     */
     public void createSystemNotification(UUID userId, String title, String message,
                                          Notification.NotificationType type) {
         CreateNotificationRequest request = CreateNotificationRequest.builder()
@@ -203,9 +173,6 @@ public class NotificationService {
         createNotification(request);
     }
 
-    /**
-     * Helper method to create course-related notifications
-     */
     public void createCourseNotification(UUID userId, UUID courseId, String title, String message,
                                          Notification.NotificationType type) {
         CreateNotificationRequest request = CreateNotificationRequest.builder()
@@ -222,9 +189,6 @@ public class NotificationService {
         createNotification(request);
     }
 
-    /**
-     * Map Notification entity to DTO
-     */
     private NotificationDTO mapToDTO(Notification notification) {
         return NotificationDTO.builder()
                 .id(notification.getId())

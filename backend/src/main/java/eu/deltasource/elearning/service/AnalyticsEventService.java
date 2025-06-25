@@ -17,9 +17,6 @@ public class AnalyticsEventService {
 
     private final AnalyticsService analyticsService;
 
-    /**
-     * Track user registration
-     */
     public void trackUserRegistration(UUID userId) {
         analyticsService.trackEvent(
                 eu.deltasource.elearning.DTOs.AnalyticsEventDTO.builder()
@@ -30,9 +27,6 @@ public class AnalyticsEventService {
         );
     }
 
-    /**
-     * Track course view
-     */
     public void trackCourseView(UUID userId, UUID courseId) {
         analyticsService.trackEvent(
                 eu.deltasource.elearning.DTOs.AnalyticsEventDTO.builder()
@@ -44,9 +38,7 @@ public class AnalyticsEventService {
         );
     }
 
-    /**
-     * Track course completion
-     */
+
     public void trackCourseCompletion(UUID userId, UUID courseId) {
         analyticsService.trackEvent(
                 eu.deltasource.elearning.DTOs.AnalyticsEventDTO.builder()
@@ -58,25 +50,16 @@ public class AnalyticsEventService {
         );
     }
 
-    /**
-     * Track video start
-     */
     public void trackVideoStart(UUID userId, UUID courseId, UUID videoId) {
         analyticsService.trackVideoEvent(userId, courseId, videoId,
                 Analytics.EventType.VIDEO_START, null, null);
     }
 
-    /**
-     * Track video completion
-     */
     public void trackVideoComplete(UUID userId, UUID courseId, UUID videoId, Long duration) {
         analyticsService.trackVideoEvent(userId, courseId, videoId,
                 Analytics.EventType.VIDEO_COMPLETE, duration, 100.0);
     }
 
-    /**
-     * Track search query
-     */
     public void trackSearchQuery(UUID userId, String query) {
         analyticsService.trackEvent(
                 eu.deltasource.elearning.DTOs.AnalyticsEventDTO.builder()

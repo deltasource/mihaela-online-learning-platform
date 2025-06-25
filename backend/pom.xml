@@ -16,6 +16,8 @@
 		<java.version>21</java.version>
 		<mysql.connector.version>8.0.33</mysql.connector.version>
 		<springdoc.version>2.7.0</springdoc.version>
+		<spring-dotenv.version>2.2.0</spring-dotenv.version>
+		<jwt.version>0.11.5</jwt.version>
 	</properties>
 	<dependencies>
 
@@ -68,24 +70,24 @@
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-api</artifactId>
-		    <version>0.11.5</version>
+			<version>${jwt.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-impl</artifactId>
-		    <version>0.11.5</version>
+			<version>${jwt.version}</version>
 		    <scope>runtime</scope>
 		</dependency>
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-jackson</artifactId>
-		    <version>0.11.5</version>
+			<version>${jwt.version}</version>
 		    <scope>runtime</scope>
 		</dependency>
 		<dependency>
 		    <groupId>me.paulschwarz</groupId>
 		    <artifactId>spring-dotenv</artifactId>
-		    <version>2.2.0</version>
+			<version>${spring-dotenv.version}</version>
 		</dependency>
 	</dependencies>
 

@@ -18,9 +18,6 @@ public class NotificationEventService {
 
     private final NotificationService notificationService;
 
-    /**
-     * Create welcome notification for new users
-     */
     public void createWelcomeNotification(UUID userId, String userName) {
         String title = "Welcome to E-Learning Platform!";
         String message = String.format("Hello %s! Welcome to our e-learning platform. " +
@@ -30,9 +27,6 @@ public class NotificationEventService {
                 userId, title, message, Notification.NotificationType.WELCOME_MESSAGE);
     }
 
-    /**
-     * Create notification when student enrolls in a course
-     */
     public void createEnrollmentNotification(UUID studentId, UUID courseId, String courseName) {
         String title = "Course Enrollment Confirmed";
         String message = String.format("You have successfully enrolled in the course: %s. " +
@@ -42,9 +36,6 @@ public class NotificationEventService {
                 studentId, courseId, title, message, Notification.NotificationType.COURSE_ENROLLMENT);
     }
 
-    /**
-     * Create notification when a new video is uploaded to a course
-     */
     public void createNewVideoNotification(UUID studentId, UUID courseId, String courseName, String videoTitle) {
         String title = "New Video Available";
         String message = String.format("A new video '%s' has been added to your course: %s",
@@ -54,9 +45,6 @@ public class NotificationEventService {
                 studentId, courseId, title, message, Notification.NotificationType.NEW_VIDEO_UPLOADED);
     }
 
-    /**
-     * Create notification when student completes a course
-     */
     public void createCourseCompletionNotification(UUID studentId, UUID courseId, String courseName) {
         String title = "Congratulations! Course Completed";
         String message = String.format("You have successfully completed the course: %s. " +
@@ -66,9 +54,6 @@ public class NotificationEventService {
                 studentId, courseId, title, message, Notification.NotificationType.COURSE_COMPLETION);
     }
 
-    /**
-     * Create notification for course updates
-     */
     public void createCourseUpdateNotification(UUID studentId, UUID courseId, String courseName, String updateDetails) {
         String title = "Course Update";
         String message = String.format("The course '%s' has been updated: %s", courseName, updateDetails);
@@ -77,9 +62,6 @@ public class NotificationEventService {
                 studentId, courseId, title, message, Notification.NotificationType.COURSE_UPDATE);
     }
 
-    /**
-     * Create system announcement notification
-     */
     public void createSystemAnnouncementNotification(UUID userId, String title, String message) {
         notificationService.createSystemNotification(
                 userId, title, message, Notification.NotificationType.SYSTEM_ANNOUNCEMENT);
