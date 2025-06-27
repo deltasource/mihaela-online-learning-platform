@@ -12,6 +12,9 @@ const registerSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   username: z.string().min(3, 'Username must be at least 3 characters'),
   email: z.string().email('Please enter a valid email address'),
+  role: z.enum(['STUDENT', 'INSTRUCTOR'], {
+        errorMap: () => ({ message: 'Please select a valid role' }),
+    }),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
 }).refine(data => data.password === data.confirmPassword, {
@@ -129,7 +132,21 @@ const RegisterPage = () => {
               <p className="mt-1 text-sm text-error-600">{errors.email.message}</p>
             )}
           </div>
-
+          <div>
+            <label htmlFor="role" className="label">Role</label>
+            <select
+              id="role"
+              {...register('role')}
+              className={`input ${errors.role ? 'border-error-500' : ''}`}
+            >
+              <option value="">Select a role</option>
+              <option value="STUDENT">Student</option>
+              <option value="INSTRUCTOR">Instructor</option>
+            </select>
+            {errors.role && (
+              <p className="mt-1 text-sm text-error-600">{errors.role.message}</p>
+            )}
+          </div>
           <div>
             <label htmlFor="password" className="label">
               Password
