@@ -2,6 +2,7 @@ package eu.deltasource.elearning.controller;
 
 import eu.deltasource.elearning.DTOs.CourseDTO;
 import eu.deltasource.elearning.service.CourseService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
