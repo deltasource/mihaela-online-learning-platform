@@ -16,9 +16,9 @@ services:
     image: elearning:latest
     container_name: elearning-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db/elearning_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: SoftwareEngineering2022
+      SPRING_DATASOURCE_URL: process.env.SPRING_DATASOURCE_URl
+      SPRING_DATASOURCE_USERNAME: process.env.SPRING_DATASOURCE_USERNAME
+      SPRING_DATASOURCE_PASSWORD: process.env.SPRING_DATASOURCE_PASSWORD
     depends_on:
       - db
     ports:
