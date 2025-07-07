@@ -38,4 +38,17 @@ public class AuthController {
     public ResponseEntity<AuthResponse> refresh(@RequestHeader("Authorization") String refreshToken) {
         return ResponseEntity.ok(authService.refreshToken(refreshToken));
     }
+
+    @PutMapping("update-profile")
+    @Operation(summary = "Update user profile")
+    public ResponseEntity<AuthResponse> updateProfile(@Valid @RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authService.updateProfile(request));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Logout user")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken) {
+        authService.logout(accessToken);
+        return ResponseEntity.noContent().build();
+    }
 }

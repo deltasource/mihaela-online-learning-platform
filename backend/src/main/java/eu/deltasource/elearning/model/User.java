@@ -1,5 +1,6 @@
 package eu.deltasource.elearning.model;
 
+import eu.deltasource.elearning.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Instructor instructor;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Student student;
+
     @Builder.Default
     @Column(nullable = false)
     private boolean enabled = true;
@@ -71,9 +78,5 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
-    }
-
-    public enum Role {
-        STUDENT, INSTRUCTOR, ADMIN
     }
 }

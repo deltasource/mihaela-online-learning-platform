@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,7 +18,7 @@ import java.util.Map;
 public class CourseAnalyticsDTO {
 
     @Schema(description = "Course ID")
-    private String courseId;
+    private UUID courseId;
 
     @Schema(description = "Course name")
     private String courseName;
@@ -63,7 +64,7 @@ public class CourseAnalyticsDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class VideoStatsDTO {
-        private String videoId;
+        private UUID videoId;
         private String videoTitle;
         private long viewCount;
         private double averageWatchTime;
@@ -75,7 +76,7 @@ public class CourseAnalyticsDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DropOffPointDTO {
-        private String videoId;
+        private UUID videoId;
         private String videoTitle;
         private double timePosition;
         private long dropOffCount;

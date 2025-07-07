@@ -106,4 +106,41 @@ public class AuthService {
         }
         throw new RuntimeException("Invalid refresh token");
     }
+
+    public AuthResponse updateProfile(RegisterRequest request) {
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
+
+        userRepository.save(user);
+
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        return new AuthResponse(
+                jwtToken,
+                refreshToken,
+                "Bearer",
+                user.getRole().name(),
+                user.getFirstName() + " " + user.getLastName()
+        );
+    }
+
+    public AuthResponse logout(String accessToken) {
+        if (accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        }
+        String userEmail = jwtService.extractUsername(accessToken);
+        if (userEmail != null) {
+            var user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            return new AuthResponse(null, null, null, null, null);
+        }
+        throw new RuntimeException("Invalid access token");
+    }
 }
