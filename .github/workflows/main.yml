@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Run tests
-        run: run tests
+        run: npm test
 
   backend:
     name: Backend (Spring Boot)
