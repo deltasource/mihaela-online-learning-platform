@@ -19,10 +19,10 @@ jobs:
         node-version: '20'
 
     - name: Install dependencies
-      run: npm ci
+      run: npm i
 
     - name: Run build
-      run: npm run build
+      run: npm run dev
 
     - name: Run tests
       run: npm test
