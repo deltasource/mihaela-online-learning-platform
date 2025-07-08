@@ -1,7 +1,8 @@
 import apiClient from "./client"
 import type { AuthResponse, LoginRequest, RegisterRequest, User } from "../types/auth"
 
-const BASE_URL = "http://localhost:8080"
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const authService = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
