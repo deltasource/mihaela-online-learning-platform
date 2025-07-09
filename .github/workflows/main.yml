@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: vite build
+        run: vite run build
       - name: Run tests
         run: npx vitest
 
