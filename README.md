@@ -25,6 +25,19 @@ The Online Learning Platform provides a solution for managing and delivering onl
     ```  
 ### Building and running your application
 
+   1. **Navigate to the project root directory**:  
+       ```bash
+       cd online-learning-platform
+       ```
+   2. **For backend run we need to run this to create .jar file:**
+   ```bash
+     mvn clean install
+   ```
+   3. **For frontend run to install all needed dependencies:**
+   ```bash
+    npm install
+   ```
+
 When you're ready, start your application by running:
  ```bash
  docker compose up --build
