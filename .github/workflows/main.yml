@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: vite build
       - name: Run tests
-        run: npm test
+        run: npx vitest
 
   backend:
     name: Backend (Spring Boot)
