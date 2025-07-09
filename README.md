@@ -20,7 +20,7 @@ The Online Learning Platform provides a solution for managing and delivering onl
 
 1. Clone the repository:  
     ```bash
-    git clone [https://github.com/your-repo/online-learning-platform-api.git](https://github.com/deltasource/mihaela-online-learning-platform.git)
+    git clone https://github.com/deltasource/mihaela-online-learning-platform.git
     cd online-learning-platform
     ```  
 ### Building and running your application
