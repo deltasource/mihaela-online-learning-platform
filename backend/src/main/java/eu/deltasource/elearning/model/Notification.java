@@ -39,11 +39,9 @@ public class Notification {
     @Column(nullable = false)
     private NotificationPriority priority = NotificationPriority.NORMAL;
 
-    @Builder.Default
     @Column(nullable = false)
     private boolean isRead = false;
 
-    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime readAt;

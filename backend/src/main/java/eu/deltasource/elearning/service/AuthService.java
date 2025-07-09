@@ -3,6 +3,8 @@ package eu.deltasource.elearning.service;
 import eu.deltasource.elearning.DTOs.AuthRequest;
 import eu.deltasource.elearning.DTOs.AuthResponse;
 import eu.deltasource.elearning.DTOs.RegisterRequest;
+import eu.deltasource.elearning.enums.Role;
+import eu.deltasource.elearning.exception.UserNotFoundException;
 import eu.deltasource.elearning.model.User;
 import eu.deltasource.elearning.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("User with this email already exists");
+            throw new UserNotFoundException("User with this email already exists");
         }
 
         var user = User.builder()
@@ -33,7 +35,7 @@ public class AuthService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(Role.INSTRUCTOR)
                 .enabled(true)
                 .accountNonExpired(true)
                 .accountNonLocked(true)
@@ -41,6 +43,32 @@ public class AuthService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
+        userRepository.save(user);
+
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        return new AuthResponse(
+                jwtToken,
+                refreshToken,
+                "Bearer",
+                user.getRole().name(),
+                user.getFirstName() + " " + user.getLastName()
+        );
+    }
+
+    public AuthResponse login(AuthRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
 
         var jwtToken = jwtService.generateToken(user);
@@ -64,7 +92,7 @@ public class AuthService {
         );
 
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
@@ -89,7 +117,7 @@ public class AuthService {
         String userEmail = jwtService.extractUsername(refreshToken);
         if (userEmail != null) {
             var user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
 
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);
@@ -109,12 +137,12 @@ public class AuthService {
 
     public AuthResponse updateProfile(RegisterRequest request) {
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
+        user.setRole(Role.INSTRUCTOR);
 
         userRepository.save(user);
 
@@ -137,7 +165,7 @@ public class AuthService {
         String userEmail = jwtService.extractUsername(accessToken);
         if (userEmail != null) {
             var user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
 
             return new AuthResponse(null, null, null, null, null);
         }

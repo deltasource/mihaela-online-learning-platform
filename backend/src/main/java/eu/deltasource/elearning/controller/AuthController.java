@@ -23,32 +23,31 @@ public class AuthController {
 
     @Operation(summary = "Register a new user")
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
+        return authService.register(request);
     }
 
     @Operation(summary = "Authenticate user")
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+    public AuthResponse login(@Valid @RequestBody AuthRequest request) {
+        return  authService.login(request);
     }
 
     @Operation(summary = "Refresh access token")
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(@RequestHeader("Authorization") String refreshToken) {
-        return ResponseEntity.ok(authService.refreshToken(refreshToken));
+    public AuthResponse refresh(@RequestHeader("Authorization") String refreshToken) {
+        return authService.refreshToken(refreshToken);
     }
 
     @PutMapping("update-profile")
     @Operation(summary = "Update user profile")
-    public ResponseEntity<AuthResponse> updateProfile(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.updateProfile(request));
+    public AuthResponse updateProfile(@Valid @RequestBody RegisterRequest request) {
+        return authService.updateProfile(request);
     }
 
     @PostMapping("/logout")
     @Operation(summary = "Logout user")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken) {
+    public void logout(@RequestHeader("Authorization") String accessToken) {
         authService.logout(accessToken);
-        return ResponseEntity.noContent().build();
     }
 }

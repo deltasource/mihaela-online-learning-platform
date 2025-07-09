@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +18,10 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @Tag(name = "Question Options Management")
 @RestController
 @RequestMapping("/api/options")
+@RequiredArgsConstructor
 public class OptionController {
 
     private final OptionService optionService;
-
-    public OptionController(OptionService optionService) {
-        this.optionService = optionService;
-    }
 
     @PostMapping
     @ResponseStatus(CREATED)

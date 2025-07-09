@@ -49,23 +49,18 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Student student;
 
-    @Builder.Default
     @Column(nullable = false)
     private boolean enabled = true;
 
-    @Builder.Default
     @Column(nullable = false)
     private boolean accountNonExpired = true;
 
-    @Builder.Default
     @Column(nullable = false)
     private boolean accountNonLocked = true;
 
-    @Builder.Default
     @Column(nullable = false)
     private boolean credentialsNonExpired = true;
 
-    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime lastLoginAt;
