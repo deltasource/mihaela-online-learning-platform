@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql:latest
-    container_name: mymysql
+    container_name: mysql
     environment:
       MYSQL_ROOT_HOST: '%'
       MYSQL_ROOT_PASSWORD: SoftwareEngineering2022
@@ -31,7 +31,7 @@ services:
       dockerfile: Dockerfile
     container_name: elearning-frontend
     environment:
-      VITE_API_BASE_URL: http://localhost:8080
+      VITE_API_BASE_URL: http://backend:8080
     depends_on:
       - backend
     ports:
