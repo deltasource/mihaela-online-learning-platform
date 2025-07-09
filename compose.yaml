@@ -9,7 +9,7 @@ services:
     ports:
       - "3306:3306"
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${SoftwareEngineering2022}" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pSoftwareEngineering2022" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -27,15 +27,10 @@ services:
       SPRING_DATASOURCE_PASSWORD: SoftwareEngineering2022
       JWT_SECRET: Drh97bjPEQTiTHdPz4fJTb5lJ5h7VV6EkRWx64aHW8Y0IkkNPQVAam/abO67eu9FcJb+XOueH/en9HpmAsoulg==
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8080:8080"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5173" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 20s
 
   frontend:
     build:
@@ -44,16 +39,8 @@ services:
     container_name: elearning-frontend
     environment:
       VITE_API_BASE_URL: http://backend:8080
-    depends_on:
-      - backend
     ports:
       - "5173:5173"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
 
 volumes:
   db-data:
