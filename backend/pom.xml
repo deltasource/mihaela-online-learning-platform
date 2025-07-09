@@ -18,7 +18,8 @@
 		<springdoc.version>2.7.0</springdoc.version>
 		<spring-dotenv.version>2.2.0</spring-dotenv.version>
 		<jwt.version>0.11.5</jwt.version>
-        <lombok.version>1.18.30</lombok.version>
+		<lombok.version>1.18.30</lombok.version>
+		<maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
 	</properties>
 	<dependencies>
 
@@ -112,7 +113,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
+				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
