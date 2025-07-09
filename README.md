@@ -26,7 +26,9 @@ The Online Learning Platform provides a solution for managing and delivering onl
 ### Building and running your application
 
 When you're ready, start your application by running:
-`docker compose up --build`.
+ ```bash
+ docker compose up --build
+ ``` 
 
 ### Backend: Running the Spring Boot Application
 
