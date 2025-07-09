@@ -23,6 +23,10 @@ The Online Learning Platform provides a solution for managing and delivering onl
     git clone [https://github.com/your-repo/online-learning-platform-api.git](https://github.com/deltasource/mihaela-online-learning-platform.git)
     cd online-learning-platform
     ```  
+### Building and running your application
+
+When you're ready, start your application by running:
+`docker compose up --build`.
 
 ### Backend: Running the Spring Boot Application
 
