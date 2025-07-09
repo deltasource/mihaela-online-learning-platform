@@ -33,34 +33,19 @@ secure environment for both educators and learners.
     ```bash
     cd online-learning-platform
     ```
-2. **Navigate to the project backend directory:**
 
-  ```bash
-       cd backend
-   ```
-
-3. **For backend run we need to run this to create .jar file:**
+2.**For backend run we need to run this to create .jar file:**
    ```bash
-     mvn clean install
+    cd backend/ && mvn clean install
    ```
 
-4. **Navigate to the project frontend directory:**
-
- ```bash
-      cd ../frontend
- ```
-
-3. **For frontend run to install all needed dependencies:**
+3.**For frontend run to install all needed dependencies:**
 
    ```bash
-    npm install
+    cd frontend/ && npm install
    ```
-4. **Navigate back to the project root directory**:
-    ```bash
-    cd ..
-    ```
 
-5. **When you're ready, start your application by running:**
+4.**When you're ready, start your application by running:**
 
  ```bash
  docker compose up --build
