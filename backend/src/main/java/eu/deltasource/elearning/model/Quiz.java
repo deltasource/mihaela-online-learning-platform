@@ -15,7 +15,6 @@ public class Quiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Schema(description = "Unique quiz identifier", example = "201")
     private UUID id;
 
     @ManyToOne

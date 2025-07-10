@@ -1,9 +1,11 @@
 package eu.deltasource.elearning.service;
 
+import static eu.deltasource.elearning.enums.Role.INSTRUCTOR;
+
 import eu.deltasource.elearning.DTOs.AuthRequest;
 import eu.deltasource.elearning.DTOs.AuthResponse;
 import eu.deltasource.elearning.DTOs.RegisterRequest;
-import eu.deltasource.elearning.enums.Role;
+import eu.deltasource.elearning.exception.InvalidAccessToken;
 import eu.deltasource.elearning.exception.UserNotFoundException;
 import eu.deltasource.elearning.model.User;
 import eu.deltasource.elearning.repository.UserRepository;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class AuthService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.INSTRUCTOR)
+                .role(INSTRUCTOR)
                 .enabled(true)
                 .accountNonExpired(true)
                 .accountNonLocked(true)
@@ -142,7 +145,7 @@ public class AuthService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.INSTRUCTOR);
+        user.setRole(INSTRUCTOR);
 
         userRepository.save(user);
 
@@ -169,6 +172,6 @@ public class AuthService {
 
             return new AuthResponse(null, null, null, null, null);
         }
-        throw new RuntimeException("Invalid access token");
+        throw new InvalidAccessToken("Invalid access token");
     }
 }
