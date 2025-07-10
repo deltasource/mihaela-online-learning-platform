@@ -28,6 +28,6 @@ public class OpenApiConfig {
                         .title("Online learning platform")
                         .description("Watch videos on different IT related topics")
                         .version("1.0.0"))
-        .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
     }
 }

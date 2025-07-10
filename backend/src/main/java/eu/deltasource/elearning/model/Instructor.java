@@ -15,7 +15,7 @@ import java.util.UUID;
 public class Instructor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID )
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @OneToOne

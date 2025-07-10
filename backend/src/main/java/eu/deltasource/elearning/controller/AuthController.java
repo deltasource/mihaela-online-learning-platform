@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Authentication", description = "User authentication and registration")
@@ -30,7 +29,7 @@ public class AuthController {
     @Operation(summary = "Authenticate user")
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody AuthRequest request) {
-        return  authService.login(request);
+        return authService.login(request);
     }
 
     @Operation(summary = "Refresh access token")

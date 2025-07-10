@@ -1,7 +1,5 @@
 package eu.deltasource.elearning.service;
 
-import static eu.deltasource.elearning.enums.Role.INSTRUCTOR;
-
 import eu.deltasource.elearning.DTOs.AuthRequest;
 import eu.deltasource.elearning.DTOs.AuthResponse;
 import eu.deltasource.elearning.DTOs.RegisterRequest;
@@ -16,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
+import static eu.deltasource.elearning.enums.Role.INSTRUCTOR;
 
 
 @Service

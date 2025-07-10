@@ -2,8 +2,12 @@ package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.StudentProgressDTO;
 import eu.deltasource.elearning.exception.StudentProgressNotFoundException;
-import eu.deltasource.elearning.model.*;
-import eu.deltasource.elearning.repository.*;
+import eu.deltasource.elearning.model.Student;
+import eu.deltasource.elearning.model.StudentProgress;
+import eu.deltasource.elearning.model.Video;
+import eu.deltasource.elearning.model.WatchedVideos;
+import eu.deltasource.elearning.repository.StudentProgressRepository;
+import eu.deltasource.elearning.repository.WatchedVideosRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,9 @@
 package eu.deltasource.elearning.service;
 
-import eu.deltasource.elearning.DTOs.*;
+import eu.deltasource.elearning.DTOs.AnalyticsEventDTO;
+import eu.deltasource.elearning.DTOs.CourseAnalyticsDTO;
+import eu.deltasource.elearning.DTOs.DashboardStatsDTO;
+import eu.deltasource.elearning.DTOs.UserAnalyticsDTO;
 import eu.deltasource.elearning.model.Analytics;
 import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.User;

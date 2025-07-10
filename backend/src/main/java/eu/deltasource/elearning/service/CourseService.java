@@ -5,8 +5,6 @@ import eu.deltasource.elearning.exception.CourseNotFoundException;
 import eu.deltasource.elearning.exception.InstructorNotFoundException;
 import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.Instructor;
-import eu.deltasource.elearning.model.Lesson;
-import eu.deltasource.elearning.model.Quiz;
 import eu.deltasource.elearning.repository.CourseRepository;
 import eu.deltasource.elearning.repository.InstructorRepository;
 import eu.deltasource.elearning.repository.LessonRepository;
