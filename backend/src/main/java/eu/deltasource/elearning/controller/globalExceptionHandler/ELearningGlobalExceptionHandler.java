@@ -1,14 +1,18 @@
 package eu.deltasource.elearning.controller.globalExceptionHandler;
 
 import eu.deltasource.elearning.DTOs.ErrorResponse;
-import eu.deltasource.elearning.exception.*;
+import eu.deltasource.elearning.exception.NotFoundException;
+import eu.deltasource.elearning.exception.StudentAlreadyExistsException;
+import eu.deltasource.elearning.exception.StudentNotFoundException;
+import eu.deltasource.elearning.exception.UnsupportedFileTypeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
 import java.time.LocalDateTime;
+
 /**
  * Global exception handler for the E-Learning application.
  * Provides centralized exception handling across all @RequestMapping methods

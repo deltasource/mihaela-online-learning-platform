@@ -1,6 +1,6 @@
 package eu.deltasource.elearning.DTOs;
 
-import eu.deltasource.elearning.model.User;
+import eu.deltasource.elearning.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,5 +30,5 @@ public class RegisterRequest {
 
     @NotNull(message = "Role is required")
     @Schema(description = "User role", example = "STUDENT")
-    private User.Role role;
+    private Role role;
 }

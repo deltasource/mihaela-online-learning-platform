@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Authentication", description = "User authentication and registration")
@@ -23,19 +22,31 @@ public class AuthController {
 
     @Operation(summary = "Register a new user")
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
+        return authService.register(request);
     }
 
     @Operation(summary = "Authenticate user")
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+    public AuthResponse login(@Valid @RequestBody AuthRequest request) {
+        return authService.login(request);
     }
 
     @Operation(summary = "Refresh access token")
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(@RequestHeader("Authorization") String refreshToken) {
-        return ResponseEntity.ok(authService.refreshToken(refreshToken));
+    public AuthResponse refresh(@RequestHeader("Authorization") String refreshToken) {
+        return authService.refreshToken(refreshToken);
+    }
+
+    @PutMapping("update-profile")
+    @Operation(summary = "Update user profile")
+    public AuthResponse updateProfile(@Valid @RequestBody RegisterRequest request) {
+        return authService.updateProfile(request);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Logout user")
+    public void logout(@RequestHeader("Authorization") String accessToken) {
+        authService.logout(accessToken);
     }
 }

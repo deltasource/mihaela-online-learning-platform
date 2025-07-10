@@ -1,6 +1,9 @@
 package eu.deltasource.elearning.service;
 
-import eu.deltasource.elearning.DTOs.*;
+import eu.deltasource.elearning.DTOs.AnalyticsEventDTO;
+import eu.deltasource.elearning.DTOs.CourseAnalyticsDTO;
+import eu.deltasource.elearning.DTOs.DashboardStatsDTO;
+import eu.deltasource.elearning.DTOs.UserAnalyticsDTO;
 import eu.deltasource.elearning.model.Analytics;
 import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.User;
@@ -40,7 +43,7 @@ public class AnalyticsService {
                 .timestamp(eventDTO.getTimestamp() != null ? eventDTO.getTimestamp() : LocalDateTime.now())
                 .duration(eventDTO.getDuration())
                 .metadata(eventDTO.getMetadata())
-                .sessionId(eventDTO.getSessionId())
+                .sessionId(String.valueOf(eventDTO.getSessionId()))
                 .completionPercentage(eventDTO.getCompletionPercentage())
                 .score(eventDTO.getScore());
 
@@ -178,7 +181,7 @@ public class AnalyticsService {
                 .size();
 
         return CourseAnalyticsDTO.builder()
-                .courseId(courseId.toString())
+                .courseId(UUID.fromString(courseId.toString()))
                 .courseName(course.getName())
                 .totalEnrollments(totalEnrollments)
                 .activeStudents(activeStudents)

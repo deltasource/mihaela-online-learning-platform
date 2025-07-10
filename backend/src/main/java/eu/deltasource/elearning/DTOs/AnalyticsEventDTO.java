@@ -51,7 +51,7 @@ public class AnalyticsEventDTO {
     private String userAgent;
 
     @Schema(description = "Session identifier")
-    private String sessionId;
+    private UUID sessionId;
 
     @Schema(description = "Completion percentage", example = "75.5")
     private Double completionPercentage;

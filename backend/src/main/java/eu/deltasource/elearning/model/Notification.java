@@ -39,11 +39,9 @@ public class Notification {
     @Column(nullable = false)
     private NotificationPriority priority = NotificationPriority.NORMAL;
 
-    @Builder.Default
     @Column(nullable = false)
     private boolean isRead = false;
 
-    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime readAt;
@@ -59,20 +57,17 @@ public class Notification {
         COURSE_ENROLLMENT,
         COURSE_COMPLETION,
         NEW_VIDEO_UPLOADED,
-        ASSIGNMENT_DUE,
-        GRADE_POSTED,
         SYSTEM_ANNOUNCEMENT,
         COURSE_UPDATE,
-        PAYMENT_CONFIRMATION,
         WELCOME_MESSAGE,
-        REMINDER
+
     }
 
     public enum NotificationPriority {
-        LOW, NORMAL, HIGH, URGENT
+        NORMAL, HIGH, URGENT
     }
 
     public enum RelatedEntityType {
-        COURSE, VIDEO, ASSIGNMENT, ENROLLMENT, USER
+        COURSE
     }
 }

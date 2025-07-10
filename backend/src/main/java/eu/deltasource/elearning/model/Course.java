@@ -1,8 +1,10 @@
 package eu.deltasource.elearning.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,33 +12,48 @@ import java.util.UUID;
  * Entity class representing a course.
  * Each course is associated with an instructor and may have multiple students and videos.
  */
-@Data
 @Entity
-@Table(name = "courses")
+@Data
+@Schema(description = "Course entity containing lessons and quizzes")
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "instructor_id", referencedColumnName = "id")
-    private Instructor instructor;
-
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(length = 1000)
     private String description;
 
-    @OneToMany(mappedBy = "course")
-    private List<Video> videos;
+    private String thumbnail;
 
-    @ManyToMany
-    @JoinTable(
-            name = "course_students",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    private List<Student> students;
+    private String category;
+
+    private String level;
+
+    private int duration;
+
+    private double rating;
+
+    private int ratingCount;
+
+    private int enrollmentCount;
+
+    private double price;
+
+    private boolean isPublished;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Lesson> lessons;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Quiz> quizzes;
 }
