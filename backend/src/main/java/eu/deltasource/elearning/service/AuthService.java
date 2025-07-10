@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 
 import static eu.deltasource.elearning.enums.Role.INSTRUCTOR;
 
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
