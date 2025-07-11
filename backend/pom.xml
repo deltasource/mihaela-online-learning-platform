@@ -176,9 +176,9 @@
                         <id>report</id>
                         <phase>verify</phase>
                         <goals>
+                            <goal>prepare-agent</goal>
                             <goal>report</goal>
                             <goal>check</goal>
-                            <goal>prepare-agent</goal>
                         </goals>
                         <configuration>
                             <rules>
