@@ -18,23 +18,16 @@ jobs:
         uses: actions/checkout@v4
 
       # Set up JDK for building the project
-      - name: Set up JDK 11
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: 21
           distribution: "temurin"
 
       # Build the project using Maven
       - name: Build project
-        run: mvn clean package
+        run: mvn clean install
 
       # Run tests and generate Jacoco reports
       - name: Run tests with Jacoco
         run: mvn test jacoco:report
-
-      # Upload Jacoco coverage reports as an artifact for later use (optional)
-      - name: Upload Jacoco coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: jacoco-report
-          path: target/site/jacoco
