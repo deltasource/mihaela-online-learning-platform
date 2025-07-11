@@ -23,9 +23,9 @@ jobs:
           distribution: "temurin"
 
       - name: Build project
-        working-directory: /backend
+        working-directory: cd backend
         run: mvn clean install
 
       - name: Run tests with Jacoco
-        working-directory: /backend
+        working-directory: cd backend
         run: mvn test jacoco:report
