@@ -177,7 +177,28 @@
                         <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
+                            <goal>check</goal>
                         </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BRANCH</element>
+                                    <limits>
+                                        <limit>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                                <rule>
+                                    <element>LINE</element>
+                                    <limits>
+                                        <limit>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
