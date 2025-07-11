@@ -25,9 +25,7 @@ jobs:
       - name: Build and verify backend
         working-directory: backend
         run: 
-          mvn clean package
-          mvn test jacoco:report
-          mvn verify
+          mvn clean verify
 
       - name: Run tests with Jacoco
         working-directory: backend
