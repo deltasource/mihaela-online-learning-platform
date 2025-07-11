@@ -178,6 +178,7 @@
                         <goals>
                             <goal>report</goal>
                             <goal>check</goal>
+                            <goal>prepare-agent</goal>
                         </goals>
                         <configuration>
                             <rules>
