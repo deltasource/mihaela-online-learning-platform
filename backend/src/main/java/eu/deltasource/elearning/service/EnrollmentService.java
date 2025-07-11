@@ -1,6 +1,7 @@
 package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.EnrollmentDTO;
+import eu.deltasource.elearning.enums.EnrollmentStatus;
 import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.Enrollment;
 import eu.deltasource.elearning.model.Student;
@@ -40,7 +41,7 @@ public class EnrollmentService {
         Enrollment enrollment = new Enrollment();
         enrollment.setStudent(student);
         enrollment.setCourse(course);
-        enrollment.setStatus(Enrollment.EnrollmentStatus.ACTIVE);
+        enrollment.setStatus(EnrollmentStatus.ACTIVE);
         enrollment.setEnrolledAt(LocalDateTime.now());
 
         enrollment = enrollmentRepository.save(enrollment);
@@ -73,10 +74,10 @@ public class EnrollmentService {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
 
-        Enrollment.EnrollmentStatus newStatus = Enrollment.EnrollmentStatus.valueOf(status.toUpperCase());
+        EnrollmentStatus newStatus = EnrollmentStatus.valueOf(status.toUpperCase());
         enrollment.setStatus(newStatus);
 
-        if (newStatus == Enrollment.EnrollmentStatus.COMPLETED) {
+        if (newStatus == EnrollmentStatus.COMPLETED) {
             enrollment.setCompletedAt(LocalDateTime.now());
         }
 

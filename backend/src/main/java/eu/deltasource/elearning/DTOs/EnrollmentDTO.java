@@ -1,6 +1,6 @@
 package eu.deltasource.elearning.DTOs;
 
-import eu.deltasource.elearning.model.Enrollment;
+import eu.deltasource.elearning.enums.EnrollmentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -24,7 +24,7 @@ public class EnrollmentDTO {
     private UUID courseId;
 
     @Schema(description = "Enrollment status", example = "ACTIVE")
-    private Enrollment.EnrollmentStatus status;
+    private EnrollmentStatus status;
 
     @Schema(description = "Enrollment date")
     private LocalDateTime enrolledAt;

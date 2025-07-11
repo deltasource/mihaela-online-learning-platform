@@ -1,5 +1,6 @@
 package eu.deltasource.elearning.repository;
 
+import eu.deltasource.elearning.enums.EnrollmentStatus;
 import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.Enrollment;
 import eu.deltasource.elearning.model.Student;
@@ -21,13 +22,13 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID> {
 
     Optional<Enrollment> findByStudentAndCourse(Student student, Course course);
 
-    List<Enrollment> findByStatus(Enrollment.EnrollmentStatus status);
+    List<Enrollment> findByStatus(EnrollmentStatus status);
 
     @Query("SELECT COUNT(e) FROM Enrollment e WHERE e.course = :course AND e.status = :status")
-    long countByCourseAndStatus(@Param("course") Course course, @Param("status") Enrollment.EnrollmentStatus status);
+    long countByCourseAndStatus(@Param("course") Course course, @Param("status") EnrollmentStatus status);
 
     @Query("SELECT COUNT(e) FROM Enrollment e WHERE e.student = :student AND e.status = :status")
-    long countByStudentAndStatus(@Param("student") Student student, @Param("status") Enrollment.EnrollmentStatus status);
+    long countByStudentAndStatus(@Param("student") Student student, @Param("status") EnrollmentStatus status);
 
     boolean existsByStudentAndCourse(Student student, Course course);
 }

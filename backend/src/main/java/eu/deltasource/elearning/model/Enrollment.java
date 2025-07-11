@@ -1,5 +1,6 @@
 package eu.deltasource.elearning.model;
 
+import eu.deltasource.elearning.enums.EnrollmentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -33,8 +34,4 @@ public class Enrollment {
     private LocalDateTime completedAt;
 
     private Double finalGrade;
-
-    public enum EnrollmentStatus {
-        ACTIVE, COMPLETED, DROPPED, SUSPENDED
-    }
 }

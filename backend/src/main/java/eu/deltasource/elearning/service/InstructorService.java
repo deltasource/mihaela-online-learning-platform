@@ -55,12 +55,14 @@ public class InstructorService {
     }
 
     @Transactional
-    public boolean deleteInstructor(String email) {
+    public void deleteInstructor(String email) {
         if (!instructorRepository.existsByEmail(email)) {
             throw new InstructorNotFoundException("Instructor with email " + email + " not found");
         }
         int deletedCount = instructorRepository.deleteByEmail(email);
-        return deletedCount > 0;
+        if (deletedCount == 0) {
+            throw new InstructorNotFoundException("Instructor with email " + email + " not found");
+        }
     }
 
     @NotNull
