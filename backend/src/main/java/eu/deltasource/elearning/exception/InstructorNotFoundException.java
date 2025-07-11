@@ -12,6 +12,6 @@ public class InstructorNotFoundException extends RuntimeException {
      * @param email the email address of the instructor that was not found
      */
     public InstructorNotFoundException(String email) {
-        super("Instructor not found with this email: " + email);
+        super("Instructor with " + email + " not found.");
     }
 }

@@ -1,13 +1,14 @@
 package eu.deltasource.elearning.controller;
 
 import eu.deltasource.elearning.DTOs.EnrollmentDTO;
-import eu.deltasource.elearning.model.Enrollment;
+import eu.deltasource.elearning.enums.EnrollmentStatus;
 import eu.deltasource.elearning.service.EnrollmentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -30,12 +31,12 @@ class EnrollmentControllerTest {
     }
 
     @Test
-    void testEnrollStudent() {
+    void givenStudentAndCourseExist_whenEnrollStudent_thenStudentIsEnrolledSuccessfully() {
         // Given
         EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
         enrollmentDTO.setStudentId(UUID.randomUUID());
         enrollmentDTO.setCourseId(UUID.randomUUID());
-        enrollmentDTO.setStatus(Enrollment.EnrollmentStatus.ACTIVE);
+        enrollmentDTO.setStatus(EnrollmentStatus.ACTIVE);
 
         when(enrollmentService.enrollStudent(enrollmentDTO)).thenReturn(enrollmentDTO);
 
@@ -43,13 +44,13 @@ class EnrollmentControllerTest {
         ResponseEntity<EnrollmentDTO> response = enrollmentController.enrollStudent(enrollmentDTO);
 
         // Then
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
         assertEquals(enrollmentDTO, response.getBody());
         verify(enrollmentService, times(1)).enrollStudent(enrollmentDTO);
     }
 
     @Test
-    void testGetStudentEnrollments() {
+    void givenStudentExists_whenGetStudentEnrollments_thenEnrollmentsAreReturnedSuccessfully() {
         // Given
         UUID studentId = UUID.randomUUID();
         List<EnrollmentDTO> enrollments = List.of(new EnrollmentDTO(), new EnrollmentDTO());
@@ -59,13 +60,13 @@ class EnrollmentControllerTest {
         ResponseEntity<List<EnrollmentDTO>> response = enrollmentController.getStudentEnrollments(studentId);
 
         // Then
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
         assertEquals(enrollments, response.getBody());
         verify(enrollmentService, times(1)).getStudentEnrollments(studentId);
     }
 
     @Test
-    void testGetCourseEnrollments() {
+    void givenCourseExists_whenGetCourseEnrollments_thenEnrollmentsAreReturnedSuccessfully() {
         // Given
         UUID courseId = UUID.randomUUID();
         List<EnrollmentDTO> enrollments = List.of(new EnrollmentDTO(), new EnrollmentDTO());
@@ -75,25 +76,25 @@ class EnrollmentControllerTest {
         ResponseEntity<List<EnrollmentDTO>> response = enrollmentController.getCourseEnrollments(courseId);
 
         // Then
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
         assertEquals(enrollments, response.getBody());
         verify(enrollmentService, times(1)).getCourseEnrollments(courseId);
     }
 
     @Test
-    void testUpdateEnrollmentStatus() {
+    void givenEnrollmentExists_whenUpdateEnrollmentStatus_thenStatusIsUpdatedSuccessfully() {
         // Given
         UUID enrollmentId = UUID.randomUUID();
         String status = "COMPLETED";
         EnrollmentDTO updatedEnrollment = new EnrollmentDTO();
-        updatedEnrollment.setStatus(Enrollment.EnrollmentStatus.COMPLETED);
+        updatedEnrollment.setStatus(EnrollmentStatus.COMPLETED);
         when(enrollmentService.updateEnrollmentStatus(enrollmentId, status)).thenReturn(updatedEnrollment);
 
         // When
         ResponseEntity<EnrollmentDTO> response = enrollmentController.updateEnrollmentStatus(enrollmentId, status);
 
         // Then
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
         assertEquals(updatedEnrollment, response.getBody());
         verify(enrollmentService, times(1)).updateEnrollmentStatus(enrollmentId, status);
     }

@@ -1,5 +1,6 @@
 package eu.deltasource.elearning.model;
 
+import eu.deltasource.elearning.enums.EnrollmentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,7 +24,6 @@ public class Enrollment {
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EnrollmentStatus status = EnrollmentStatus.ACTIVE;
 
@@ -33,8 +33,4 @@ public class Enrollment {
     private LocalDateTime completedAt;
 
     private Double finalGrade;
-
-    public enum EnrollmentStatus {
-        ACTIVE, COMPLETED, DROPPED, SUSPENDED
-    }
 }

@@ -28,7 +28,7 @@ class CourseControllerTest {
     }
 
     @Test
-    void testCreateCourse() {
+    void givenValidCourseData_whenCreateCourse_thenCourseIsSuccessfullyCreated() {
         // Given
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setName("Java Basics");
@@ -45,7 +45,7 @@ class CourseControllerTest {
     }
 
     @Test
-    void testGetCourseById() {
+    void givenCourseIdExists_whenGetCourseById_thenCorrectCourseIsReturned() {
         // Given
         UUID courseId = UUID.randomUUID();
         CourseDTO courseDTO = new CourseDTO();
@@ -63,7 +63,7 @@ class CourseControllerTest {
     }
 
     @Test
-    void testGetAllCourses() {
+    void givenCoursesExist_whenGetAllCourses_thenAllCoursesAreReturned() {
         // Given
         List<CourseDTO> courses = List.of(new CourseDTO(), new CourseDTO());
         when(courseService.getAllCourses()).thenReturn(courses);
@@ -77,7 +77,7 @@ class CourseControllerTest {
     }
 
     @Test
-    void testUpdateCourse() {
+    void givenCourseExists_whenUpdateCourse_thenCourseIsUpdatedSuccessfully() {
         // Given
         UUID courseId = UUID.randomUUID();
         CourseDTO courseDTO = new CourseDTO();
@@ -95,7 +95,7 @@ class CourseControllerTest {
     }
 
     @Test
-    void testDeleteCourse() {
+    void givenCourseExists_whenDeleteCourse_thenCourseIsDeletedSuccessfully() {
         // Given
         UUID courseId = UUID.randomUUID();
 
