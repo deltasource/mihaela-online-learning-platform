@@ -3,9 +3,11 @@ package eu.deltasource.elearning.DTOs;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "Authentication response")
 public class AuthResponse {
 
