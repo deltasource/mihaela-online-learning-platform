@@ -22,19 +22,23 @@ jobs:
           java-version: 21
           distribution: "temurin"
 
-      - name: Build, test and verify backend
+      - name: Build
         working-directory: backend
-        run: |
-          mvn clean package
-          mvn test jacoco:report
-          mvn verify
+        run: mvn clean package    
+
+      - name: Test 
+        run: mvn test jacoco:report
+
+      - name: Verify backend
+        run: mvn verify
+        
 
       - name: Upload backend results 
         uses: actions/upload-artifact@v4
         with:
           name: backend-test-results
           path: backend/target/surefire-reports/
-      
+
   frontend-checks:
     runs-on: ubuntu-latest
 
