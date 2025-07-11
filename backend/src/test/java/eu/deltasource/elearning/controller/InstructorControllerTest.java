@@ -2,15 +2,16 @@ package eu.deltasource.elearning.controller;
 
 import eu.deltasource.elearning.DTOs.InstructorDTO;
 import eu.deltasource.elearning.service.InstructorService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class InstructorControllerTest {
 
     @Mock
@@ -18,11 +19,6 @@ class InstructorControllerTest {
 
     @InjectMocks
     private InstructorController instructorController;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void givenValidInstructorDTO_whenCreateInstructor_thenReturnInstructorDTO() {

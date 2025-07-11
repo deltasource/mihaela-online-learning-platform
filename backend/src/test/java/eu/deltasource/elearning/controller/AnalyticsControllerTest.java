@@ -6,17 +6,18 @@ import eu.deltasource.elearning.DTOs.DashboardStatsDTO;
 import eu.deltasource.elearning.DTOs.UserAnalyticsDTO;
 import eu.deltasource.elearning.service.AnalyticsService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class AnalyticsControllerTest {
 
     @Mock
@@ -27,11 +28,6 @@ class AnalyticsControllerTest {
 
     @InjectMocks
     private AnalyticsController analyticsController;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void givenValidEventDTO_whenTrackEvent_thenVerifyServiceCalled() {

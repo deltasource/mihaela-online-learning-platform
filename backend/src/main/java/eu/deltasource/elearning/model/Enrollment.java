@@ -24,6 +24,7 @@ public class Enrollment {
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EnrollmentStatus status = EnrollmentStatus.ACTIVE;
 

@@ -4,15 +4,16 @@ import eu.deltasource.elearning.DTOs.AuthRequest;
 import eu.deltasource.elearning.DTOs.AuthResponse;
 import eu.deltasource.elearning.DTOs.RegisterRequest;
 import eu.deltasource.elearning.service.AuthService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
 
     @Mock
@@ -20,11 +21,6 @@ class AuthControllerTest {
 
     @InjectMocks
     private AuthController authController;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void givenValidRegisterRequest_whenRegister_thenReturnAuthResponse() {

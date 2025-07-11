@@ -3,10 +3,11 @@ package eu.deltasource.elearning.controller;
 import eu.deltasource.elearning.DTOs.EnrollmentDTO;
 import eu.deltasource.elearning.enums.EnrollmentStatus;
 import eu.deltasource.elearning.service.EnrollmentService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -15,8 +16,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class EnrollmentControllerTest {
 
     @Mock
@@ -24,11 +25,6 @@ class EnrollmentControllerTest {
 
     @InjectMocks
     private EnrollmentController enrollmentController;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void givenStudentAndCourseExist_whenEnrollStudent_thenStudentIsEnrolledSuccessfully() {
