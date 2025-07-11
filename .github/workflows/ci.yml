@@ -24,7 +24,8 @@ jobs:
 
       - name: Build and verify backend
         working-directory: backend
-        run: mvn clean package
+        run: 
+          mvn clean package
           mvn test jacoco:report
           mvn verify
 
@@ -54,4 +55,4 @@ jobs:
 
       - name: Run tests
         working-directory: frontend
-        run: npm test
+        run: npx vitest
