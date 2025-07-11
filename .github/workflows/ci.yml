@@ -22,16 +22,19 @@ jobs:
           java-version: 21
           distribution: "temurin"
 
-      - name: Build and verify backend
+      - name: Build, test and verify backend
         working-directory: backend
         run: |
           mvn clean package
+          mvn test jacoco:report
           mvn verify
 
-      - name: Run tests with Jacoco
-        working-directory: backend
-        run: mvn test jacoco:report
-
+      - name: Upload backend results 
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-test-results
+          path: backend/target/site/jacoco/index.html
+      
   frontend-checks:
     runs-on: ubuntu-latest
 
