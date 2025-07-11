@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build-test-jacoco:
+  backend-checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +22,36 @@ jobs:
           java-version: 21
           distribution: "temurin"
 
-      - name: Build project
+      - name: Build and verify backend
         working-directory: backend
-        run: mvn clean install
+        run: mvn clean package
+          mvn test jacoco:report
+          mvn verify
 
       - name: Run tests with Jacoco
         working-directory: backend
         run: mvn test jacoco:report
+
+  frontend-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23'
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Run tests
+        working-directory: frontend
+        run: npm test -- --watchAll=false
