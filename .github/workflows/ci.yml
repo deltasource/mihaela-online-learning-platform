@@ -22,11 +22,7 @@ jobs:
           java-version: 21
           distribution: "temurin"
 
-      - name: Build
-        working-directory: backend
-        run: mvn clean package    
-
-      - name: Test 
+      - name: Build and check code coverage with Jacoco 
         working-directory: backend
         run: mvn test jacoco:report
 
