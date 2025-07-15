@@ -24,8 +24,8 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/elearning_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: SoftwareEngineering2022
-      JWT_SECRET: Drh97bjPEQTiTHdPz4fJTb5lJ5h7VV6EkRWx64aHW8Y0IkkNPQVAam/abO67eu9FcJb+XOueH/en9HpmAsoulg==
+      SPRING_DATASOURCE_PASSWORD: &{{SPRING_DATASOURCE_PASSWORD}}
+      JWT_SECRET: &{{JWT_SECRET_KEY}}
     depends_on:
       db:
         condition: service_healthy
