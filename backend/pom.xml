@@ -209,7 +209,6 @@
                         <exclude>**/*Application.class</exclude>
                         <exclude>**/exception/**</exclude>
                         <exclude>**/enums/**</exclude>
-                        <exclude>**/globalExceptionHandler/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
