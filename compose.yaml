@@ -24,13 +24,22 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/elearning_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: &{{SPRING_DATASOURCE_PASSWORD}}
-      JWT_SECRET: &{{JWT_SECRET_KEY}}
+      SPRING_DATASOURCE_PASSWORD: SoftwareEngineering2022
+      JWT_SECRET: Drh97bjPEQTiTHdPz4fJTb5lJ5h7VV6EkRWx64aHW8Y0IkkNPQVAam/abO67eu9FcJb+XOueH/en9HpmAsoulg==
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,metrics"
+      MANAGEMENT_ENDPOINTS_WEB_BASE_PATH: "/actuator"
     depends_on:
       db:
         condition: service_healthy
     ports:
       - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
 
   frontend:
     build:
