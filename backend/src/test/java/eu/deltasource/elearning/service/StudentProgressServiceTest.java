@@ -23,12 +23,16 @@ class StudentProgressServiceTest {
 
     @Mock
     private StudentService studentService;
+
     @Mock
     private CourseService courseService;
+
     @Mock
     private VideoService videoService;
+
     @Mock
     private StudentProgressRepository studentProgressRepository;
+
     @Mock
     private WatchedVideosRepository watchedVideosRepository;
 

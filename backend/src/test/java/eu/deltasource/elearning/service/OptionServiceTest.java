@@ -26,6 +26,7 @@ class OptionServiceTest {
 
     @Mock
     private OptionRepository optionRepository;
+
     @Mock
     private QuestionRepository questionRepository;
 
@@ -111,17 +112,17 @@ class OptionServiceTest {
         UUID questionId = UUID.randomUUID();
         Question question = new Question();
         question.setId(questionId);
-        Option o1 = new Option();
-        o1.setId(UUID.randomUUID());
-        o1.setQuestion(question);
-        o1.setText("A");
-        o1.setCorrect(true);
-        Option o2 = new Option();
-        o2.setId(UUID.randomUUID());
-        o2.setQuestion(question);
-        o2.setText("B");
-        o2.setCorrect(false);
-        when(optionRepository.findByQuestionId(questionId)).thenReturn(Arrays.asList(o1, o2));
+        Option optionOne = new Option();
+        optionOne.setId(UUID.randomUUID());
+        optionOne.setQuestion(question);
+        optionOne.setText("A");
+        optionOne.setCorrect(true);
+        Option optionTwo = new Option();
+        optionTwo.setId(UUID.randomUUID());
+        optionTwo.setQuestion(question);
+        optionTwo.setText("B");
+        optionTwo.setCorrect(false);
+        when(optionRepository.findByQuestionId(questionId)).thenReturn(Arrays.asList(optionOne, optionTwo));
 
         // When
         List<OptionDTO> result = optionService.getOptionsByQuestionId(questionId);

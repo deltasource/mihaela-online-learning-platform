@@ -3,6 +3,9 @@ package eu.deltasource.elearning.service;
 import eu.deltasource.elearning.DTOs.CreateNotificationRequest;
 import eu.deltasource.elearning.DTOs.NotificationDTO;
 import eu.deltasource.elearning.DTOs.NotificationSummaryDTO;
+import eu.deltasource.elearning.exception.IdNotFoundException;
+import eu.deltasource.elearning.exception.NotificationNotFoundException;
+import eu.deltasource.elearning.exception.UserNotFoundException;
 import eu.deltasource.elearning.model.Notification;
 import eu.deltasource.elearning.model.User;
 import eu.deltasource.elearning.repository.NotificationRepository;
@@ -31,11 +34,11 @@ public class NotificationService {
     @Transactional
     public NotificationDTO createNotification(CreateNotificationRequest request) {
         if (request.getUserId() == null) {
-            throw new IllegalArgumentException("User ID is required for single notification");
+            throw new IdNotFoundException("User ID is required for single notification");
         }
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + request.getUserId()));
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + request.getUserId()));
 
         Notification notification = Notification.builder()
                 .user(user)
@@ -57,12 +60,12 @@ public class NotificationService {
     @Transactional
     public List<NotificationDTO> createBulkNotifications(CreateNotificationRequest request) {
         if (request.getUserIds() == null || request.getUserIds().isEmpty()) {
-            throw new IllegalArgumentException("User IDs are required for bulk notification");
+            throw new IdNotFoundException("User IDs are required for bulk notification");
         }
 
         List<User> users = userRepository.findAllById(request.getUserIds());
         if (users.size() != request.getUserIds().size()) {
-            throw new RuntimeException("Some users were not found");
+            throw new UserNotFoundException("Some users were not found");
         }
 
         List<Notification> notifications = users.stream()
@@ -88,7 +91,7 @@ public class NotificationService {
 
     public Page<NotificationDTO> getUserNotifications(UUID userId, int page, int size) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Notification> notifications = notificationRepository.findByUserOrderByCreatedAtDesc(user, pageable);
@@ -98,7 +101,7 @@ public class NotificationService {
 
     public List<NotificationDTO> getUnreadNotifications(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 
         List<Notification> notifications = notificationRepository.findByUserAndIsReadFalseOrderByCreatedAtDesc(user);
 
@@ -116,7 +119,7 @@ public class NotificationService {
     @Transactional
     public void markAllAsRead(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 
         notificationRepository.markAllAsReadForUser(user, LocalDateTime.now());
         log.info("Marked all notifications as read for user {}", user.getEmail());
@@ -124,7 +127,7 @@ public class NotificationService {
 
     public NotificationSummaryDTO getNotificationSummary(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 
         long totalNotifications = notificationRepository.countByUser(user);
         long unreadNotifications = notificationRepository.countByUserAndIsReadFalse(user);
@@ -144,7 +147,7 @@ public class NotificationService {
     @Transactional
     public void deleteNotification(UUID notificationId) {
         if (!notificationRepository.existsById(notificationId)) {
-            throw new RuntimeException("Notification not found with ID: " + notificationId);
+            throw new NotificationNotFoundException("Notification not found with ID: " + notificationId);
         }
         notificationRepository.deleteById(notificationId);
         log.info("Deleted notification {}", notificationId);
@@ -153,7 +156,7 @@ public class NotificationService {
     @Transactional
     public void cleanupOldNotifications(UUID userId, int daysOld) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 
         LocalDateTime cutoffDate = LocalDateTime.now().minusDays(daysOld);
         notificationRepository.deleteByUserAndCreatedAtBefore(user, cutoffDate);

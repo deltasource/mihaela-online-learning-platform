@@ -27,6 +27,7 @@ class QuizServiceTest {
 
     @Mock
     private QuizRepository quizRepository;
+
     @Mock
     private CourseRepository courseRepository;
 

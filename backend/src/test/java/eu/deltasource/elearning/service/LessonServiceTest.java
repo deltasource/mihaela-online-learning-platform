@@ -27,6 +27,7 @@ class LessonServiceTest {
 
     @Mock
     private LessonRepository lessonRepository;
+
     @Mock
     private CourseRepository courseRepository;
 
@@ -123,29 +124,29 @@ class LessonServiceTest {
         UUID courseId = UUID.randomUUID();
         Course course = new Course();
         course.setId(courseId);
-        Lesson l1 = new Lesson();
-        l1.setId(UUID.randomUUID());
-        l1.setCourse(course);
-        l1.setOrder(1);
-        l1.setTitle("L1");
-        l1.setCreatedAt(LocalDateTime.now());
-        l1.setUpdatedAt(LocalDateTime.now());
-        Lesson l2 = new Lesson();
-        l2.setId(UUID.randomUUID());
-        l2.setCourse(course);
-        l2.setOrder(2);
-        l2.setTitle("L2");
-        l2.setCreatedAt(LocalDateTime.now());
-        l2.setUpdatedAt(LocalDateTime.now());
-        when(lessonRepository.findByCourseIdOrderByOrderAsc(courseId)).thenReturn(Arrays.asList(l1, l2));
+        Lesson lessonOne = new Lesson();
+        lessonOne.setId(UUID.randomUUID());
+        lessonOne.setCourse(course);
+        lessonOne.setOrder(1);
+        lessonOne.setTitle("lessonOne");
+        lessonOne.setCreatedAt(LocalDateTime.now());
+        lessonOne.setUpdatedAt(LocalDateTime.now());
+        Lesson lessonTwo = new Lesson();
+        lessonTwo.setId(UUID.randomUUID());
+        lessonTwo.setCourse(course);
+        lessonTwo.setOrder(2);
+        lessonTwo.setTitle("lessonTwo");
+        lessonTwo.setCreatedAt(LocalDateTime.now());
+        lessonTwo.setUpdatedAt(LocalDateTime.now());
+        when(lessonRepository.findByCourseIdOrderByOrderAsc(courseId)).thenReturn(Arrays.asList(lessonOne, lessonTwo));
 
         // When
         List<LessonDTO> result = lessonService.getLessonsByCourseId(courseId);
 
         // Then
         assertEquals(2, result.size());
-        assertEquals("L1", result.get(0).getTitle());
-        assertEquals("L2", result.get(1).getTitle());
+        assertEquals("lessonOne", result.get(0).getTitle());
+        assertEquals("lessonTwo", result.get(1).getTitle());
     }
 
     @Test

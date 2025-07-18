@@ -2,6 +2,7 @@ package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.EnrollmentDTO;
 import eu.deltasource.elearning.enums.EnrollmentStatus;
+import eu.deltasource.elearning.exception.EnrollmentNotPossibleException;
 import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.Enrollment;
 import eu.deltasource.elearning.model.Student;
@@ -29,13 +30,13 @@ public class EnrollmentService {
     @Transactional
     public EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO) {
         Student student = studentRepository.findById(enrollmentDTO.getStudentId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new EnrollmentNotPossibleException("Student not found"));
 
         Course course = courseRepository.findById(enrollmentDTO.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new EnrollmentNotPossibleException("Course not found"));
 
         if (enrollmentRepository.existsByStudentAndCourse(student, course)) {
-            throw new RuntimeException("Student is already enrolled in this course");
+            throw new EnrollmentNotPossibleException("Student is already enrolled in this course");
         }
 
         Enrollment enrollment = new Enrollment();
@@ -53,7 +54,7 @@ public class EnrollmentService {
 
     public List<EnrollmentDTO> getStudentEnrollments(UUID studentId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new EnrollmentNotPossibleException("Student not found"));
 
         return enrollmentRepository.findByStudent(student).stream()
                 .map(this::mapToDTO)
@@ -62,7 +63,7 @@ public class EnrollmentService {
 
     public List<EnrollmentDTO> getCourseEnrollments(UUID courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new EnrollmentNotPossibleException("Course not found"));
 
         return enrollmentRepository.findByCourse(course).stream()
                 .map(this::mapToDTO)
@@ -72,7 +73,7 @@ public class EnrollmentService {
     @Transactional
     public EnrollmentDTO updateEnrollmentStatus(UUID enrollmentId, String status) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+                .orElseThrow(() -> new EnrollmentNotPossibleException("Enrollment not found"));
 
         EnrollmentStatus newStatus = EnrollmentStatus.valueOf(status.toUpperCase());
         enrollment.setStatus(newStatus);

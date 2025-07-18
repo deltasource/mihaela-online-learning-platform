@@ -3,6 +3,9 @@ package eu.deltasource.elearning.service;
 import eu.deltasource.elearning.DTOs.CreateNotificationRequest;
 import eu.deltasource.elearning.DTOs.NotificationDTO;
 import eu.deltasource.elearning.DTOs.NotificationSummaryDTO;
+import eu.deltasource.elearning.exception.IdNotFoundException;
+import eu.deltasource.elearning.exception.NotificationNotFoundException;
+import eu.deltasource.elearning.exception.UserNotFoundException;
 import eu.deltasource.elearning.model.Notification;
 import eu.deltasource.elearning.model.User;
 import eu.deltasource.elearning.repository.NotificationRepository;
@@ -31,6 +34,7 @@ class NotificationServiceTest {
 
     @Mock
     private NotificationRepository notificationRepository;
+
     @Mock
     private UserRepository userRepository;
 
@@ -83,9 +87,8 @@ class NotificationServiceTest {
         // Given
         CreateNotificationRequest request = CreateNotificationRequest.builder().build();
 
-        // When
-        // Then
-        assertThrows(IllegalArgumentException.class, () -> notificationService.createNotification(request));
+        // When & Then
+        assertThrows(IdNotFoundException.class, () -> notificationService.createNotification(request));
     }
 
     @Test
@@ -94,9 +97,8 @@ class NotificationServiceTest {
         CreateNotificationRequest request = CreateNotificationRequest.builder().userId(userId).build();
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // When
-        // Then
-        assertThrows(RuntimeException.class, () -> notificationService.createNotification(request));
+        // When & Then
+        assertThrows(UserNotFoundException.class, () -> notificationService.createNotification(request));
     }
 
     @Test
@@ -128,7 +130,7 @@ class NotificationServiceTest {
 
         // Then
         assertEquals(1, result.size());
-        assertEquals("Bulk", result.get(0).getTitle());
+        assertEquals("Bulk", result.getFirst().getTitle());
     }
 
     @Test
@@ -136,9 +138,8 @@ class NotificationServiceTest {
         // Given
         CreateNotificationRequest request = CreateNotificationRequest.builder().userIds(Collections.emptyList()).build();
 
-        // When
-        // Then
-        assertThrows(IllegalArgumentException.class, () -> notificationService.createBulkNotifications(request));
+        // When & Then
+        assertThrows(IdNotFoundException.class, () -> notificationService.createBulkNotifications(request));
     }
 
     @Test
@@ -148,9 +149,8 @@ class NotificationServiceTest {
         CreateNotificationRequest request = CreateNotificationRequest.builder().userIds(userIds).build();
         when(userRepository.findAllById(userIds)).thenReturn(List.of(user));
 
-        // When
-        // Then
-        assertThrows(RuntimeException.class, () -> notificationService.createBulkNotifications(request));
+        // When & Then
+        assertThrows(UserNotFoundException.class, () -> notificationService.createBulkNotifications(request));
     }
 
     @Test
@@ -166,7 +166,7 @@ class NotificationServiceTest {
 
         // Then
         assertEquals(1, result.getTotalElements());
-        assertEquals("T", result.getContent().get(0).getTitle());
+        assertEquals("T", result.getContent().getFirst().getTitle());
     }
 
     @Test
@@ -174,9 +174,8 @@ class NotificationServiceTest {
         // Given
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // When
-        // Then
-        assertThrows(RuntimeException.class, () -> notificationService.getUserNotifications(userId, 0, 10));
+        // When & Then
+        assertThrows(UserNotFoundException.class, () -> notificationService.getUserNotifications(userId, 0, 10));
     }
 
     @Test
@@ -191,7 +190,7 @@ class NotificationServiceTest {
 
         // Then
         assertEquals(1, result.size());
-        assertFalse(result.get(0).isRead());
+        assertFalse(result.getFirst().isRead());
     }
 
     @Test
@@ -225,8 +224,7 @@ class NotificationServiceTest {
         // Given
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // When
-        // Then
+        // When & Then
         assertThrows(RuntimeException.class, () -> notificationService.markAllAsRead(userId));
     }
 
@@ -254,8 +252,7 @@ class NotificationServiceTest {
         // Given
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // When
-        // Then
+        // When & Then
         assertThrows(RuntimeException.class, () -> notificationService.getNotificationSummary(userId));
     }
 
@@ -279,9 +276,8 @@ class NotificationServiceTest {
         UUID notificationId = UUID.randomUUID();
         when(notificationRepository.existsById(notificationId)).thenReturn(false);
 
-        // When
-        // Then
-        assertThrows(RuntimeException.class, () -> notificationService.deleteNotification(notificationId));
+        // When & Then
+        assertThrows(NotificationNotFoundException.class, () -> notificationService.deleteNotification(notificationId));
     }
 
     @Test
@@ -302,9 +298,7 @@ class NotificationServiceTest {
         // Given
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // When
-
-        // Then
-        assertThrows(RuntimeException.class, () -> notificationService.cleanupOldNotifications(userId, 30));
+        // When & Then
+        assertThrows(UserNotFoundException.class, () -> notificationService.cleanupOldNotifications(userId, 30));
     }
 }

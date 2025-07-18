@@ -30,10 +30,13 @@ class VideoServiceTest {
 
     @Mock
     private VideoRepository videoRepository;
+
     @Mock
     private CourseRepository courseRepository;
+
     @Mock
     private VideoFileManager videoFileManager;
+
     @Mock
     private MultipartFile multipartFile;
 

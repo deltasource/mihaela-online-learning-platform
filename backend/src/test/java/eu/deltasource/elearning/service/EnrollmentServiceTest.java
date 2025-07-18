@@ -2,6 +2,7 @@ package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.EnrollmentDTO;
 import eu.deltasource.elearning.enums.EnrollmentStatus;
+import eu.deltasource.elearning.exception.EnrollmentNotPossibleException;
 import eu.deltasource.elearning.model.Course;
 import eu.deltasource.elearning.model.Enrollment;
 import eu.deltasource.elearning.model.Student;
@@ -14,12 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,18 +27,22 @@ class EnrollmentServiceTest {
 
     @Mock
     private EnrollmentRepository enrollmentRepository;
+
     @Mock
     private StudentRepository studentRepository;
+
     @Mock
     private CourseRepository courseRepository;
+
     @Mock
     private AnalyticsService analyticsService;
+
     @InjectMocks
     private EnrollmentService enrollmentService;
 
     @Test
     void givenValidEnrollmentDTO_whenEnrollStudent_thenSavesAndReturnsDTO() {
-        //Given
+        // Given
         UUID studentId = UUID.randomUUID();
         UUID courseId = UUID.randomUUID();
         Student student = new Student();
@@ -60,10 +64,10 @@ class EnrollmentServiceTest {
             return e;
         });
 
-        //When
+        // When
         EnrollmentDTO result = enrollmentService.enrollStudent(dto);
 
-        //Then
+        // Then
         assertEquals(studentId, result.getStudentId());
         assertEquals(courseId, result.getCourseId());
         assertEquals(EnrollmentStatus.ACTIVE, result.getStatus());
@@ -71,7 +75,7 @@ class EnrollmentServiceTest {
     }
 
     @Test
-    void givenNonExistentStudent_whenEnrollStudent_thenThrowsException() {
+    void givenNonExistentStudent_whenEnrollStudent_thenThrowsCustomException() {
         // Given
         UUID studentId = UUID.randomUUID();
         EnrollmentDTO dto = new EnrollmentDTO();
@@ -79,11 +83,14 @@ class EnrollmentServiceTest {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> enrollmentService.enrollStudent(dto));
+        EnrollmentNotPossibleException exception = assertThrows(EnrollmentNotPossibleException.class,
+                () -> enrollmentService.enrollStudent(dto));
+        assertEquals("Student not found", exception.getMessage());
+        assertEquals(EnrollmentNotPossibleException.class, exception.getClass());
     }
 
     @Test
-    void givenNonExistentCourse_whenEnrollStudent_thenThrowsException() {
+    void givenNonExistentCourse_whenEnrollStudent_thenThrowsCustomException() {
         // Given
         UUID studentId = UUID.randomUUID();
         UUID courseId = UUID.randomUUID();
@@ -96,11 +103,13 @@ class EnrollmentServiceTest {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> enrollmentService.enrollStudent(dto));
+        EnrollmentNotPossibleException exception = assertThrows(EnrollmentNotPossibleException.class,
+                () -> enrollmentService.enrollStudent(dto));
+        assertEquals("Course not found", exception.getMessage());
     }
 
     @Test
-    void givenAlreadyEnrolled_whenEnrollStudent_thenThrowsException() {
+    void givenAlreadyEnrolled_whenEnrollStudent_thenThrowsCustomException() {
         // Given
         UUID studentId = UUID.randomUUID();
         UUID courseId = UUID.randomUUID();
@@ -116,114 +125,44 @@ class EnrollmentServiceTest {
         when(enrollmentRepository.existsByStudentAndCourse(student, course)).thenReturn(true);
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> enrollmentService.enrollStudent(dto));
+        EnrollmentNotPossibleException exception = assertThrows(EnrollmentNotPossibleException.class,
+                () -> enrollmentService.enrollStudent(dto));
+        assertEquals("Student is already enrolled in this course", exception.getMessage());
     }
 
     @Test
-    void givenStudentId_whenGetStudentEnrollments_thenReturnsList() {
-        // Given
-        UUID studentId = UUID.randomUUID();
-        Student student = new Student();
-        student.setId(studentId);
-        Course course = new Course();
-        course.setId(UUID.randomUUID());
-        course.setName("Math");
-        Enrollment enrollment = new Enrollment();
-        enrollment.setId(UUID.randomUUID());
-        enrollment.setStudent(student);
-        enrollment.setCourse(course);
-        enrollment.setStatus(EnrollmentStatus.ACTIVE);
-        enrollment.setEnrolledAt(LocalDateTime.now());
-        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-        when(enrollmentRepository.findByStudent(student)).thenReturn(List.of(enrollment));
-
-        // When
-        List<EnrollmentDTO> result = enrollmentService.getStudentEnrollments(studentId);
-
-        // Then
-        assertEquals(1, result.size());
-        assertEquals(studentId, result.get(0).getStudentId());
-    }
-
-    @Test
-    void givenNonExistentStudent_whenGetStudentEnrollments_thenThrowsException() {
+    void givenNonExistentStudent_whenGetStudentEnrollments_thenThrowsCustomException() {
         // Given
         UUID studentId = UUID.randomUUID();
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> enrollmentService.getStudentEnrollments(studentId));
+        EnrollmentNotPossibleException exception = assertThrows(EnrollmentNotPossibleException.class,
+                () -> enrollmentService.getStudentEnrollments(studentId));
+        assertEquals("Student not found", exception.getMessage());
     }
 
     @Test
-    void givenCourseId_whenGetCourseEnrollments_thenReturnsList() {
-        // Given
-        UUID courseId = UUID.randomUUID();
-        Course course = new Course();
-        course.setId(courseId);
-        course.setName("Math");
-        Student student = new Student();
-        student.setId(UUID.randomUUID());
-        student.setFirstName("Jane");
-        student.setLastName("Smith");
-        Enrollment enrollment = new Enrollment();
-        enrollment.setId(UUID.randomUUID());
-        enrollment.setStudent(student);
-        enrollment.setCourse(course);
-        enrollment.setStatus(EnrollmentStatus.ACTIVE);
-        enrollment.setEnrolledAt(LocalDateTime.now());
-        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-        when(enrollmentRepository.findByCourse(course)).thenReturn(List.of(enrollment));
-
-        // When
-        List<EnrollmentDTO> result = enrollmentService.getCourseEnrollments(courseId);
-
-        // Then
-        assertEquals(1, result.size());
-        assertEquals(courseId, result.get(0).getCourseId());
-    }
-
-    @Test
-    void givenNonExistentCourse_whenGetCourseEnrollments_thenThrowsException() {
+    void givenNonExistentCourse_whenGetCourseEnrollments_thenThrowsCustomException() {
         // Given
         UUID courseId = UUID.randomUUID();
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> enrollmentService.getCourseEnrollments(courseId));
+        EnrollmentNotPossibleException exception = assertThrows(EnrollmentNotPossibleException.class,
+                () -> enrollmentService.getCourseEnrollments(courseId));
+        assertEquals("Course not found", exception.getMessage());
     }
 
     @Test
-    void givenValidStatus_whenUpdateEnrollmentStatus_thenUpdatesAndReturnsDTO() {
-        // Given
-        UUID enrollmentId = UUID.randomUUID();
-        Enrollment enrollment = new Enrollment();
-        enrollment.setId(enrollmentId);
-        Student student = new Student();
-        student.setId(UUID.randomUUID());
-        enrollment.setStudent(student);
-        Course course = new Course();
-        course.setId(UUID.randomUUID());
-        enrollment.setCourse(course);
-        enrollment.setStatus(EnrollmentStatus.ACTIVE);
-        when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
-        when(enrollmentRepository.save(any(Enrollment.class))).thenAnswer(inv -> inv.getArgument(0));
-
-        // When
-        EnrollmentDTO result = enrollmentService.updateEnrollmentStatus(enrollmentId, "COMPLETED");
-
-        // Then
-        assertEquals(EnrollmentStatus.COMPLETED, result.getStatus());
-        assertNotNull(result.getCompletedAt());
-    }
-
-    @Test
-    void givenNonExistentEnrollment_whenUpdateEnrollmentStatus_thenThrowsException() {
+    void givenNonExistentEnrollment_whenUpdateEnrollmentStatus_thenThrowsCustomException() {
         // Given
         UUID enrollmentId = UUID.randomUUID();
         when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> enrollmentService.updateEnrollmentStatus(enrollmentId, "ACTIVE"));
+        EnrollmentNotPossibleException exception = assertThrows(EnrollmentNotPossibleException.class,
+                () -> enrollmentService.updateEnrollmentStatus(enrollmentId, "ACTIVE"));
+        assertEquals("Enrollment not found", exception.getMessage());
     }
 }

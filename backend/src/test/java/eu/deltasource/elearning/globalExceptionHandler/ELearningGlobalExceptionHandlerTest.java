@@ -9,13 +9,13 @@ import eu.deltasource.elearning.exception.UnsupportedFileTypeException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.springframework.http.HttpStatus.*;
 
 @ExtendWith(MockitoExtension.class)
 class ELearningGlobalExceptionHandlerTest {
@@ -32,7 +32,7 @@ class ELearningGlobalExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = handler.handleStudentAlreadyExistsException(ex, request);
 
         // Then
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals(CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().getTimestamp());
     }
@@ -47,7 +47,7 @@ class ELearningGlobalExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = handler.handleException(ex, request);
 
         // Then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().getTimestamp());
     }
@@ -62,7 +62,7 @@ class ELearningGlobalExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = handler.handleException(ex, request);
 
         // Then
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().getTimestamp());
     }
@@ -77,7 +77,7 @@ class ELearningGlobalExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = handler.handleNotFoundException(ex, request);
 
         // Then
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().getTimestamp());
     }
@@ -91,7 +91,7 @@ class ELearningGlobalExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = handler.handleUnsupportedFileType(ex);
 
         // Then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().getTimestamp());
     }

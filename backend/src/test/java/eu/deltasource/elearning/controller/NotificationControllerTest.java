@@ -36,7 +36,7 @@ class NotificationControllerTest {
         when(notificationService.createNotification(request)).thenReturn(notificationDTO);
 
         // When
-        NotificationDTO response = (NotificationDTO) notificationController.createNotification(request).getBody();
+        var response = notificationController.createNotification(request).getBody();
 
         // Then
         assertEquals(notificationDTO, response);
