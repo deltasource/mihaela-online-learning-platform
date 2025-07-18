@@ -11,6 +11,9 @@ on:
 jobs:
   backend-checks:
     runs-on: ubuntu-latest
+    env:
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 
     steps:
       - name: Checkout code
@@ -38,6 +41,8 @@ jobs:
 
   frontend-checks:
     runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: ${{ secrets.VITE_API_BASE_URL }}
 
     steps:
       - name: Checkout code
@@ -59,3 +64,4 @@ jobs:
       - name: Run tests
         working-directory: frontend
         run: npx vitest
+  

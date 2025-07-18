@@ -27,6 +27,7 @@
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <jjwt.version>0.11.5</jjwt.version>
         <maven.surefire.plugin.version>3.5.3</maven.surefire.plugin.version>
+        <spring-boot-actuator.version>2.7.0</spring-boot-actuator.version>
     </properties>
 
     <dependencies>
@@ -96,6 +97,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
@@ -109,6 +115,11 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>${spring-boot-actuator.version}</version>
         </dependency>
     </dependencies>
 
@@ -203,6 +214,7 @@
                         <exclude>**/constants/**</exclude>
                         <exclude>**/*Application.class</exclude>
                         <exclude>**/exception/**</exclude>
+                        <exclude>**/enums/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
