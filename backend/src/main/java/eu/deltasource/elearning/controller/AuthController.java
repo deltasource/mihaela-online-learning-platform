@@ -39,7 +39,7 @@ public class AuthController {
 
     @Operation(summary = "Refresh access token")
     @PostMapping("/refresh")
-    public AuthResponse refresh(@RequestHeader("Authorization") String refreshToken) throws RefreshTokenException {
+    public AuthResponse refresh(@RequestHeader("Authorization") String refreshToken){
         log.info("Refreshing access token with refresh token: {}", refreshToken);
         return authService.refreshToken(refreshToken);
     }
