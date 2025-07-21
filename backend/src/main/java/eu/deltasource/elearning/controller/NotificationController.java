@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,8 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
+@Data
+@Slf4j
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -33,13 +37,19 @@ public class NotificationController {
     @ResponseStatus(CREATED)
     @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<?> createNotification(@Valid @RequestBody CreateNotificationRequest request) {
+        log.info("Creating notification with request: {}", request);
         if (request.getUserId() != null) {
+            log.info("Creating notification with user with ID: {}", request.getUserId());
             NotificationDTO notification = notificationService.createNotification(request);
+            log.info("Notification created successfully: {}", notification);
             return ResponseEntity.status(CREATED).body(notification);
         } else if (request.getUserIds() != null && !request.getUserIds().isEmpty()) {
+            log.info("Creating bulk notifications for user IDs: {}", request.getUserIds());
             List<NotificationDTO> notifications = notificationService.createBulkNotifications(request);
+            log.info("Bulk notifications created successfully: {}", notifications);
             return ResponseEntity.status(CREATED).body(notifications);
         } else {
+            log.warn("Invalid request: either userId or userIds must be provided");
             return ResponseEntity.badRequest().body("Either userId or userIds must be provided");
         }
     }
@@ -51,6 +61,7 @@ public class NotificationController {
             @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Page size") @RequestParam(defaultValue = "20") int size) {
 
+        log.info("Retrieving notifications for user with ID: {} (page: {}, size: {})", userId, page, size);
         Page<NotificationDTO> notifications = notificationService.getUserNotifications(userId, page, size);
         return ResponseEntity.ok(notifications);
     }
@@ -60,6 +71,7 @@ public class NotificationController {
     public ResponseEntity<List<NotificationDTO>> getUnreadNotifications(
             @Parameter(description = "User ID") @PathVariable UUID userId) {
 
+        log.info("Retrieving unread notifications for user with ID: {}", userId);
         List<NotificationDTO> notifications = notificationService.getUnreadNotifications(userId);
         return ResponseEntity.ok(notifications);
     }
@@ -69,6 +81,7 @@ public class NotificationController {
     public ResponseEntity<NotificationSummaryDTO> getNotificationSummary(
             @Parameter(description = "User ID") @PathVariable UUID userId) {
 
+        log.info("Retrieving notification summary for user with ID: {}", userId);
         NotificationSummaryDTO summary = notificationService.getNotificationSummary(userId);
         return ResponseEntity.ok(summary);
     }
@@ -79,6 +92,7 @@ public class NotificationController {
     public void markAsRead(
             @Parameter(description = "Notification ID") @PathVariable UUID notificationId) {
 
+        log.info("Marking notification with ID: {} as read", notificationId);
         notificationService.markAsRead(notificationId);
     }
 
@@ -88,6 +102,7 @@ public class NotificationController {
     public void markAllAsRead(
             @Parameter(description = "User ID") @PathVariable UUID userId) {
 
+        log.info("Marking all notifications as read for user with ID: {}", userId);
         notificationService.markAllAsRead(userId);
     }
 
@@ -97,6 +112,7 @@ public class NotificationController {
     public void deleteNotification(
             @Parameter(description = "Notification ID") @PathVariable UUID notificationId) {
 
+        log.info("Deleting notification with ID: {}", notificationId);
         notificationService.deleteNotification(notificationId);
     }
 
@@ -107,6 +123,7 @@ public class NotificationController {
             @Parameter(description = "User ID") @PathVariable UUID userId,
             @Parameter(description = "Days old") @RequestParam(defaultValue = "30") int daysOld) {
 
+        log.info("Cleaning up notifications older than {} days for user with ID: {}", daysOld, userId);
         notificationService.cleanupOldNotifications(userId, daysOld);
     }
 }

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RestController
 @RequestMapping("/api/analytics")
 @RequiredArgsConstructor
+@Slf4j
 public class AnalyticsController {
 
     private final AnalyticsService analyticsService;
@@ -32,14 +34,18 @@ public class AnalyticsController {
     @PostMapping("/events")
     @ResponseStatus(CREATED)
     public void trackEvent(@Valid @RequestBody AnalyticsEventDTO eventDTO, HttpServletRequest request) {
+        log.info("Tracking event: {}", eventDTO);
         analyticsService.trackEvent(eventDTO, request);
+        log.info("Tracked event: {}", eventDTO);
     }
 
     @Operation(summary = "Get dashboard statistics", description = "Retrieves overall platform statistics for admin dashboard")
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DashboardStatsDTO> getDashboardStats() {
+        log.info("Getting dashboard statistics");
         DashboardStatsDTO stats = analyticsService.getDashboardStats();
+        log.info("Retrieved dashboard statistics: {}", stats);
         return ResponseEntity.ok(stats);
     }
 
@@ -48,7 +54,9 @@ public class AnalyticsController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('STUDENT') and #userId == authentication.principal.id) or (hasRole('INSTRUCTOR') and #userId == authentication.principal.id)")
     public ResponseEntity<UserAnalyticsDTO> getUserAnalytics(
             @Parameter(description = "User ID") @PathVariable UUID userId) {
+        log.info("Getting analytics for user: {}", userId);
         UserAnalyticsDTO analytics = analyticsService.getUserAnalytics(userId);
+        log.info("Retrieved analytics for user {}: {}", userId, analytics);
         return ResponseEntity.ok(analytics);
     }
 
@@ -57,7 +65,9 @@ public class AnalyticsController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<CourseAnalyticsDTO> getCourseAnalytics(
             @Parameter(description = "Course ID") @PathVariable UUID courseId) {
+        log.info("Getting analytics for course: {}", courseId);
         CourseAnalyticsDTO analytics = analyticsService.getCourseAnalytics(courseId);
+        log.info("Retrieved analytics for course {}: {}", courseId, analytics);
         return ResponseEntity.ok(analytics);
     }
 
@@ -66,7 +76,9 @@ public class AnalyticsController {
     public void trackUserLogin(
             @Parameter(description = "User ID") @PathVariable UUID userId,
             HttpServletRequest request) {
+        log.info("Tracking login for user: {}", userId);
         analyticsService.trackUserLogin(userId, request);
+        log.info("Tracked login for user: {}", userId);
     }
 
     @Operation(summary = "Track course enrollment", description = "Records a course enrollment event")
@@ -74,7 +86,9 @@ public class AnalyticsController {
     public void trackCourseEnrollment(
             @Parameter(description = "User ID") @RequestParam UUID userId,
             @Parameter(description = "Course ID") @RequestParam UUID courseId) {
+        log.info("Tracking course enrollment for user: {} in course: {}", userId, courseId);
         analyticsService.trackCourseEnrollment(userId, courseId);
+        log.info("Tracked course enrollment for user: {} in course: {}", userId, courseId);
     }
 
     @Operation(summary = "Clean up old analytics data", description = "Removes analytics data older than specified days")
@@ -83,6 +97,8 @@ public class AnalyticsController {
     @ResponseStatus(NO_CONTENT)
     public void cleanupOldData(
             @Parameter(description = "Days to keep") @RequestParam(defaultValue = "365") int daysToKeep) {
+        log.info("Cleaning up analytics data older than {} days", daysToKeep);
         analyticsService.cleanupOldData(daysToKeep);
+        log.info("Cleaned up analytics data older than {} days", daysToKeep);
     }
 }
