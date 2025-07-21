@@ -10,6 +10,7 @@ import eu.deltasource.elearning.repository.CourseRepository;
 import eu.deltasource.elearning.repository.QuizRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class QuizService {
 
     private final QuizRepository quizRepository;
@@ -47,12 +49,14 @@ public class QuizService {
     }
 
     public QuizDTO getQuizById(UUID quizId) {
+        log.info("Getting quiz with id {}", quizId);
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new QuizNotFoundException("Quiz not found"));
         return mapToQuizDTO(quiz);
     }
 
     public List<QuizDTO> getQuizzesByCourseId(UUID courseId) {
+        log.info("Getting quizzes for course id {}", courseId);
         List<Quiz> quizzes = quizRepository.findByCourseIdOrderByOrderAsc(courseId);
         return quizzes.stream()
                 .map(this::mapToQuizDTO)
@@ -64,7 +68,9 @@ public class QuizService {
         Quiz existingQuiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new QuizNotFoundException("Quiz not found"));
 
+        log.info("Updating quiz with id {}", quizId);
         if (!existingQuiz.getCourse().getId().equals(quizDTO.getCourseId())) {
+            log.warn("Attempt to update quiz with a different course ID: {}. Current course ID: {}", quizDTO.getCourseId(), existingQuiz.getCourse().getId());
             Course newCourse = courseRepository.findById(quizDTO.getCourseId())
                     .orElseThrow(() -> new CourseNotFoundException("Course not found"));
             existingQuiz.setCourse(newCourse);
@@ -104,6 +110,7 @@ public class QuizService {
         quizDTO.setUpdatedAt(quiz.getUpdatedAt());
 
         if (quiz.getQuestions() != null) {
+            log.info("Mapping questions for quiz with id {}", quiz.getId());
             quizDTO.setQuestionIds(quiz.getQuestions().stream()
                     .map(Question::getId)
                     .collect(Collectors.toList()));

@@ -7,6 +7,7 @@ import eu.deltasource.elearning.model.Student;
 import eu.deltasource.elearning.repository.StudentRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class StudentService {
 
     private final StudentRepository studentRepository;
@@ -27,7 +29,9 @@ public class StudentService {
     @Transactional
     public StudentDTO createStudent(StudentDTO studentDTO) {
         Optional<Student> existingStudent = studentRepository.findByEmail(studentDTO.getEmail());
+        log.info("Creating student with email: {}", studentDTO.getEmail());
         if (existingStudent.isPresent()) {
+            log.warn("Student with email {} already exists", studentDTO.getEmail());
             throw new StudentAlreadyExistsException("Student with email " + studentDTO.getEmail() + " already exists.");
         }
         Student student = mapToStudent(studentDTO);
@@ -36,12 +40,14 @@ public class StudentService {
     }
 
     public Student getStudentById(UUID studentId) {
+        log.info("Retrieving student with ID: {}", studentId);
         return studentRepository.findById(studentId)
                 .orElseThrow(() -> new StudentNotFoundException(
                         String.format("Student with ID %s not found", studentId)));
     }
 
     public StudentDTO getStudentByEmail(String email) {
+        log.info("Retrieving student with email: {}", email);
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new StudentNotFoundException("Student with email " + email + " not found"));
         return mapToStudentDTO(student);
@@ -49,6 +55,7 @@ public class StudentService {
 
     @Transactional
     public StudentDTO updateStudentByEmail(String email, StudentDTO studentDTO) {
+        log.info("Updating student with email: {}", email);
         Student existingStudent = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new StudentNotFoundException("Student with email " + email + " not found"));
 
@@ -62,11 +69,13 @@ public class StudentService {
 
     @Transactional
     public void deleteStudent(String email) {
+        log.info("Deleting student with email: {}", email);
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException("Student with email " + email + " not found");
         }
         studentRepository.deleteByEmail(email);
         if (studentRepository.existsByEmail(email)) {
+            log.error("Failed to delete student with email: {}", email);
             throw new StudentAlreadyExistsException("Failed to delete student with email " + email);
         }
     }

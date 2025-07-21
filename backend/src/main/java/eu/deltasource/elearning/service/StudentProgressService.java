@@ -9,6 +9,7 @@ import eu.deltasource.elearning.model.WatchedVideos;
 import eu.deltasource.elearning.repository.StudentProgressRepository;
 import eu.deltasource.elearning.repository.WatchedVideosRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StudentProgressService {
 
     private final StudentService studentService;
@@ -26,6 +28,7 @@ public class StudentProgressService {
     private final WatchedVideosRepository watchedVideosRepository;
 
     public StudentProgressDTO getProgressPercentage(UUID studentId, UUID courseId) {
+        log.info("Retrieving progress percentage for student ID: {} in course ID: {}", studentId, courseId);
         studentService.getStudentById(studentId);
         courseService.getCourseById(courseId);
         StudentProgress progress = findStudentProgressOrThrow(studentId, courseId);
@@ -48,7 +51,7 @@ public class StudentProgressService {
 
     private StudentProgress findOrCreateStudentProgress(UUID studentId, UUID courseId) {
         Optional<StudentProgress> studentProgressOpt = studentProgressRepository.findByStudentIdAndCourseId(studentId, courseId);
-
+        log.info("Checking progress for student ID: {} in course ID: {}", studentId, courseId);
         return studentProgressOpt.orElseGet(() -> createNewStudentProgress(studentId, courseId));
     }
 
@@ -76,10 +79,13 @@ public class StudentProgressService {
     }
 
     private void calculateProgressPercentage(StudentProgress progress) {
+        log.info("Calculating progress percentage for student progress: {}", progress);
         if (progress.getTotalVideos() > 0) {
+            log.info("Total videos: {}, Videos watched: {}", progress.getTotalVideos(), progress.getVideosWatched());
             double percentage = (progress.getVideosWatched() * 100.0) / progress.getTotalVideos();
             progress.setProgressPercentage(percentage);
         } else {
+            log.warn("Total videos is zero, setting progress percentage to 0");
             progress.setProgressPercentage(0);
         }
     }
