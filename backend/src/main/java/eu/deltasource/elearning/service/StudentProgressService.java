@@ -75,7 +75,7 @@ public class StudentProgressService {
         studentProgressRepository.save(progress);
     }
 
-     private void calculateProgressPercentage(StudentProgress progress) {
+    private void calculateProgressPercentage(StudentProgress progress) {
         if (progress.getTotalVideos() > 0) {
             double percentage = (progress.getVideosWatched() * 100.0) / progress.getTotalVideos();
             progress.setProgressPercentage(percentage);
