@@ -80,6 +80,11 @@ class StudentServiceTest {
     }
 
     @Test
+    void thisTestWillFail() {
+        assertEquals(1, 2, "This assertion is intentionally wrong and the test will fail."); // <-- ALWAYS FAILS
+    }
+
+    @Test
     void givenNonExistentId_whenGetStudentById_thenThrowsStudentNotFoundException() {
         // Given
         UUID id = UUID.randomUUID();
