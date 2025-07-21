@@ -194,6 +194,15 @@ class NotificationServiceTest {
     }
 
     @Test
+    void givenNonExistentUser_whenGetUnreadNotifications_thenThrowsException() {
+        // Given
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(UserNotFoundException.class, () -> notificationService.getUnreadNotifications(userId));
+    }
+
+    @Test
     void givenNotificationId_whenMarkAsRead_thenRepositoryCalled() {
         // Given
         UUID notificationId = UUID.randomUUID();
@@ -225,7 +234,7 @@ class NotificationServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> notificationService.markAllAsRead(userId));
+        assertThrows(UserNotFoundException.class, () -> notificationService.markAllAsRead(userId));
     }
 
     @Test
@@ -253,7 +262,7 @@ class NotificationServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> notificationService.getNotificationSummary(userId));
+        assertThrows(UserNotFoundException.class, () -> notificationService.getNotificationSummary(userId));
     }
 
     @Test
@@ -300,5 +309,72 @@ class NotificationServiceTest {
 
         // When & Then
         assertThrows(UserNotFoundException.class, () -> notificationService.cleanupOldNotifications(userId, 30));
+    }
+
+    @Test
+    void givenUserIdAndParams_whenCreateSystemNotification_thenCreatesNotification() {
+        // Given
+        CreateNotificationRequest expectedRequest = CreateNotificationRequest.builder()
+                .userId(userId)
+                .title("System")
+                .message("SystemMsg")
+                .type(Notification.NotificationType.COURSE_UPDATE)
+                .priority(Notification.NotificationPriority.NORMAL)
+                .build();
+        Notification notification = Notification.builder()
+                .id(UUID.randomUUID())
+                .user(user)
+                .title("System")
+                .message("SystemMsg")
+                .type(Notification.NotificationType.COURSE_UPDATE)
+                .priority(Notification.NotificationPriority.NORMAL)
+                .createdAt(LocalDateTime.now())
+                .isRead(false)
+                .build();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
+
+        // When
+        notificationService.createSystemNotification(userId, "System", "SystemMsg", Notification.NotificationType.COURSE_UPDATE);
+
+        // Then
+        verify(notificationRepository).save(any(Notification.class));
+    }
+
+    @Test
+    void givenUserIdAndCourseIdAndParams_whenCreateCourseNotification_thenCreatesNotification() {
+        // Given
+        UUID courseId = UUID.randomUUID();
+        CreateNotificationRequest expectedRequest = CreateNotificationRequest.builder()
+                .userId(userId)
+                .title("Course")
+                .message("CourseMsg")
+                .type(Notification.NotificationType.COURSE_UPDATE)
+                .priority(Notification.NotificationPriority.NORMAL)
+                .relatedEntityId(courseId)
+                .relatedEntityType(Notification.RelatedEntityType.COURSE)
+                .actionUrl("/courses/" + courseId)
+                .build();
+        Notification notification = Notification.builder()
+                .id(UUID.randomUUID())
+                .user(user)
+                .title("Course")
+                .message("CourseMsg")
+                .type(Notification.NotificationType.COURSE_UPDATE)
+                .priority(Notification.NotificationPriority.NORMAL)
+                .relatedEntityId(courseId)
+                .relatedEntityType(Notification.RelatedEntityType.COURSE)
+                .actionUrl("/courses/" + courseId)
+                .createdAt(LocalDateTime.now())
+                .isRead(false)
+                .build();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
+
+        // When
+        notificationService.createCourseNotification(userId, courseId, "Course", "CourseMsg", Notification.NotificationType.COURSE_UPDATE);
+
+        // Then
+        verify(notificationRepository).save(any(Notification.class));
     }
 }
