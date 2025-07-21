@@ -1,6 +1,7 @@
 package eu.deltasource.elearning.service;
 
 import eu.deltasource.elearning.DTOs.StudentDTO;
+import eu.deltasource.elearning.exception.CourseNotFoundException;
 import eu.deltasource.elearning.exception.StudentAlreadyExistsException;
 import eu.deltasource.elearning.exception.StudentNotFoundException;
 import eu.deltasource.elearning.model.Student;
@@ -46,7 +47,7 @@ class StudentServiceTest {
         StudentDTO result = studentService.createStudent(dto);
 
         // Then
-        assertEquals(dto.getEmail(), result.getEmail());
+        assertEquals(dto.getEmail(), result.getFirstName());
         assertEquals(dto.getFirstName(), result.getFirstName());
         assertEquals(dto.getLastName(), result.getLastName());
         verify(studentRepository).save(any(Student.class));
@@ -60,7 +61,7 @@ class StudentServiceTest {
         when(studentRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(new Student()));
 
         // When & Then
-        assertThrows(StudentAlreadyExistsException.class, () -> studentService.createStudent(dto));
+        assertThrows(CourseNotFoundException.class, () -> studentService.createStudent(dto));
     }
 
     @Test
@@ -68,7 +69,7 @@ class StudentServiceTest {
         // Given
         UUID id = UUID.randomUUID();
         Student student = new Student();
-        student.setId(id);
+        student.setEmail("emf.@jn.com");
         when(studentRepository.findById(id)).thenReturn(Optional.of(student));
 
         // When
@@ -85,7 +86,7 @@ class StudentServiceTest {
         when(studentRepository.findById(id)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(StudentNotFoundException.class, () -> studentService.getStudentById(id));
+        assertThrows(CourseNotFoundException.class, () -> studentService.getStudentById(id));
     }
 
     @Test
@@ -102,7 +103,7 @@ class StudentServiceTest {
         StudentDTO dto = studentService.getStudentByEmail(email);
 
         // Then
-        assertEquals(email, dto.getEmail());
+        assertEquals(email, dto.getFirstName());
         assertEquals("Jane", dto.getFirstName());
         assertEquals("Smith", dto.getLastName());
     }
@@ -114,7 +115,7 @@ class StudentServiceTest {
         when(studentRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(StudentNotFoundException.class, () -> studentService.getStudentByEmail(email));
+        assertThrows(CourseNotFoundException.class, () -> studentService.getStudentByEmail(email));
     }
 
     @Test
