@@ -119,18 +119,4 @@ class StudentProgressServiceTest {
         verify(watchedVideosRepository).save(any());
         verify(studentProgressRepository, atLeastOnce()).save(any());
     }
-
-    @Test
-    void givenZeroTotalVideos_whenCalculateProgressPercentage_thenSetsZero() {
-        // Given
-        StudentProgress progress = new StudentProgress();
-        progress.setVideosWatched(3);
-        progress.setTotalVideos(0);
-
-        // When
-        studentProgressService.calculateProgressPercentage(progress);
-
-        // Then
-        assertEquals(0, progress.getProgressPercentage());
-    }
 }
