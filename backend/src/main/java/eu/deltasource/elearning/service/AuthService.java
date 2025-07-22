@@ -151,7 +151,7 @@ public class AuthService {
                 );
             }
         }
-            throw new InvalidAccessToken ("Invalid refresh token");
+        throw new InvalidAccessToken("Invalid refresh token");
     }
 
     public AuthResponse updateProfile(RegisterRequest request) {
