@@ -30,8 +30,6 @@ jobs:
       - name: Run tests and generate coverage
         working-directory: backend
         run: mvn test jacoco:report
-        continue-on-error: true
-
 
       - name: Build backend 
         working-directory: backend

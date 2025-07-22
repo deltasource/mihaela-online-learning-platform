@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @Tag(name = "Video Management", description = "APIs for managing course videos")
 @RestController
 @RequestMapping("/api/videos")
-@Data
+@RequiredArgsConstructor
 @Slf4j
 public class VideoController {
 
