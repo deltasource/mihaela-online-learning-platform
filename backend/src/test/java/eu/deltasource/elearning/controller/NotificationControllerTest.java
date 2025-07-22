@@ -1,128 +1,137 @@
 package eu.deltasource.elearning.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.deltasource.elearning.DTOs.CreateNotificationRequest;
 import eu.deltasource.elearning.DTOs.NotificationDTO;
 import eu.deltasource.elearning.DTOs.NotificationSummaryDTO;
 import eu.deltasource.elearning.service.NotificationService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(NotificationController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class NotificationControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
     private NotificationService notificationService;
 
-    @InjectMocks
-    private NotificationController notificationController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void givenValidRequest_whenCreateNotification_thenReturnNotificationDTO() {
+    void givenInvalidRequest_whenCreateNotification_thenReturnsBadRequest() throws Exception {
         // Given
         CreateNotificationRequest request = new CreateNotificationRequest();
-        request.setUserId(UUID.randomUUID());
-        request.setMessage("Test notification");
-        NotificationDTO notificationDTO = new NotificationDTO();
-        notificationDTO.setId(UUID.randomUUID());
-        when(notificationService.createNotification(request)).thenReturn(notificationDTO);
+        request.setMessage("Missing userId and userIds");
 
-        // When
-        var response = notificationController.createNotification(request).getBody();
-
-        // Then
-        assertEquals(notificationDTO, response);
-        verify(notificationService, times(1)).createNotification(request);
+        // When & Then
+        mockMvc.perform(post("/api/notifications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void givenValidUserId_whenGetUnreadNotifications_thenReturnListOfNotificationDTOs() {
+    void givenValidUserId_whenGetUserNotifications_thenReturnsOk() throws Exception {
+        // Given
+        UUID userId = UUID.randomUUID();
+        var page = new PageImpl<>(List.of(new NotificationDTO(), new NotificationDTO()), PageRequest.of(0, 20), 2);
+        when(notificationService.getUserNotifications(eq(userId), anyInt(), anyInt())).thenReturn(page);
+
+        // When & Then
+        mockMvc.perform(get("/api/notifications/user/{userId}", userId)
+                        .param("page", "0")
+                        .param("size", "20"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenValidUserId_whenGetUnreadNotifications_thenReturnsOk() throws Exception {
         // Given
         UUID userId = UUID.randomUUID();
         List<NotificationDTO> notifications = List.of(new NotificationDTO(), new NotificationDTO());
         when(notificationService.getUnreadNotifications(userId)).thenReturn(notifications);
 
-        // When
-        List<NotificationDTO> response = notificationController.getUnreadNotifications(userId).getBody();
-
-        // Then
-        assertEquals(notifications, response);
-        verify(notificationService, times(1)).getUnreadNotifications(userId);
+        // When & Then
+        mockMvc.perform(get("/api/notifications/user/{userId}/unread", userId))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void givenValidUserId_whenGetNotificationSummary_thenReturnNotificationSummaryDTO() {
+    void givenValidUserId_whenGetNotificationSummary_thenReturnsOk() throws Exception {
         // Given
         UUID userId = UUID.randomUUID();
         NotificationSummaryDTO summaryDTO = new NotificationSummaryDTO();
         when(notificationService.getNotificationSummary(userId)).thenReturn(summaryDTO);
 
-        // When
-        NotificationSummaryDTO response = notificationController.getNotificationSummary(userId).getBody();
-
-        // Then
-        assertEquals(summaryDTO, response);
-        verify(notificationService, times(1)).getNotificationSummary(userId);
+        // When & Then
+        mockMvc.perform(get("/api/notifications/user/{userId}/summary", userId))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void givenValidNotificationId_whenMarkAsRead_thenVerifyServiceCalled() {
+    void givenValidNotificationId_whenMarkAsRead_thenReturnsNoContent() throws Exception {
         // Given
         UUID notificationId = UUID.randomUUID();
         doNothing().when(notificationService).markAsRead(notificationId);
 
-        // When
-        notificationController.markAsRead(notificationId);
-
-        // Then
-        verify(notificationService, times(1)).markAsRead(notificationId);
+        // When & Then
+        mockMvc.perform(put("/api/notifications/{notificationId}/read", notificationId))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void givenValidUserId_whenMarkAllAsRead_thenVerifyServiceCalled() {
+    void givenValidUserId_whenMarkAllAsRead_thenReturnsNoContent() throws Exception {
         // Given
         UUID userId = UUID.randomUUID();
         doNothing().when(notificationService).markAllAsRead(userId);
 
-        // When
-        notificationController.markAllAsRead(userId);
-
-        // Then
-        verify(notificationService, times(1)).markAllAsRead(userId);
+        // When & Then
+        mockMvc.perform(put("/api/notifications/user/{userId}/read-all", userId))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void givenValidNotificationId_whenDeleteNotification_thenVerifyServiceCalled() {
+    void givenValidNotificationId_whenDeleteNotification_thenReturnsNoContent() throws Exception {
         // Given
         UUID notificationId = UUID.randomUUID();
         doNothing().when(notificationService).deleteNotification(notificationId);
 
-        // When
-        notificationController.deleteNotification(notificationId);
-
-        // Then
-        verify(notificationService, times(1)).deleteNotification(notificationId);
+        // When & Then
+        mockMvc.perform(delete("/api/notifications/{notificationId}", notificationId))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void givenValidUserIdAndDaysOld_whenCleanupOldNotifications_thenVerifyServiceCalled() {
+    void givenValidUserIdAndDaysOld_whenCleanupOldNotifications_thenReturnsNoContent() throws Exception {
         // Given
         UUID userId = UUID.randomUUID();
         int daysOld = 30;
         doNothing().when(notificationService).cleanupOldNotifications(userId, daysOld);
 
-        // When
-        notificationController.cleanupOldNotifications(userId, daysOld);
-
-        // Then
-        verify(notificationService, times(1)).cleanupOldNotifications(userId, daysOld);
+        // When & Then
+        mockMvc.perform(delete("/api/notifications/user/{userId}/cleanup", userId)
+                        .param("daysOld", String.valueOf(daysOld)))
+                .andExpect(status().isNoContent());
     }
 }

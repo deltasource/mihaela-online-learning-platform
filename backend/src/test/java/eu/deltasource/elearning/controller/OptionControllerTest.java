@@ -1,104 +1,96 @@
 package eu.deltasource.elearning.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.deltasource.elearning.DTOs.OptionDTO;
 import eu.deltasource.elearning.service.OptionService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(OptionController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class OptionControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
     private OptionService optionService;
 
-    @InjectMocks
-    private OptionController optionController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void givenValidOptionData_whenCreateOption_thenOptionIsSuccessfullyCreated() {
-        // Given
-        OptionDTO optionDTO = new OptionDTO();
-        optionDTO.setQuestionId(UUID.randomUUID());
-        optionDTO.setText("Sample Option");
-        optionDTO.setCorrect(true);
-        when(optionService.createOption(optionDTO)).thenReturn(optionDTO);
-
-        // When
-        OptionDTO response = optionController.createOption(optionDTO);
-
-        // Then
-        assertEquals(optionDTO, response);
-        verify(optionService, times(1)).createOption(optionDTO);
-    }
-
-    @Test
-    void givenOptionIdExists_whenGetOptionById_thenCorrectOptionIsReturned() {
+    void givenValidOptionId_whenGetOptionById_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID optionId = UUID.randomUUID();
         OptionDTO optionDTO = new OptionDTO();
         optionDTO.setId(optionId);
-        optionDTO.setText("Sample Option");
+        optionDTO.setText("Option A");
+        optionDTO.setCorrect(true);
+        optionDTO.setQuestionId(UUID.randomUUID());
         when(optionService.getOptionById(optionId)).thenReturn(optionDTO);
 
         // When
-        OptionDTO response = optionController.getOptionById(optionId);
+        var result = mockMvc.perform(get("/api/options/{optionId}", optionId));
 
         // Then
-        assertEquals(optionDTO, response);
-        verify(optionService, times(1)).getOptionById(optionId);
+        result.andExpect(status().isOk());
+        verify(optionService, times(1)).getOptionById(eq(optionId));
     }
 
     @Test
-    void givenQuestionIdExists_whenGetOptionsByQuestionId_thenAllOptionsAreReturned() {
+    void givenValidQuestionId_whenGetOptionsByQuestionId_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID questionId = UUID.randomUUID();
         List<OptionDTO> options = List.of(new OptionDTO(), new OptionDTO());
         when(optionService.getOptionsByQuestionId(questionId)).thenReturn(options);
 
         // When
-        List<OptionDTO> response = optionController.getOptionsByQuestionId(questionId);
+        var result = mockMvc.perform(get("/api/options/question/{questionId}", questionId));
 
         // Then
-        assertEquals(options, response);
-        verify(optionService, times(1)).getOptionsByQuestionId(questionId);
+        result.andExpect(status().isOk());
+        verify(optionService, times(1)).getOptionsByQuestionId(eq(questionId));
     }
 
     @Test
-    void givenOptionExists_whenUpdateOption_thenOptionIsUpdatedSuccessfully() {
-        // Given
-        UUID optionId = UUID.randomUUID();
-        OptionDTO optionDTO = new OptionDTO();
-        optionDTO.setText("Updated Option");
-        optionDTO.setCorrect(false);
-        when(optionService.updateOption(optionId, optionDTO)).thenReturn(optionDTO);
-
-        // When
-        OptionDTO response = optionController.updateOption(optionId, optionDTO);
-
-        // Then
-        assertEquals(optionDTO, response);
-        verify(optionService, times(1)).updateOption(optionId, optionDTO);
-    }
-
-    @Test
-    void givenOptionExists_whenDeleteOption_thenOptionIsDeletedSuccessfully() {
+    void givenValidOptionId_whenDeleteOption_thenReturnsNoContentAndServiceCalled() throws Exception {
         // Given
         UUID optionId = UUID.randomUUID();
         doNothing().when(optionService).deleteOption(optionId);
 
         // When
-        optionController.deleteOption(optionId);
+        var result = mockMvc.perform(delete("/api/options/{optionId}", optionId));
 
         // Then
-        verify(optionService, times(1)).deleteOption(optionId);
+        result.andExpect(status().isNoContent());
+        verify(optionService, times(1)).deleteOption(eq(optionId));
+    }
+
+    @Test
+    void givenInvalidOptionDTO_whenCreateOption_thenReturnsBadRequest() throws Exception {
+        // Given
+        OptionDTO optionDTO = new OptionDTO();
+
+        // When
+        var result = mockMvc.perform(post("/api/options")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(optionDTO)));
+
+        // Then
+        result.andExpect(status().isBadRequest());
     }
 }

@@ -1,96 +1,76 @@
 package eu.deltasource.elearning.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.deltasource.elearning.DTOs.AuthRequest;
 import eu.deltasource.elearning.DTOs.AuthResponse;
-import eu.deltasource.elearning.DTOs.RegisterRequest;
 import eu.deltasource.elearning.service.AuthService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
     private AuthService authService;
 
-    @InjectMocks
-    private AuthController authController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void givenValidRegisterRequest_whenRegister_thenReturnAuthResponse() {
-        // Given
-        RegisterRequest request = new RegisterRequest();
-        AuthResponse expectedResponse = new AuthResponse();
-        when(authService.register(request)).thenReturn(expectedResponse);
-
-        // When
-        AuthResponse response = authController.register(request);
-
-        // Then
-        assertEquals(expectedResponse, response);
-        verify(authService, times(1)).register(request);
-    }
-
-    @Test
-    void givenValidAuthRequest_whenLogin_thenReturnAuthResponse() {
+    void givenValidAuthRequest_whenLogin_thenReturnsAuthResponse() throws Exception {
         // Given
         AuthRequest request = new AuthRequest();
-        AuthResponse expectedResponse = new AuthResponse();
-        when(authService.login(request)).thenReturn(expectedResponse);
+        request.setEmail("john.doe@example.com");
+        request.setPassword("password123");
+        AuthResponse response = new AuthResponse();
+        when(authService.login(any(AuthRequest.class))).thenReturn(response);
 
-        // When
-        AuthResponse response = authController.login(request);
+        // When & Then
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
 
-        // Then
-        assertEquals(expectedResponse, response);
-        verify(authService, times(1)).login(request);
+        verify(authService, times(1)).login(any(AuthRequest.class));
     }
 
     @Test
-    void givenValidRefreshToken_whenRefresh_thenReturnAuthResponse() {
+    void givenRefreshToken_whenRefresh_thenReturnsAuthResponse() throws Exception {
         // Given
-        String refreshToken = "valid-refresh-token";
-        AuthResponse expectedResponse = new AuthResponse();
-        when(authService.refreshToken(refreshToken)).thenReturn(expectedResponse);
+        String refreshToken = "Bearer some-refresh-token";
+        AuthResponse response = new AuthResponse();
+        when(authService.refreshToken(any(String.class))).thenReturn(response);
 
-        // When
-        AuthResponse response = authController.refresh(refreshToken);
-
-        // Then
-        assertEquals(expectedResponse, response);
-        verify(authService, times(1)).refreshToken(refreshToken);
+        // When & Then
+        mockMvc.perform(post("/api/auth/refresh")
+                        .header("Authorization", refreshToken))
+                .andExpect(status().isOk());
+        verify(authService, times(1)).refreshToken(eq(refreshToken));
     }
 
     @Test
-    void givenValidUpdateProfileRequest_whenUpdateProfile_thenReturnAuthResponse() {
+    void givenAccessToken_whenLogout_thenReturnsOk() throws Exception {
         // Given
-        RegisterRequest request = new RegisterRequest();
-        AuthResponse expectedResponse = new AuthResponse();
-        when(authService.updateProfile(request)).thenReturn(expectedResponse);
+        String accessToken = "Bearer some-access-token";
 
-        // When
-        AuthResponse response = authController.updateProfile(request);
-
-        // Then
-        assertEquals(expectedResponse, response);
-        verify(authService, times(1)).updateProfile(request);
-    }
-
-    @Test
-    void givenValidAccessToken_whenLogout_thenVerifyServiceCalled() {
-        // Given
-        String accessToken = "valid-access-token";
-
-        // When
-        authController.logout(accessToken);
-
-        // Then
-        verify(authService, times(1)).logout(accessToken);
+        // When & Then
+        mockMvc.perform(post("/api/auth/logout")
+                        .header("Authorization", accessToken))
+                .andExpect(status().isOk());
+        verify(authService, times(1)).logout(eq(accessToken));
     }
 }

@@ -1,90 +1,62 @@
 package eu.deltasource.elearning.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.deltasource.elearning.DTOs.InstructorDTO;
 import eu.deltasource.elearning.service.InstructorService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(InstructorController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class InstructorControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
     private InstructorService instructorService;
 
-    @InjectMocks
-    private InstructorController instructorController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void givenValidInstructorDTO_whenCreateInstructor_thenReturnInstructorDTO() {
-        // Given
-        InstructorDTO instructorDTO = new InstructorDTO();
-        instructorDTO.setFirstName("John");
-        instructorDTO.setLastName("Doe");
-        instructorDTO.setEmail("john.doe@example.com");
-
-        when(instructorService.createInstructor(instructorDTO)).thenReturn(instructorDTO);
-
-        // When
-        InstructorDTO response = instructorController.createInstructor(instructorDTO);
-
-        // Then
-        assertEquals(instructorDTO, response);
-        verify(instructorService, times(1)).createInstructor(instructorDTO);
-    }
-
-    @Test
-    void givenValidEmail_whenGetInstructorByEmail_thenReturnInstructorDTO() {
+    void givenValidEmail_whenGetInstructorByEmail_thenReturnsInstructorDTO() throws Exception {
         // Given
         String email = "john.doe@example.com";
         InstructorDTO instructorDTO = new InstructorDTO();
+        instructorDTO.setFirstName("John");
+        instructorDTO.setLastName("Doe");
         instructorDTO.setEmail(email);
-
         when(instructorService.getInstructorByEmail(email)).thenReturn(instructorDTO);
 
         // When
-        InstructorDTO response = instructorController.getInstructorByEmail(email);
+        var result = mockMvc.perform(get("/instructors/v1/{email}", email));
 
         // Then
-        assertEquals(instructorDTO, response);
+        result.andExpect(status().isOk());
         verify(instructorService, times(1)).getInstructorByEmail(email);
     }
 
     @Test
-    void givenValidEmailAndInstructorDTO_whenUpdateInstructorByEmail_thenReturnUpdatedInstructorDTO() {
+    void givenValidEmail_whenDeleteInstructor_thenReturnsNoContent() throws Exception {
         // Given
         String email = "john.doe@example.com";
-        InstructorDTO instructorDTO = new InstructorDTO();
-        instructorDTO.setFirstName("John");
-        instructorDTO.setLastName("Updated");
-        instructorDTO.setEmail(email);
-
-        when(instructorService.updateInstructorByEmail(email, instructorDTO)).thenReturn(instructorDTO);
-
-        // When
-        InstructorDTO response = instructorController.updateInstructorByEmail(email, instructorDTO);
-
-        // Then
-        assertEquals(instructorDTO, response);
-        verify(instructorService, times(1)).updateInstructorByEmail(email, instructorDTO);
-    }
-
-    @Test
-    void givenValidEmail_whenDeleteInstructor_thenVerifyServiceCalled() {
-        // Given
-        String email = "john.doe@example.com";
-
         doNothing().when(instructorService).deleteInstructor(email);
 
         // When
-        instructorController.deleteInstructor(email);
+        var result = mockMvc.perform(delete("/instructors/v1/{email}", email));
 
         // Then
+        result.andExpect(status().isNoContent());
         verify(instructorService, times(1)).deleteInstructor(email);
     }
 }

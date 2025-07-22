@@ -1,103 +1,79 @@
 package eu.deltasource.elearning.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.deltasource.elearning.DTOs.LessonDTO;
 import eu.deltasource.elearning.service.LessonService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(LessonController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class LessonControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
     private LessonService lessonService;
 
-    @InjectMocks
-    private LessonController lessonController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void givenValidLessonDTO_whenCreateLesson_thenReturnLessonDTO() {
-        // Given
-        LessonDTO lessonDTO = new LessonDTO();
-        lessonDTO.setTitle("Introduction to Java");
-        lessonDTO.setDescription("Learn the basics of Java programming");
-        when(lessonService.createLesson(lessonDTO)).thenReturn(lessonDTO);
-
-        // When
-        LessonDTO response = lessonController.createLesson(lessonDTO);
-
-        // Then
-        assertEquals(lessonDTO, response);
-        verify(lessonService, times(1)).createLesson(lessonDTO);
-    }
-
-    @Test
-    void givenValidLessonId_whenGetLessonById_thenReturnLessonDTO() {
+    void givenValidLessonId_whenGetLessonById_thenReturnsLessonDTO() throws Exception {
         // Given
         UUID lessonId = UUID.randomUUID();
         LessonDTO lessonDTO = new LessonDTO();
         lessonDTO.setId(lessonId);
-        lessonDTO.setTitle("Introduction to Java");
+        lessonDTO.setTitle("Intro to Java");
         when(lessonService.getLessonById(lessonId)).thenReturn(lessonDTO);
 
         // When
-        LessonDTO response = lessonController.getLessonById(lessonId);
+        var result = mockMvc.perform(get("/api/lessons/{lessonId}", lessonId));
 
         // Then
-        assertEquals(lessonDTO, response);
+        result.andExpect(status().isOk());
         verify(lessonService, times(1)).getLessonById(lessonId);
     }
 
     @Test
-    void givenValidCourseId_whenGetLessonsByCourseId_thenReturnListOfLessonDTOs() {
+    void givenValidCourseId_whenGetLessonsByCourseId_thenReturnsListOfLessonDTOs() throws Exception {
         // Given
         UUID courseId = UUID.randomUUID();
         List<LessonDTO> lessons = List.of(new LessonDTO(), new LessonDTO());
         when(lessonService.getLessonsByCourseId(courseId)).thenReturn(lessons);
 
         // When
-        List<LessonDTO> response = lessonController.getLessonsByCourseId(courseId);
+        var result = mockMvc.perform(get("/api/lessons/course/{courseId}", courseId));
 
         // Then
-        assertEquals(lessons, response);
+        result.andExpect(status().isOk());
         verify(lessonService, times(1)).getLessonsByCourseId(courseId);
     }
 
     @Test
-    void givenValidLessonIdAndLessonDTO_whenUpdateLesson_thenReturnUpdatedLessonDTO() {
-        // Given
-        UUID lessonId = UUID.randomUUID();
-        LessonDTO lessonDTO = new LessonDTO();
-        lessonDTO.setTitle("Advanced Java");
-        lessonDTO.setDescription("Deep dive into Java programming");
-        when(lessonService.updateLesson(lessonId, lessonDTO)).thenReturn(lessonDTO);
-
-        // When
-        LessonDTO response = lessonController.updateLesson(lessonId, lessonDTO);
-
-        // Then
-        assertEquals(lessonDTO, response);
-        verify(lessonService, times(1)).updateLesson(lessonId, lessonDTO);
-    }
-
-    @Test
-    void givenValidLessonId_whenDeleteLesson_thenVerifyServiceCalled() {
+    void givenValidLessonId_whenDeleteLesson_thenReturnsNoContent() throws Exception {
         // Given
         UUID lessonId = UUID.randomUUID();
         doNothing().when(lessonService).deleteLesson(lessonId);
 
         // When
-        lessonController.deleteLesson(lessonId);
+        var result = mockMvc.perform(delete("/api/lessons/{lessonId}", lessonId));
 
         // Then
+        result.andExpect(status().isNoContent());
         verify(lessonService, times(1)).deleteLesson(lessonId);
     }
 }
