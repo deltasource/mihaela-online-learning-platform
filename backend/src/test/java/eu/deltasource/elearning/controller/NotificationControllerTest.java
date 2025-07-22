@@ -36,7 +36,7 @@ class NotificationControllerTest {
         when(notificationService.createNotification(request)).thenReturn(notificationDTO);
 
         // When
-        var response = notificationController.createNotification(request).getBody();
+        var response = notificationController.createNotification(request);
 
         // Then
         assertEquals(notificationDTO, response);
@@ -51,7 +51,7 @@ class NotificationControllerTest {
         when(notificationService.getUnreadNotifications(userId)).thenReturn(notifications);
 
         // When
-        List<NotificationDTO> response = notificationController.getUnreadNotifications(userId).getBody();
+        List<NotificationDTO> response = notificationController.getUnreadNotifications(userId);
 
         // Then
         assertEquals(notifications, response);
@@ -66,7 +66,7 @@ class NotificationControllerTest {
         when(notificationService.getNotificationSummary(userId)).thenReturn(summaryDTO);
 
         // When
-        NotificationSummaryDTO response = notificationController.getNotificationSummary(userId).getBody();
+        NotificationSummaryDTO response = notificationController.getNotificationSummary(userId);
 
         // Then
         assertEquals(summaryDTO, response);
