@@ -1,4 +1,4 @@
-name: Build, Test, Jacoco Report, and Liquibase Migration
+name: Build, Test, Jacoco, and Liquibase
 
 on:
   push:
@@ -11,11 +11,8 @@ on:
       - feature/*
 
 jobs:
-  backend-checks:
+  backend:
     runs-on: ubuntu-latest
-    env:
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
     services:
       mysql:
         image: mysql:8
@@ -24,88 +21,73 @@ jobs:
           MYSQL_DATABASE: elearning_db
         ports:
           - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
+        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=5
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
+      - uses: actions/setup-java@v3
         with:
           java-version: 21
-          distribution: "temurin"
+          distribution: temurin
 
-      - name: Wait for MySQL to be ready
+      - name: Wait for MySQL
         run: |
           for i in {1..30}; do
-            if mysqladmin ping -h"127.0.0.1" -uroot -p"${SPRING_DATASOURCE_PASSWORD}" --silent; then
+            if mysqladmin ping -h127.0.0.1 -uroot -p"${{ secrets.SPRING_DATASOURCE_PASSWORD }}" --silent; then
               echo "MySQL is up!"
               break
             fi
-            echo "Waiting for MySQL..."
             sleep 2
           done
 
-      - name: Download MySQL Driver
+      - name: Download MySQL driver for Liquibase
         run: |
           mkdir -p backend/drivers
           curl -L -o backend/drivers/mysql-connector-j-8.4.0.jar https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar
 
-      - name: Run Liquibase migrations
+      - name: Liquibase migrate
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/backend/src/main/resources/db/changelog:/liquibase/changelog \
             -v ${{ github.workspace }}/backend/drivers:/liquibase/drivers \
             liquibase/liquibase \
-            --url=jdbc:mysql://host.docker.internal:3306/elearning_db \
+            --url=jdbc:mysql://localhost:3306/elearning_db \
             --username=root \
-            --password=${SPRING_DATASOURCE_PASSWORD} \
-            --changeLogFile=changelog/db.changelog-master.xml \
+            --password=${{ secrets.SPRING_DATASOURCE_PASSWORD }} \
+            --changeLogFile=/liquibase/changelog/db.changelog-master.xml \
             --classpath=/liquibase/drivers/mysql-connector-j-8.4.0.jar \
             update
 
-      - name: Run tests and generate coverage
+      - name: Test & Jacoco
         working-directory: backend
         run: mvn test jacoco:report
 
-      - name: Build backend 
+      - name: Build
         working-directory: backend
         run: mvn package
 
-      - name: Upload backend results 
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: backend-test-results
           path: backend/target/surefire-reports/
 
-  frontend-checks:
+  frontend:
     runs-on: ubuntu-latest
     env:
       VITE_API_URL: ${{ secrets.VITE_API_BASE_URL }}
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '23'
+          node-version: 23
 
-      - name: Install dependencies
+      - run: npm install
         working-directory: frontend
-        run: npm install
 
-      - name: Build frontend 
+      - run: npm run build
         working-directory: frontend
-        run: npm run build
 
-      - name: Run tests
+      - run: npx vitest
         working-directory: frontend
-        run: npx vitest 
         
