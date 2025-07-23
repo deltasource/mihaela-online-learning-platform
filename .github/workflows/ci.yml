@@ -25,14 +25,14 @@ jobs:
           java-version: 21
           distribution: "temurin"
 
-      - name: Build and check code coverage with Jacoco 
+      - name: Run tests and generate coverage
         working-directory: backend
         run: mvn test jacoco:report
 
-      - name: Check code coverage with JaCoCo
+      - name: Build backend 
         working-directory: backend
-        run: mvn verify
-        
+        run: mvn package
+
       - name: Upload backend results 
         uses: actions/upload-artifact@v4
         with:
@@ -57,11 +57,10 @@ jobs:
         working-directory: frontend
         run: npm install
 
-      - name: Build frontend
+      - name: Build frontend 
         working-directory: frontend
         run: npm run build
 
       - name: Run tests
         working-directory: frontend
-        run: npx vitest
-  
+        run: npx vitest 

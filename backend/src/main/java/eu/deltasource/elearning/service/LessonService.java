@@ -9,6 +9,7 @@ import eu.deltasource.elearning.repository.CourseRepository;
 import eu.deltasource.elearning.repository.LessonRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class LessonService {
 
     private final LessonRepository lessonRepository;
@@ -26,6 +28,7 @@ public class LessonService {
 
     @Transactional
     public LessonDTO createLesson(LessonDTO lessonDTO) {
+        log.info("Creating lesson: {}", lessonDTO);
         UUID courseId = lessonDTO.getCourseId();
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found"));
@@ -43,17 +46,21 @@ public class LessonService {
         lesson.setCreatedAt(LocalDateTime.now());
         lesson.setUpdatedAt(LocalDateTime.now());
 
+        log.info("Saving lesson: {}", lesson);
         lesson = lessonRepository.save(lesson);
+        log.info("Lesson created with ID: {}", lesson.getId());
         return mapToLessonDTO(lesson);
     }
 
     public LessonDTO getLessonById(UUID lessonId) {
+        log.info("Retrieving lesson with ID: {}", lessonId);
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
         return mapToLessonDTO(lesson);
     }
 
     public List<LessonDTO> getLessonsByCourseId(UUID courseId) {
+        log.info("Retrieving lessons for course ID: {}", courseId);
         UUID courseUuid = UUID.fromString(courseId.toString());
         List<Lesson> lessons = lessonRepository.findByCourseIdOrderByOrderAsc(courseUuid);
         return lessons.stream()
@@ -63,11 +70,15 @@ public class LessonService {
 
     @Transactional
     public LessonDTO updateLesson(UUID lessonId, LessonDTO lessonDTO) {
+        log.info("Updating lesson with ID: {}", lessonId);
         Lesson existingLesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
-
+        log.info("Found existing lesson: {}", existingLesson);
         if (!existingLesson.getCourse().getId().equals(lessonDTO.getCourseId())) {
+            log.warn("Course ID mismatch for lesson update. Existing Course ID: {}, New Course ID: {}",
+                    existingLesson.getCourse().getId(), lessonDTO.getCourseId());
             UUID courseId = lessonDTO.getCourseId();
+            log.info("Fetching new course with ID: {}", courseId);
             Course newCourse = courseRepository.findById(courseId)
                     .orElseThrow(() -> new CourseNotFoundException("Course not found"));
             existingLesson.setCourse(newCourse);
@@ -82,12 +93,15 @@ public class LessonService {
         existingLesson.setPublished(lessonDTO.isPublished());
         existingLesson.setUpdatedAt(LocalDateTime.now());
 
+        log.info("Saving updated lesson: {}", existingLesson);
         existingLesson = lessonRepository.save(existingLesson);
+        log.info("Lesson updated with ID: {}", existingLesson.getId());
         return mapToLessonDTO(existingLesson);
     }
 
     @Transactional
     public void deleteLesson(UUID lessonId) {
+        log.info("Deleting lesson with ID: {}", lessonId);
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
         lessonRepository.delete(lesson);

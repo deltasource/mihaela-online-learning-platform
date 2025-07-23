@@ -4,109 +4,77 @@ import eu.deltasource.elearning.DTOs.CreateNotificationRequest;
 import eu.deltasource.elearning.DTOs.NotificationDTO;
 import eu.deltasource.elearning.DTOs.NotificationSummaryDTO;
 import eu.deltasource.elearning.service.NotificationService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-
-@Tag(name = "Notification Management", description = "Operations for managing user notifications")
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @Operation(summary = "Create a notification", description = "Creates a new notification for one or multiple users")
     @PostMapping
-    @ResponseStatus(CREATED)
-    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
-    public ResponseEntity<?> createNotification(@Valid @RequestBody CreateNotificationRequest request) {
-        if (request.getUserId() != null) {
-            NotificationDTO notification = notificationService.createNotification(request);
-            return ResponseEntity.status(CREATED).body(notification);
-        } else if (request.getUserIds() != null && !request.getUserIds().isEmpty()) {
-            List<NotificationDTO> notifications = notificationService.createBulkNotifications(request);
-            return ResponseEntity.status(CREATED).body(notifications);
-        } else {
-            return ResponseEntity.badRequest().body("Either userId or userIds must be provided");
-        }
+    public NotificationDTO createNotification(@RequestBody @Valid CreateNotificationRequest request) {
+        log.info("Creating notification: {}", request);
+        return notificationService.createNotification(request);
     }
 
-    @Operation(summary = "Get user notifications", description = "Retrieves paginated notifications for a user")
+    @PostMapping("/bulk")
+    public List<NotificationDTO> createBulkNotifications(@RequestBody @Valid CreateNotificationRequest request) {
+        log.info("Creating bulk notifications: {}", request);
+        return notificationService.createBulkNotifications(request);
+    }
+
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<NotificationDTO>> getUserNotifications(
-            @Parameter(description = "User ID") @PathVariable UUID userId,
-            @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Page size") @RequestParam(defaultValue = "20") int size) {
-
-        Page<NotificationDTO> notifications = notificationService.getUserNotifications(userId, page, size);
-        return ResponseEntity.ok(notifications);
+    public Page<NotificationDTO> getUserNotifications(
+            @PathVariable UUID userId,
+            @RequestParam int page,
+            @RequestParam int size) {
+        log.info("Retrieving notifications for user ID: {} with page: {} and size: {}", userId, page, size);
+        return notificationService.getUserNotifications(userId, page, size);
     }
 
-    @Operation(summary = "Get unread notifications", description = "Retrieves all unread notifications for a user")
     @GetMapping("/user/{userId}/unread")
-    public ResponseEntity<List<NotificationDTO>> getUnreadNotifications(
-            @Parameter(description = "User ID") @PathVariable UUID userId) {
-
-        List<NotificationDTO> notifications = notificationService.getUnreadNotifications(userId);
-        return ResponseEntity.ok(notifications);
+    public List<NotificationDTO> getUnreadNotifications(@PathVariable UUID userId) {
+        log.info("Retrieving unread notifications for user ID: {}", userId);
+        return notificationService.getUnreadNotifications(userId);
     }
 
-    @Operation(summary = "Get notification summary", description = "Retrieves notification summary for a user")
-    @GetMapping("/user/{userId}/summary")
-    public ResponseEntity<NotificationSummaryDTO> getNotificationSummary(
-            @Parameter(description = "User ID") @PathVariable UUID userId) {
-
-        NotificationSummaryDTO summary = notificationService.getNotificationSummary(userId);
-        return ResponseEntity.ok(summary);
-    }
-
-    @Operation(summary = "Mark notification as read", description = "Marks a specific notification as read")
-    @PutMapping("/{notificationId}/read")
-    @ResponseStatus(NO_CONTENT)
-    public void markAsRead(
-            @Parameter(description = "Notification ID") @PathVariable UUID notificationId) {
-
+    @PostMapping("/{notificationId}/read")
+    public void markAsRead(@PathVariable UUID notificationId) {
+        log.info("Marking notification ID: {} as read", notificationId);
         notificationService.markAsRead(notificationId);
     }
 
-    @Operation(summary = "Mark all notifications as read", description = "Marks all notifications as read for a user")
-    @PutMapping("/user/{userId}/read-all")
-    @ResponseStatus(NO_CONTENT)
-    public void markAllAsRead(
-            @Parameter(description = "User ID") @PathVariable UUID userId) {
-
+    @PostMapping("/user/{userId}/read-all")
+    public void markAllAsRead(@PathVariable UUID userId) {
+        log.info("Marking all notifications as read for user ID: {}", userId);
         notificationService.markAllAsRead(userId);
     }
 
-    @Operation(summary = "Delete notification", description = "Deletes a specific notification")
-    @DeleteMapping("/{notificationId}")
-    @ResponseStatus(NO_CONTENT)
-    public void deleteNotification(
-            @Parameter(description = "Notification ID") @PathVariable UUID notificationId) {
+    @GetMapping("/user/{userId}/summary")
+    public NotificationSummaryDTO getNotificationSummary(@PathVariable UUID userId) {
+        log.info("Retrieving notification summary for user ID: {}", userId);
+        return notificationService.getNotificationSummary(userId);
+    }
 
+    @DeleteMapping("/{notificationId}")
+    public void deleteNotification(@PathVariable UUID notificationId) {
+        log.info("Deleting notification ID: {}", notificationId);
         notificationService.deleteNotification(notificationId);
     }
 
-    @Operation(summary = "Clean up old notifications", description = "Deletes old notifications for a user")
     @DeleteMapping("/user/{userId}/cleanup")
-    @ResponseStatus(NO_CONTENT)
-    public void cleanupOldNotifications(
-            @Parameter(description = "User ID") @PathVariable UUID userId,
-            @Parameter(description = "Days old") @RequestParam(defaultValue = "30") int daysOld) {
-
+    public void cleanupOldNotifications(@PathVariable UUID userId, @RequestParam int daysOld) {
+        log.info("Cleaning up notifications older than {} days for user ID: {}", daysOld, userId);
         notificationService.cleanupOldNotifications(userId, daysOld);
     }
 }

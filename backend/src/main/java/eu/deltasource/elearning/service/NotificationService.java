@@ -33,13 +33,16 @@ public class NotificationService {
 
     @Transactional
     public NotificationDTO createNotification(CreateNotificationRequest request) {
+        log.info("Creating notification: {}", request);
         if (request.getUserId() == null) {
+            log.error("User with this ID not found");
             throw new IdNotFoundException("User ID is required for single notification");
         }
-
+        log.debug("Creating notification: {}", request);
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + request.getUserId()));
 
+        log.debug("Creating notification: {}", request);
         Notification notification = Notification.builder()
                 .user(user)
                 .title(request.getTitle())
@@ -51,20 +54,24 @@ public class NotificationService {
                 .actionUrl(request.getActionUrl())
                 .build();
 
+        log.debug("Saving notification for user: {}", user.getEmail());
         notification = notificationRepository.save(notification);
         log.info("Created notification {} for user {}", notification.getId(), user.getEmail());
-
         return mapToDTO(notification);
     }
 
     @Transactional
     public List<NotificationDTO> createBulkNotifications(CreateNotificationRequest request) {
+        log.info("Creating bulk notifications: {}", request);
         if (request.getUserIds() == null || request.getUserIds().isEmpty()) {
+            log.error("User IDs are required for bulk notification");
             throw new IdNotFoundException("User IDs are required for bulk notification");
         }
 
         List<User> users = userRepository.findAllById(request.getUserIds());
+        log.debug("Found {} users for bulk notification", users.size());
         if (users.size() != request.getUserIds().size()) {
+            log.error("Some users were not found for bulk notification");
             throw new UserNotFoundException("Some users were not found");
         }
 
@@ -90,6 +97,7 @@ public class NotificationService {
     }
 
     public Page<NotificationDTO> getUserNotifications(UUID userId, int page, int size) {
+        log.info("Fetching notifications for user ID: {}", userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 

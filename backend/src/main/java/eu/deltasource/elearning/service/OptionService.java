@@ -9,6 +9,7 @@ import eu.deltasource.elearning.repository.OptionRepository;
 import eu.deltasource.elearning.repository.QuestionRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class OptionService {
 
     private final OptionRepository optionRepository;
@@ -39,12 +41,14 @@ public class OptionService {
     }
 
     public OptionDTO getOptionById(UUID optionId) {
+        log.info("Getting option by id {}", optionId);
         Option option = optionRepository.findById(optionId)
                 .orElseThrow(() -> new OptionNotFoundException("Option not found"));
         return mapToOptionDTO(option);
     }
 
     public List<OptionDTO> getOptionsByQuestionId(UUID questionId) {
+        log.info("Getting options for question id {}", questionId);
         List<Option> options = optionRepository.findByQuestionId(questionId);
         return options.stream()
                 .map(this::mapToOptionDTO)
@@ -53,10 +57,13 @@ public class OptionService {
 
     @Transactional
     public OptionDTO updateOption(UUID optionId, OptionDTO optionDTO) {
+        log.info("Updating option with id {}", optionId);
         Option existingOption = optionRepository.findById(optionId)
                 .orElseThrow(() -> new OptionNotFoundException("Option not found"));
 
+        log.info("Updating option with id {}", optionId);
         if (!existingOption.getQuestion().getId().equals(optionDTO.getQuestionId())) {
+            log.info("Updating question for option with id {}", optionId);
             Question newQuestion = questionRepository.findById(optionDTO.getQuestionId())
                     .orElseThrow(() -> new QuestionNotFoundException("Question not found"));
             existingOption.setQuestion(newQuestion);
@@ -71,6 +78,7 @@ public class OptionService {
 
     @Transactional
     public void deleteOption(UUID optionId) {
+        log.info("Deleting option with id {}", optionId);
         Option option = optionRepository.findById(optionId)
                 .orElseThrow(() -> new OptionNotFoundException("Option not found"));
         optionRepository.delete(option);

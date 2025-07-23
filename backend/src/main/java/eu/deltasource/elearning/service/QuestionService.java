@@ -10,6 +10,7 @@ import eu.deltasource.elearning.repository.QuestionRepository;
 import eu.deltasource.elearning.repository.QuizRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
@@ -26,6 +28,7 @@ public class QuestionService {
 
     @Transactional
     public QuestionDTO createQuestion(QuestionDTO questionDTO) {
+        log.info("Creating question: {}", questionDTO);
         Quiz quiz = quizRepository.findById(questionDTO.getQuizId())
                 .orElseThrow(() -> new QuizNotFoundException("Quiz not found"));
 
@@ -41,12 +44,14 @@ public class QuestionService {
     }
 
     public QuestionDTO getQuestionById(UUID questionId) {
+        log.info("Retrieving question with ID: {}", questionId);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionNotFoundException("Question not found"));
         return mapToQuestionDTO(question);
     }
 
     public List<QuestionDTO> getQuestionsByQuizId(UUID quizId) {
+        log.info("Retrieving questions for quiz ID: {}", quizId);
         List<Question> questions = questionRepository.findByQuizId(quizId);
         return questions.stream()
                 .map(this::mapToQuestionDTO)
@@ -58,7 +63,9 @@ public class QuestionService {
         Question existingQuestion = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionNotFoundException("Question not found"));
 
+        log.info("Updating question with ID: {}", questionId);
         if (!existingQuestion.getQuiz().getId().equals(questionDTO.getQuizId())) {
+            log.warn("Attempt to update question with a different quiz ID: {}. Current quiz ID: {}", questionDTO.getQuizId(), existingQuestion.getQuiz().getId());
             Quiz newQuiz = quizRepository.findById(questionDTO.getQuizId())
                     .orElseThrow(() -> new QuizNotFoundException("Quiz not found"));
             existingQuestion.setQuiz(newQuiz);

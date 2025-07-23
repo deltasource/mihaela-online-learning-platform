@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * This ensures that the Spring Boot application context loads successfully.
  */
 @SpringBootTest
-class ElearningApplicationTest {
+class ElearningApplicationTest extends TestContainerConfig {
 
     @Test
     void contextLoads() {

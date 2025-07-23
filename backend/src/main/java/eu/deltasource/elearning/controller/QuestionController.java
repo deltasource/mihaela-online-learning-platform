@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RestController
 @RequestMapping("/api/questions")
 @RequiredArgsConstructor
+@Slf4j
 public class QuestionController {
 
     private final QuestionService questionService;
@@ -27,18 +29,21 @@ public class QuestionController {
     @ResponseStatus(CREATED)
     @Operation(summary = "Create a new question")
     public QuestionDTO createQuestion(@RequestBody @Valid QuestionDTO questionDTO) {
+        log.info("Creating question: {}", questionDTO);
         return questionService.createQuestion(questionDTO);
     }
 
     @GetMapping("/{questionId}")
     @Operation(summary = "Get question by ID")
     public QuestionDTO getQuestionById(@PathVariable @NotNull UUID questionId) {
+        log.info("Retrieving question with ID: {}", questionId);
         return questionService.getQuestionById(questionId);
     }
 
     @GetMapping("/quiz/{quizId}")
     @Operation(summary = "Get all questions for a quiz")
     public List<QuestionDTO> getQuestionsByQuizId(@PathVariable @NotNull UUID quizId) {
+        log.info("Retrieving all questions for quiz ID: {}", quizId);
         return questionService.getQuestionsByQuizId(quizId);
     }
 
@@ -47,6 +52,7 @@ public class QuestionController {
     public QuestionDTO updateQuestion(
             @PathVariable @NotNull UUID questionId,
             @RequestBody @Valid QuestionDTO questionDTO) {
+        log.info("Updating question with ID: {}", questionId);
         return questionService.updateQuestion(questionId, questionDTO);
     }
 
@@ -54,6 +60,7 @@ public class QuestionController {
     @ResponseStatus(NO_CONTENT)
     @Operation(summary = "Delete a question")
     public void deleteQuestion(@PathVariable @NotNull UUID questionId) {
+        log.info("Deleting question with ID: {}", questionId);
         questionService.deleteQuestion(questionId);
     }
 }

@@ -11,6 +11,7 @@ import eu.deltasource.elearning.repository.LessonRepository;
 import eu.deltasource.elearning.repository.QuizRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class CourseService {
 
     private final CourseRepository courseRepository;
@@ -55,18 +57,21 @@ public class CourseService {
     }
 
     public CourseDTO getCourseById(UUID courseId) {
+        log.info("Getting course by ID: {}", courseId);
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found"));
         return mapToCourseDTO(course);
     }
 
     public List<CourseDTO> getAllCourses() {
+        log.info("Retrieving all courses");
         List<Course> courses = courseRepository.findAll();
         return courses.stream().map(this::mapToCourseDTO).collect(Collectors.toList());
     }
 
     @Transactional
     public CourseDTO updateCourse(UUID courseId, CourseDTO courseDTO) {
+        log.info("Updating course with ID: {}", courseId);
         Course existingCourse = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found"));
         Instructor instructor = instructorRepository.findById(courseDTO.getInstructorId())
@@ -89,6 +94,7 @@ public class CourseService {
 
     @Transactional
     public void deleteCourse(UUID courseId) {
+        log.info("Deleting course with ID: {}", courseId);
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found"));
         courseRepository.delete(course);
@@ -114,17 +120,20 @@ public class CourseService {
         courseDTO.setInstructorId(course.getInstructor().getId());
 
         if (course.getLessons() != null) {
+            log.info("Adding lessons to course: {}", course.getLessons());
             courseDTO.setLessonIds(course.getLessons().stream()
                     .map(lesson -> lesson.getId().toString())
                     .collect(Collectors.toList()));
         }
+        log.info("Lessons added to course DTO: {}", courseDTO.getLessonIds());
 
         if (course.getQuizzes() != null) {
+            log.info("Adding quizzes to course: {}", course.getQuizzes());
             courseDTO.setQuizIds(course.getQuizzes().stream()
                     .map(quiz -> quiz.getId().toString())
                     .collect(Collectors.toList()));
         }
-
+        log.info("Mapped course to DTO: {}", courseDTO);
         return courseDTO;
     }
 }

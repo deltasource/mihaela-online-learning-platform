@@ -34,6 +34,7 @@ public class AnalyticsService {
 
     @Transactional
     public void trackEvent(AnalyticsEventDTO eventDTO, HttpServletRequest request) {
+        log.info("Tracking event: {}", eventDTO);
         User user = userRepository.findById(eventDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
