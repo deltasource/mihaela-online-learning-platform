@@ -51,15 +51,22 @@ jobs:
             sleep 2
           done
 
+      - name: Download MySQL Driver
+        run: |
+          mkdir -p backend/drivers
+          curl -L -o backend/drivers/mysql-connector-j-8.4.0.jar https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar
+
       - name: Run Liquibase migrations
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/backend/src/main/resources/db/changelog:/liquibase/changelog \
+            -v ${{ github.workspace }}/backend/drivers:/liquibase/drivers \
             liquibase/liquibase \
             --url=jdbc:mysql://host.docker.internal:3306/elearning_db \
             --username=root \
             --password=${SPRING_DATASOURCE_PASSWORD} \
             --changeLogFile=changelog/db.changelog-master.xml \
+            --classpath=/liquibase/drivers/mysql-connector-j-8.4.0.jar \
             update
 
       - name: Run tests and generate coverage
