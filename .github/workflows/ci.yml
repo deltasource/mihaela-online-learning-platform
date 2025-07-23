@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Build, Test, and Jacoco Report
 
 on:
   push:
@@ -6,84 +6,63 @@ on:
       - main
       - feature/*
   pull_request:
-    branches: 
+    branches:
       - main
       - feature/*
 
 jobs:
-  backend:
+  backend-checks:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-          MYSQL_DATABASE: elearning_db
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=5
-    steps:
-      - uses: actions/checkout@v4
+    env:
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 
-      - uses: actions/setup-java@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
         with:
           java-version: 21
-          distribution: temurin
+          distribution: "temurin"
 
-      - name: Wait for MySQL
-        run: |
-          for i in {1..30}; do
-            if mysqladmin ping -h127.0.0.1 -uroot -p"${{ secrets.SPRING_DATASOURCE_PASSWORD }}" --silent; then
-              echo "MySQL is up!"
-              break
-            fi
-            sleep 2
-          done
-
-      - name: Download MySQL driver for Liquibase
-        run: |
-          mkdir -p backend/drivers
-          curl -L -o backend/drivers/mysql-connector-j-8.0.33.jar https://mvnrepository.com/artifact/mysql/mysql-connector-java/8.0.33
-
-      - name: Liquibase migrate (using liquibase-github-action)
-        uses: liquibase/liquibase-github-action@v13
-        with:
-          operation: update
-          classpath: backend/drivers/mysql-connector-j-8.0.33.jar
-          changeLogFile: backend/src/main/resources/db/changelog/db.changelog-master.xml
-          url: jdbc:mysql://127.0.0.1:3306/elearning_db
-          username: root
-          password: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-
-      - name: Test & Jacoco
+      - name: Run tests and generate coverage
         working-directory: backend
         run: mvn test jacoco:report
 
-      - name: Build
+      - name: Build backend 
         working-directory: backend
         run: mvn package
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload backend results 
+        uses: actions/upload-artifact@v4
         with:
           name: backend-test-results
           path: backend/target/surefire-reports/
 
-  frontend:
+  frontend-checks:
     runs-on: ubuntu-latest
     env:
       VITE_API_URL: ${{ secrets.VITE_API_BASE_URL }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 23
+          node-version: '23'
 
-      - run: npm install
+      - name: Install dependencies
         working-directory: frontend
+        run: npm install
 
-      - run: npm run build
+      - name: Build frontend 
         working-directory: frontend
+        run: npm run build
 
-      - run: npx vitest
+      - name: Run tests
         working-directory: frontend
+        run: npx vitest 
