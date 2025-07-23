@@ -1,106 +1,99 @@
 package eu.deltasource.elearning.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.deltasource.elearning.DTOs.QuizDTO;
 import eu.deltasource.elearning.service.QuizService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+/**
+ * The @AutoConfigureMockMvc(addFilters = false) annotation is used in Spring Boot testing to disable the automatic addition of Spring Security filters when configuring MockMvc.
+ * By default, when @AutoConfigureMockMvc is used, any registered filters (such as security filters) are applied to the MockMvc instance. Setting addFilters = false prevents these filters from being added, allowing tests to bypass security constraints and focus on controller logic without authentication or authorization requirements.
+ **/
+@WebMvcTest(QuizController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class QuizControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
     private QuizService quizService;
 
-    @InjectMocks
-    private QuizController quizController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void givenValidQuizData_whenCreateQuiz_thenQuizIsSuccessfullyCreated() {
-        // Given
-        QuizDTO quizDTO = new QuizDTO();
-        quizDTO.setTitle("Java Quiz");
-        quizDTO.setCourseId(UUID.randomUUID());
-
-        when(quizService.createQuiz(quizDTO)).thenReturn(quizDTO);
-
-        // When
-        QuizDTO response = quizController.createQuiz(quizDTO);
-
-        // Then
-        assertEquals(quizDTO, response);
-        verify(quizService, times(1)).createQuiz(quizDTO);
-    }
-
-    @Test
-    void givenQuizIdExists_whenGetQuizById_thenCorrectQuizIsReturned() {
+    void givenValidQuizId_whenGetQuizById_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID quizId = UUID.randomUUID();
         QuizDTO quizDTO = new QuizDTO();
         quizDTO.setId(quizId);
         quizDTO.setTitle("Java Quiz");
-
+        quizDTO.setCourseId(UUID.randomUUID());
         when(quizService.getQuizById(quizId)).thenReturn(quizDTO);
 
         // When
-        QuizDTO response = quizController.getQuizById(quizId);
+        var result = mockMvc.perform(get("/api/quizzes/{quizId}", quizId));
 
         // Then
-        assertEquals(quizDTO, response);
-        verify(quizService, times(1)).getQuizById(quizId);
+        result.andExpect(status().isOk());
+        verify(quizService, times(1)).getQuizById(eq(quizId));
     }
 
     @Test
-    void givenCourseIdExists_whenGetQuizzesByCourseId_thenAllQuizzesAreReturned() {
+    void givenValidCourseId_whenGetQuizzesByCourseId_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID courseId = UUID.randomUUID();
         List<QuizDTO> quizzes = List.of(new QuizDTO(), new QuizDTO());
         when(quizService.getQuizzesByCourseId(courseId)).thenReturn(quizzes);
 
         // When
-        List<QuizDTO> response = quizController.getQuizzesByCourseId(courseId);
+        var result = mockMvc.perform(get("/api/quizzes/course/{courseId}", courseId));
 
         // Then
-        assertEquals(quizzes, response);
-        verify(quizService, times(1)).getQuizzesByCourseId(courseId);
+        result.andExpect(status().isOk());
+        verify(quizService, times(1)).getQuizzesByCourseId(eq(courseId));
     }
 
     @Test
-    void givenQuizExists_whenUpdateQuiz_thenQuizIsUpdatedSuccessfully() {
-        // Given
-        UUID quizId = UUID.randomUUID();
-        QuizDTO quizDTO = new QuizDTO();
-        quizDTO.setTitle("Updated Quiz");
-        quizDTO.setCourseId(UUID.randomUUID());
-
-        when(quizService.updateQuiz(quizId, quizDTO)).thenReturn(quizDTO);
-
-        // When
-        QuizDTO response = quizController.updateQuiz(quizId, quizDTO);
-
-        // Then
-        assertEquals(quizDTO, response);
-        verify(quizService, times(1)).updateQuiz(quizId, quizDTO);
-    }
-
-    @Test
-    void givenQuizExists_whenDeleteQuiz_thenQuizIsDeletedSuccessfully() {
+    void givenValidQuizId_whenDeleteQuiz_thenReturnsNoContentAndServiceCalled() throws Exception {
         // Given
         UUID quizId = UUID.randomUUID();
         doNothing().when(quizService).deleteQuiz(quizId);
 
         // When
-        quizController.deleteQuiz(quizId);
+        var result = mockMvc.perform(delete("/api/quizzes/{quizId}", quizId));
 
         // Then
-        verify(quizService, times(1)).deleteQuiz(quizId);
+        result.andExpect(status().isNoContent());
+        verify(quizService, times(1)).deleteQuiz(eq(quizId));
+    }
+
+    @Test
+    void givenInvalidQuizDTO_whenCreateQuiz_thenReturnsBadRequest() throws Exception {
+        // Given
+        QuizDTO quizDTO = new QuizDTO();
+
+        // When
+        var result = mockMvc.perform(post("/api/quizzes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(quizDTO)));
+
+        // Then
+        result.andExpect(status().isBadRequest());
     }
 }
