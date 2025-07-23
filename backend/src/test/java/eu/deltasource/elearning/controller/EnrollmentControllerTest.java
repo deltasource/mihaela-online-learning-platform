@@ -87,7 +87,7 @@ class EnrollmentControllerTest {
         when(enrollmentService.updateEnrollmentStatus(eq(enrollmentId), eq(status))).thenReturn(updatedEnrollment);
 
         // When & Then
-        mockMvc.perform(put("/api/enrollments/{enrollmentId}/status", enrollmentId)
+        mockMvc.perform(put("/api/enrollments/{enrollmentId}/status", enrollmentId )
                         .param("status", status))
                 .andExpect(status().isOk());
         verify(enrollmentService, times(1)).updateEnrollmentStatus(enrollmentId, status);
