@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1753268887563-1" author="mihaelakolarova">
+        <createTable tableName="analytics">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_analytics"/>
+            </column>
+            <column name="user_id" type="binary(16)"/>
+            <column name="course_id" type="binary(16)"/>
+            <column name="video_id" type="binary(16)"/>
+            <column name="event_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="BIGINT"/>
+            <column name="metadata" type="VARCHAR(1000)"/>
+            <column name="ip_address" type="VARCHAR(255)"/>
+            <column name="user_agent" type="VARCHAR(500)"/>
+            <column name="session_id" type="VARCHAR(255)"/>
+            <column name="completion_percentage" type="DOUBLE"/>
+            <column name="score" type="DOUBLE"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-2" author="mihaelakolarova">
+        <createTable tableName="course">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_course"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(1000)"/>
+            <column name="thumbnail" type="VARCHAR(255)"/>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="level" type="VARCHAR(255)"/>
+            <column name="duration" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enrollment_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_published" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="instructor_id" type="binary(16)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-3" author="mihaelakolarova">
+        <createTable tableName="enrollments">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_enrollments"/>
+            </column>
+            <column name="student_id" type="binary(16)"/>
+            <column name="course_id" type="binary(16)"/>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enrolled_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="completed_at" type="DATETIME"/>
+            <column name="final_grade" type="DOUBLE"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-4" author="mihaelakolarova">
+        <createTable tableName="instructors">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_instructors"/>
+            </column>
+            <column name="user_id" type="binary(16)"/>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="department" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-5" author="mihaelakolarova">
+        <createTable tableName="lesson">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lesson"/>
+            </column>
+            <column name="course_id" type="binary(16)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="content" type="VARCHAR(255)"/>
+            <column name="video_url" type="VARCHAR(255)"/>
+            <column name="duration" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_published" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-6" author="mihaelakolarova">
+        <createTable tableName="notifications">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_notifications"/>
+            </column>
+            <column name="user_id" type="binary(16)"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_read" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="read_at" type="DATETIME"/>
+            <column name="related_entity_id" type="binary(16)"/>
+            <column name="related_entity_type" type="VARCHAR(255)"/>
+            <column name="action_url" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-7" author="mihaelakolarova">
+        <createTable tableName="option">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_option"/>
+            </column>
+            <column name="question_id" type="binary(16)"/>
+            <column name="text" type="VARCHAR(255)"/>
+            <column name="is_correct" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-8" author="mihaelakolarova">
+        <createTable tableName="question">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_question"/>
+            </column>
+            <column name="quiz_id" type="binary(16)"/>
+            <column name="question" type="VARCHAR(255)"/>
+            <column name="question_type" type="VARCHAR(255)"/>
+            <column name="points" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-9" author="mihaelakolarova">
+        <createTable tableName="quiz">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_quiz"/>
+            </column>
+            <column name="course_id" type="binary(16)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="passing_score" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_limit" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_published" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-10" author="mihaelakolarova">
+        <createTable tableName="student_progress">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_student_progress"/>
+            </column>
+            <column name="student_id" type="binary(16)"/>
+            <column name="course_id" type="binary(16)"/>
+            <column name="total_videos" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="videos_watched" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="progress_percentage" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-11" author="mihaelakolarova">
+        <createTable tableName="students">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_students"/>
+            </column>
+            <column name="user_id" type="binary(16)"/>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-12" author="mihaelakolarova">
+        <createTable tableName="users">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_non_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_non_locked" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="credentials_non_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="last_login_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-13" author="mihaelakolarova">
+        <createTable tableName="videos">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_videos"/>
+            </column>
+            <column name="course_id" type="binary(16)"/>
+            <column name="file_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-14" author="mihaelakolarova">
+        <createTable tableName="watched_videos">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_watched_videos"/>
+            </column>
+            <column name="student_progress_id" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="video_id" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="watched" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1753268887563-15" author="mihaelakolarova">
+        <addUniqueConstraint columnNames="email" constraintName="uc_instructors_email" tableName="instructors"/>
+    </changeSet>
+    <changeSet id="1753268887563-16" author="mihaelakolarova">
+        <addUniqueConstraint columnNames="user_id" constraintName="uc_instructors_user" tableName="instructors"/>
+    </changeSet>
+    <changeSet id="1753268887563-17" author="mihaelakolarova">
+        <addUniqueConstraint columnNames="email" constraintName="uc_students_email" tableName="students"/>
+    </changeSet>
+    <changeSet id="1753268887563-18" author="mihaelakolarova">
+        <addUniqueConstraint columnNames="user_id" constraintName="uc_students_user" tableName="students"/>
+    </changeSet>
+    <changeSet id="1753268887563-19" author="mihaelakolarova">
+        <addUniqueConstraint columnNames="email" constraintName="uc_users_email" tableName="users"/>
+    </changeSet>
+    <changeSet id="1753268887563-20" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="analytics"
+                                 constraintName="FK_ANALYTICS_ON_COURSE" referencedColumnNames="id"
+                                 referencedTableName="course"/>
+    </changeSet>
+    <changeSet id="1753268887563-21" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="analytics"
+                                 constraintName="FK_ANALYTICS_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1753268887563-22" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="video_id" baseTableName="analytics"
+                                 constraintName="FK_ANALYTICS_ON_VIDEO" referencedColumnNames="id"
+                                 referencedTableName="videos"/>
+    </changeSet>
+    <changeSet id="1753268887563-23" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="instructor_id" baseTableName="course"
+                                 constraintName="FK_COURSE_ON_INSTRUCTOR" referencedColumnNames="id"
+                                 referencedTableName="instructors"/>
+    </changeSet>
+    <changeSet id="1753268887563-24" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="enrollments"
+                                 constraintName="FK_ENROLLMENTS_ON_COURSE" referencedColumnNames="id"
+                                 referencedTableName="course"/>
+    </changeSet>
+    <changeSet id="1753268887563-25" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="enrollments"
+                                 constraintName="FK_ENROLLMENTS_ON_STUDENT" referencedColumnNames="id"
+                                 referencedTableName="students"/>
+    </changeSet>
+    <changeSet id="1753268887563-26" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="instructors"
+                                 constraintName="FK_INSTRUCTORS_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1753268887563-27" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="lesson" constraintName="FK_LESSON_ON_COURSE"
+                                 referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet id="1753268887563-28" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="notifications"
+                                 constraintName="FK_NOTIFICATIONS_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1753268887563-29" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="option"
+                                 constraintName="FK_OPTION_ON_QUESTION" referencedColumnNames="id"
+                                 referencedTableName="question"/>
+    </changeSet>
+    <changeSet id="1753268887563-30" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="question" constraintName="FK_QUESTION_ON_QUIZ"
+                                 referencedColumnNames="id" referencedTableName="quiz"/>
+    </changeSet>
+    <changeSet id="1753268887563-31" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="quiz" constraintName="FK_QUIZ_ON_COURSE"
+                                 referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet id="1753268887563-32" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="students" constraintName="FK_STUDENTS_ON_USER"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1753268887563-33" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="student_progress"
+                                 constraintName="FK_STUDENT_PROGRESS_ON_COURSE" referencedColumnNames="id"
+                                 referencedTableName="course"/>
+    </changeSet>
+    <changeSet id="1753268887563-34" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_progress"
+                                 constraintName="FK_STUDENT_PROGRESS_ON_STUDENT" referencedColumnNames="id"
+                                 referencedTableName="students"/>
+    </changeSet>
+    <changeSet id="1753268887563-35" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="videos" constraintName="FK_VIDEOS_ON_COURSE"
+                                 referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet id="1753268887563-36" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="student_progress_id" baseTableName="watched_videos"
+                                 constraintName="FK_WATCHED_VIDEOS_ON_STUDENT_PROGRESS" referencedColumnNames="id"
+                                 referencedTableName="student_progress"/>
+    </changeSet>
+    <changeSet id="1753268887563-37" author="mihaelakolarova">
+        <addForeignKeyConstraint baseColumnNames="video_id" baseTableName="watched_videos"
+                                 constraintName="FK_WATCHED_VIDEOS_ON_VIDEO" referencedColumnNames="id"
+                                 referencedTableName="videos"/>
+    </changeSet>
+
+    <changeSet id="test-liquibase-works" author="michaela03">
+        <createTable tableName="liquibase_test_table">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

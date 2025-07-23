@@ -1,4 +1,4 @@
-name: Build, Test, and Jacoco Report
+name: Build, Test, Jacoco Report, and Liquibase Migration
 
 on:
   push:
@@ -16,6 +16,19 @@ jobs:
     env:
       SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          MYSQL_DATABASE: elearning_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -26,6 +39,28 @@ jobs:
         with:
           java-version: 21
           distribution: "temurin"
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h"127.0.0.1" -uroot -p"${SPRING_DATASOURCE_PASSWORD}" --silent; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      - name: Run Liquibase migrations
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/backend/src/main/resources/db/changelog:/liquibase/changelog \
+            liquibase/liquibase \
+            --url=jdbc:mysql://host.docker.internal:3306/elearning_db \
+            --username=root \
+            --password=${SPRING_DATASOURCE_PASSWORD} \
+            --changeLogFile=changelog/db.changelog-master.xml \
+            update
 
       - name: Run tests and generate coverage
         working-directory: backend
@@ -66,4 +101,4 @@ jobs:
       - name: Run tests
         working-directory: frontend
         run: npx vitest 
-
+        

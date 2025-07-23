@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/initial-changeset.yaml
+
+spring:
+  liquibase:
+    change-log=classpath:db/changelog/db:
+      changelog-master:
+        yaml:
+
