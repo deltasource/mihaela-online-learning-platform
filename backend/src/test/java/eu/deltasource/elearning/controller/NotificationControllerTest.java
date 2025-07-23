@@ -39,7 +39,7 @@ class NotificationControllerTest {
     @Test
     void givenInvalidRequest_whenCreateNotification_thenReturnsBadRequest() throws Exception {
         // Given
-        CreateNotificationRequest request = new CreateNotificationRequest(); // missing required fields
+        CreateNotificationRequest request = new CreateNotificationRequest();
 
         // When
         var result = mockMvc.perform(post("/api/notifications")
