@@ -122,6 +122,49 @@ http://localhost:8080/swagger-ui/index.html#
 Alternatively, you can use tools like Swagger UI or Postman to visualize and interact with the API documentation in a
 more user-friendly interface.
 
+## Database Migrations
+
+We use Liquibase for database migrations, and for this example the database password is written directly in the migration command. This way, everyone on the team can run migrations without needing to use environment variables or secrets.
+
+### How we run migrations
+
+1. **Example for the migration command**
+
+   - Example migration command:
+     ```sh
+     mvn liquibase:update \
+       -Dliquibase.url="jdbc:mysql://localhost:3306/elearning_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true" \
+       -Dliquibase.username="root" \
+       -Dliquibase.password="SoftwareEngineering2022" \
+       -Dliquibase.driver="com.mysql.cj.jdbc.Driver" \
+       -Dliquibase.changeLogFile="src/main/resources/db/changelog/db.changelog-master.xml"
+     ```
+
+2. **Create and include migration files**
+
+   - The main changelog file is:  
+     `src/main/resources/db/changelog/db.changelog-master.xml`
+   - For each new migration, create a new file inside  
+     `src/main/resources/db/changelog/YYYY/MM/DD--migration-name.xml`
+   - Include your new migration file in the master changelog using:
+     ```xml
+     <include file="db/changelog/YYYY/MM/DD--migration-name.xml"/>
+     ```
+     Add this line to `db.changelog-master.xml`.
+
+3. **Run the migrations**
+
+   - Make sure all migration files are created and properly included in the main changelog.
+   - Run the migration command above directly in your terminal.
+
+### Migration file structure
+
+- **Master changelog:**  
+  `src/main/resources/db/changelog/db.changelog-master.xml`
+- **Migration files:**  
+  `src/main/resources/db/changelog/YYYY/MM/DD--migration-name.xml`
+- **Include every migration file in the master changelog using `<include file="..."/>`.**
+
 ## API Endpoints
 
 Here are some of the key endpoints provided by the API:
