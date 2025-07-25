@@ -31,24 +31,15 @@ jobs:
         working-directory: backend
         run: mvn test jacoco:report
 
-      - name: Build backend 
+      - name: Build backend
         working-directory: backend
         run: mvn package
 
-      - name: Upload backend results 
+      - name: Upload backend results
         uses: actions/upload-artifact@v4
         with:
           name: backend-test-results
           path: backend/target/surefire-reports/
-
-      - name: Run Liquibase migrations
-        run: |
-          mvn liquibase:update \
-            -Dliquibase.url="jdbc:mysql://localhost:3306/elearning_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true" \
-            -Dliquibase.username="root" \
-            -Dliquibase.password="SoftwareEngineering2022" \
-            -Dliquibase.driver="com.mysql.cj.jdbc.Driver" \
-            -Dliquibase.changeLogFile="src/main/resources/db/changelog/db.changelog-master.xml"
 
   frontend-checks:
     runs-on: ubuntu-latest
@@ -68,7 +59,7 @@ jobs:
         working-directory: frontend
         run: npm install
 
-      - name: Build frontend 
+      - name: Build frontend
         working-directory: frontend
         run: npm run build
 
