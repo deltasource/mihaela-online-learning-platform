@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,12 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 /**
  * The @AutoConfigureMockMvc(addFilters = false) annotation is used in Spring Boot testing to disable the automatic addition of Spring Security filters when configuring MockMvc.
@@ -46,96 +45,198 @@ class NotificationControllerTest {
     void givenInvalidRequest_whenCreateNotification_thenReturnsBadRequest() throws Exception {
         // Given
         CreateNotificationRequest request = new CreateNotificationRequest();
-        request.setMessage("Missing userId and userIds");
 
-        // When & Then
-        mockMvc.perform(post("/api/notifications")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+        // When
+        var result = mockMvc.perform(post("/api/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        // Then
+        result.andExpect(status().isBadRequest());
     }
 
     @Test
-    void givenValidUserId_whenGetUserNotifications_thenReturnsOk() throws Exception {
+    void givenInvalidRequest_whenCreateBulkNotifications_thenReturnsBadRequest() throws Exception {
+        // Given
+        CreateNotificationRequest request = new CreateNotificationRequest();
+
+        // When
+        var result = mockMvc.perform(post("/api/notifications/bulk")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        // Then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenValidUserIdAndPaging_whenGetUserNotifications_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID userId = UUID.randomUUID();
-        var page = new PageImpl<>(List.of(new NotificationDTO(), new NotificationDTO()), PageRequest.of(0, 20), 2);
-        when(notificationService.getUserNotifications(eq(userId), anyInt(), anyInt())).thenReturn(page);
+        Page<NotificationDTO> page = new PageImpl<>(List.of(new NotificationDTO()));
+        when(notificationService.getUserNotifications(eq(userId), eq(0), eq(10))).thenReturn(page);
 
-        // When & Then
-        mockMvc.perform(get("/api/notifications/user/{userId}", userId)
-                        .param("page", "0")
-                        .param("size", "20"))
-                .andExpect(status().isOk());
+        // When
+        var result = mockMvc.perform(get("/api/notifications/user/{userId}", userId)
+                .param("page", "0")
+                .param("size", "10"));
+
+        // Then
+        result.andExpect(status().isOk());
+        verify(notificationService, times(1)).getUserNotifications(eq(userId), eq(0), eq(10));
     }
 
     @Test
-    void givenValidUserId_whenGetUnreadNotifications_thenReturnsOk() throws Exception {
+    void givenInvalidUUID_whenGetUserNotifications_thenReturnsBadRequest() throws Exception {
+        // When
+        var result = mockMvc.perform(get("/api/notifications/user/{userId}", "invalid-uuid")
+                .param("page", "0")
+                .param("size", "10"));
+
+        // Then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenValidUserId_whenGetUnreadNotifications_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID userId = UUID.randomUUID();
-        List<NotificationDTO> notifications = List.of(new NotificationDTO(), new NotificationDTO());
-        when(notificationService.getUnreadNotifications(userId)).thenReturn(notifications);
+        List<NotificationDTO> response = List.of(new NotificationDTO());
+        when(notificationService.getUnreadNotifications(userId)).thenReturn(response);
 
-        // When & Then
-        mockMvc.perform(get("/api/notifications/user/{userId}/unread", userId))
-                .andExpect(status().isOk());
+        // When
+        var result = mockMvc.perform(get("/api/notifications/user/{userId}/unread", userId));
+
+        // Then
+        result.andExpect(status().isOk());
+        verify(notificationService, times(1)).getUnreadNotifications(eq(userId));
     }
 
     @Test
-    void givenValidUserId_whenGetNotificationSummary_thenReturnsOk() throws Exception {
-        // Given
-        UUID userId = UUID.randomUUID();
-        NotificationSummaryDTO summaryDTO = new NotificationSummaryDTO();
-        when(notificationService.getNotificationSummary(userId)).thenReturn(summaryDTO);
+    void givenInvalidUUID_whenGetUnreadNotifications_thenReturnsBadRequest() throws Exception {
+        // When
+        var result = mockMvc.perform(get("/api/notifications/user/{userId}/unread", "invalid-uuid"));
 
-        // When & Then
-        mockMvc.perform(get("/api/notifications/user/{userId}/summary", userId))
-                .andExpect(status().isOk());
+        // Then
+        result.andExpect(status().isBadRequest());
     }
 
     @Test
-    void givenValidNotificationId_whenMarkAsRead_thenReturnsNoContent() throws Exception {
+    void givenValidNotificationId_whenMarkAsRead_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID notificationId = UUID.randomUUID();
         doNothing().when(notificationService).markAsRead(notificationId);
 
-        // When & Then
-        mockMvc.perform(put("/api/notifications/{notificationId}/read", notificationId))
-                .andExpect(status().isNoContent());
+        // When
+        var result = mockMvc.perform(post("/api/notifications/{notificationId}/read", notificationId));
+
+        // Then
+        result.andExpect(status().isOk());
+        verify(notificationService, times(1)).markAsRead(eq(notificationId));
     }
 
     @Test
-    void givenValidUserId_whenMarkAllAsRead_thenReturnsNoContent() throws Exception {
+    void givenInvalidUUID_whenMarkAsRead_thenReturnsBadRequest() throws Exception {
+        // When
+        var result = mockMvc.perform(post("/api/notifications/{notificationId}/read", "invalid-uuid"));
+
+        // Then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenValidUserId_whenMarkAllAsRead_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID userId = UUID.randomUUID();
         doNothing().when(notificationService).markAllAsRead(userId);
 
-        // When & Then
-        mockMvc.perform(put("/api/notifications/user/{userId}/read-all", userId))
-                .andExpect(status().isNoContent());
+        // When
+        var result = mockMvc.perform(post("/api/notifications/user/{userId}/read-all", userId));
+
+        // Then
+        result.andExpect(status().isOk());
+        verify(notificationService, times(1)).markAllAsRead(eq(userId));
     }
 
     @Test
-    void givenValidNotificationId_whenDeleteNotification_thenReturnsNoContent() throws Exception {
+    void givenInvalidUUID_whenMarkAllAsRead_thenReturnsBadRequest() throws Exception {
+        // When
+        var result = mockMvc.perform(post("/api/notifications/user/{userId}/read-all", "invalid-uuid"));
+
+        // Then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenValidUserId_whenGetNotificationSummary_thenReturnsOkAndServiceCalled() throws Exception {
+        // Given
+        UUID userId = UUID.randomUUID();
+        NotificationSummaryDTO summary = new NotificationSummaryDTO();
+        when(notificationService.getNotificationSummary(userId)).thenReturn(summary);
+
+        // When
+        var result = mockMvc.perform(get("/api/notifications/user/{userId}/summary", userId));
+
+        // Then
+        result.andExpect(status().isOk());
+        verify(notificationService, times(1)).getNotificationSummary(eq(userId));
+    }
+
+    @Test
+    void givenInvalidUUID_whenGetNotificationSummary_thenReturnsBadRequest() throws Exception {
+        // When
+        var result = mockMvc.perform(get("/api/notifications/user/{userId}/summary", "invalid-uuid"));
+
+        // Then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenValidNotificationId_whenDeleteNotification_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID notificationId = UUID.randomUUID();
         doNothing().when(notificationService).deleteNotification(notificationId);
 
-        // When & Then
-        mockMvc.perform(delete("/api/notifications/{notificationId}", notificationId))
-                .andExpect(status().isNoContent());
+        // When
+        var result = mockMvc.perform(delete("/api/notifications/{notificationId}", notificationId));
+
+        // Then
+        result.andExpect(status().isOk());
+        verify(notificationService, times(1)).deleteNotification(eq(notificationId));
     }
 
     @Test
-    void givenValidUserIdAndDaysOld_whenCleanupOldNotifications_thenReturnsNoContent() throws Exception {
+    void givenInvalidUUID_whenDeleteNotification_thenReturnsBadRequest() throws Exception {
+        // When
+        var result = mockMvc.perform(delete("/api/notifications/{notificationId}", "invalid-uuid"));
+
+        // Then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenValidUserIdAndDaysOld_whenCleanupOldNotifications_thenReturnsOkAndServiceCalled() throws Exception {
         // Given
         UUID userId = UUID.randomUUID();
         int daysOld = 30;
         doNothing().when(notificationService).cleanupOldNotifications(userId, daysOld);
 
-        // When & Then
-        mockMvc.perform(delete("/api/notifications/user/{userId}/cleanup", userId)
-                        .param("daysOld", String.valueOf(daysOld)))
-                .andExpect(status().isNoContent());
+        // When
+        var result = mockMvc.perform(delete("/api/notifications/user/{userId}/cleanup", userId)
+                .param("daysOld", String.valueOf(daysOld)));
+
+        // Then
+        result.andExpect(status().isOk());
+        verify(notificationService, times(1)).cleanupOldNotifications(eq(userId), eq(daysOld));
+    }
+
+    @Test
+    void givenInvalidUUID_whenCleanupOldNotifications_thenReturnsBadRequest() throws Exception {
+        // When
+        var result = mockMvc.perform(delete("/api/notifications/user/{userId}/cleanup", "invalid-uuid")
+                .param("daysOld", "30"));
+
+        // Then
+        result.andExpect(status().isBadRequest());
     }
 }
