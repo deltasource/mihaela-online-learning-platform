@@ -49,7 +49,6 @@ jobs:
             -Dliquibase.password="SoftwareEngineering2022" \
             -Dliquibase.driver="com.mysql.cj.jdbc.Driver" \
             -Dliquibase.changeLogFile="src/main/resources/db/changelog/db.changelog-master.xml"
-      
 
   frontend-checks:
     runs-on: ubuntu-latest
